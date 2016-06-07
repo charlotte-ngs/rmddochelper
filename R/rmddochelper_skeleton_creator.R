@@ -6,7 +6,13 @@
 ###
 ### ################################################### ###
 
-#' Create a new Rmarkdown (Rmd) document
+
+#' @title Create a Rmarkdown (Rmd) document based on the provided template
+#'
+#' @description
+#'
+
+#' Create a skeleton for a new Rmarkdown (Rmd) document
 #'
 #' @description
 #' \code{create_docu_skeleton} assumes that psPkgPath is a
