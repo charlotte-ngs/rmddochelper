@@ -10,7 +10,14 @@
 #' @title Create a Rmarkdown (Rmd) document based on the provided template
 #'
 #' @description
+#' The \code{rmarkdown} package provides a templating mechanism
+#' within which templates can be stored in the source version
+#' of a package in directory inst/rmarkdown/templates. By default,
+#' we choose the template from the rmarkdown package for rmd
+#' documents
 #'
+
+### ################################################### ###
 
 #' Create a skeleton for a new Rmarkdown (Rmd) document
 #'
