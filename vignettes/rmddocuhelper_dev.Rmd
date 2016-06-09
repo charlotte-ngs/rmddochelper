@@ -1,0 +1,47 @@
+---
+title: "rmddocuhelper Package Development"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+---
+
+## Disclaimer
+This document is a collection of ideas, plans and specifications that are important for developing the package `rmddocuhelper`.
+
+
+## Introduction
+Creating documents is easy using tools like `Rstudio`, `rmarkdown`, `knitr` and `pandoc`. The source of such a document is written in a special version of markdown called `rmarkdown` which allows the direct inclusion of `R`-statements in the document source. The `knitr` package is used to convert the rmarkdown wource into ordinary markdown wherebye all `R`-statements are evaluated and evaluation results are included into the markdown document. The document conversion tool `pandoc` converts the produced markdown document into many different output formats. 
+
+
+## Objective
+The above mentioned tool chain consisting of `Rstudio`, `rmarkdown`, `knitr` and `pandoc` is great for starting documents via the GUI provided by `Rstudio`. Whenever the number of documents to be created increases above a certain level and the structure of the created documents is very similar, a more scalable and more flexible approach for document creation is needed. 
+
+Scalability and flexibility can be increased by replacing the GUI by a function-based UI when creating new documents and by the very heavy usage of templates. That means, we provide simple functions that create documents based on templates. The document creation functions can be called with parameters that are used to replace placeholders in the templates.
+
+As an example, we  assume the following template
+
+```{r DocumentTemplate}
+docu_template <- "---
+title: [REPLACE_WITH_TITLE]
+author: [REPLACE_WITH_AUTHOR]
+date: [REPLACE_WITH_DATE]
+output: rmarkdown::html_vignette
+---
+
+## [REPLACE_WITH_SECTION]"
+```
+
+We want to replace all the `[REPLACE_WITH_*]` tags with information specific for the document to be created. The replacement information will be provided in a list that has names that match the end of the tags.
+
+```{r ReplacementInfo}
+repl_info <- list(title   = "My First Document",
+                  author  = "Peter von Rohr",
+                  date    = format(Sys.Date(), "%Y-%m-%d"),
+                  section = "First Section")
+
+getReplTag <- function(psTag){
+  return(paste0("[REPLACE_WITH_", toupper(psTag), "]"))
+}
+```
+
+
