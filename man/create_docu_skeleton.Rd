@@ -2,7 +2,7 @@
 % Please edit documentation in R/rmddochelper_skeleton_creator.R
 \name{create_docu_skeleton}
 \alias{create_docu_skeleton}
-\title{Create a new Rmarkdown (Rmd) document}
+\title{Create a Rmarkdown (Rmd) document based on the provided template}
 \usage{
 create_docu_skeleton(psDocuName, psPkgPath = ".", psRmdTemplate,
   psTemplatePkg = NULL, psDocuSubdir = "vignettes",
@@ -26,6 +26,14 @@ create_docu_skeleton(psDocuName, psPkgPath = ".", psRmdTemplate,
 \item{pbDocuHasOwnSubdir}{should document be stored in separate subdir}
 }
 \description{
+The \code{rmarkdown} package provides a templating mechanism
+within which templates can be stored in the source version
+of a package in directory inst/rmarkdown/templates. By default,
+we choose the template from the rmarkdown package for rmd
+documents
+
+Create a skeleton for a new Rmarkdown (Rmd) document
+
 \code{create_docu_skeleton} assumes that psPkgPath is a
 directory that contains an R-package. By default the new
 document is created in subdirectory "vignettes". If this

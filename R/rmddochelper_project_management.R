@@ -77,30 +77,44 @@ move_doc_to_subdir <- function(psDocuName, psDocuPath = NULL, pbMoveEverything =
 #' psPattern. By default, directories are ignored,
 #' even if they match the given pattern.
 #'
+#' @details
+#' In case psDocuName is left NULL then all subdirectories of
+#' psDocuPath are searched for files to be removed
+#'
 #' @param psDocuName   Name stem of the directory source
 #' @param psDocuPath   Name of the document path
 #' @param psPattern    Pattern to match by files to be deleted
 #' @export cleanup_output
-cleanup_output <- function(psDocuName,
-                           psDocuPath  = file.path("vignettes", psDocuName),
+cleanup_output <- function(psDocuName  = NULL,
+                           psDocuPath  = "vignettes",
                            psPattern   = "pdf$",
                            pbIgnoreDir = TRUE){
-  ### # loop over vector of patterns given in psPattern
-  for (p in psPattern) {
-    ### # list the files and directories that match the current pattern p
-    curMatch <- list.files(path = psDocuPath, pattern = p, full.names = TRUE)
-    if (pbIgnoreDir)
-      curMatch <- curMatch[!file.info(curMatch)[,"isdir"]]
-    if (!exists("files_to_remove")){
-      files_to_remove <- curMatch
-    } else {
-      files_to_remove <- c(files_to_remove, curMatch)
-    }
+  if (is.null(psDocuName)) {
+    sDocuName <- list.files(path = psDocuPath, full.names = TRUE)
+  } else {
+    sDocuName <- file.path(psDocuPath, psDocuName)
   }
-  message("Files to be removed: ", paste(basename(files_to_remove), collapse = ", "))
-  sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
-  if (tolower(sAnswer) == "y")
-    file.remove(files_to_remove)
+
+  ### # loop over vector of sDocuName which are document source directories
+  for (dn in sDocuName) {
+
+    ### # loop over vector of patterns given in psPattern
+    for (p in psPattern) {
+      ### # list the files and directories that match the current pattern p
+      curMatch <- list.files(path = sDocuName, pattern = p, full.names = TRUE)
+      if (pbIgnoreDir)
+        curMatch <- curMatch[!file.info(curMatch)[,"isdir"]]
+      if (!exists("files_to_remove")){
+        files_to_remove <- curMatch
+      } else {
+        files_to_remove <- c(files_to_remove, curMatch)
+      }
+    }
+    message("Files to be removed: ", paste(basename(files_to_remove), collapse = ", "))
+    sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
+    if (tolower(sAnswer) == "y")
+      file.remove(files_to_remove)
+  }
 
   invisible(TRUE)
 

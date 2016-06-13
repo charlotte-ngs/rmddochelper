@@ -4,7 +4,7 @@
 \alias{cleanup_output}
 \title{Cleanup a directory from old output}
 \usage{
-cleanup_output(psDocuName, psDocuPath = file.path("vignettes", psDocuName),
+cleanup_output(psDocuName = NULL, psDocuPath = "vignettes",
   psPattern = "pdf$", pbIgnoreDir = TRUE)
 }
 \arguments{
@@ -20,5 +20,9 @@ as ouput from a previous compilation of a document
 given by psDocuName and match the pattern specified by
 psPattern. By default, directories are ignored,
 even if they match the given pattern.
+}
+\details{
+In case psDocuName is left NULL then all subdirectories of
+psDocuPath are searched for files to be removed
 }
 
