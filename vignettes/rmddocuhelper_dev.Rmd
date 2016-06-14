@@ -5,12 +5,25 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 ---
 
+```{r DocumentSetup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+```
+
+```{r DocumentStatus}
+r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
+r6obj_docstat$setVersion(psVersion = "0.0.901")
+r6obj_docstat$setProject(psProject = "rmddochelper")
+r6obj_docstat$setStatus(psStatus = "Initialisation")
+r6obj_docstat$include_doc_stat()
+```
+
+
 ## Disclaimer
 This document is a collection of ideas, plans and specifications that are important for developing the package `rmddocuhelper`.
 
 
 ## Introduction
-Creating documents is easy using tools like `Rstudio`, `rmarkdown`, `knitr` and `pandoc`. The source of such a document is written in a special version of markdown called `rmarkdown` which allows the direct inclusion of `R`-statements in the document source. The `knitr` package is used to convert the rmarkdown wource into ordinary markdown wherebye all `R`-statements are evaluated and evaluation results are included into the markdown document. The document conversion tool `pandoc` converts the produced markdown document into many different output formats. 
+Creating documents is easy using tools like `Rstudio`, `rmarkdown`, `knitr` and `pandoc`. The source of such a document is written in a special version of markdown called `rmarkdown`. In addition to ordinary markdown, `rmarkdown` allows for direct inclusion of `R`-statements in the document markup source. The `knitr` package is used to convert the rmarkdown sources into ordinary markdown source file. During that conversion all `R`-statements are evaluated and evaluation results are collected and included into the markdown document. The transformation of `rmarkdown` sources to markdown by `knitr` is analogous to what `Sweave` does with `LaTeX` source files. The advantage of using `knitr` and `rmarkdown` is that we have to use considerably less markup instructions compared to `Sweave` and `LaTeX`. On the other hand, if we really need the expressive power of `LaTeX`, we can include chunks of `LaTeX` statements which are automatically converted by the latter used conversion tool pandoc. The document conversion tool `pandoc` converts the produced markdown document into many different output formats, such as HTML or PDF. Although, pandoc is a very powerful conversion tool, there are limits when trying to convert `LaTeX` sources into output formats such as `docx`.  
 
 
 ## Objective

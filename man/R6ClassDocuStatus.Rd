@@ -16,10 +16,14 @@ Object of \code{\link{R6Class}} with methods for managing the status of a docume
 of a given document. A core requirement is that the different status
 records should be persistent across different compilation runs. That
 makes it necessary to store the intermediate states of an \code{R6ClassDocuStatus}
-object in a file. Given that requirement we must have methods for
-reading status information from a file and for writing status information
-to a file. Furthermore, we need a method to add a document status record
-and we must be able to display all document status records as a table.
+object in a file. The requirement of a persistent document status history
+is implemented in private methods. These method create a small history
+management system that can read the status history from a history file and
+that is able to write the updated document status to a history
+file. The only public method is the one that creates the markdown table in
+a document. Before that table is created the private history management functions
+are called and the complete status information of the document is collected
+from the history file and from the current document status.
 }
 \section{Fields}{
 
@@ -45,9 +49,13 @@ and we must be able to display all document status records as a table.
 \describe{
   \item{\code{new()}}{This method instantiates an object of class R6ClassDocuStatus}
   \item{\code{initialize()}}{Initialization of field called after creating the instance}
-  \item{\code{include_doc_stat(psTitle)}}{Saves updated document status to the status file.
-              Write section header psTitle for document status and write
-              markdown table containing the document status.}
+  \item{\code{include_doc_stat(psTitle = "Document Status", psFormat = "tab")}}
+             {In case a document status history file is found, the document status
+              history is read from the history file and is assigend to a dataframe.
+              The current status is added to the status history and is written back
+              to the status history file. Then the document status section is written
+              as a markdown table to the document from where the method is called. This
+              is done using the function knitr::kable().}
 }
 }
 

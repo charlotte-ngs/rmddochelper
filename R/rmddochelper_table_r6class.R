@@ -7,67 +7,6 @@
 ### ############################################################ ###
 
 
-#' @title R6 Class Representing Version Objects
-#'
-#' @description
-#' Version strings can be separated into three parts
-#' \enumerate{
-#'   \item major version
-#'   \item minor version
-#'   \item fix level
-#' }
-#' For each of the three parts a private field is created
-#'
-#' @export R6ClassVersion
-R6ClassVersion <- R6::R6Class(classname = "R6ClassVersion",
-                              public = list(
-                                initialize = function(pnMajorVersion = NA,
-                                                      pnMinorVersion = NA,
-                                                      pnFixLevel = NA){
-                                  ### # by default we start with 0.0.900
-                                  private$nMajorVersion <- 0
-                                  if (!is.na(pnMajorVersion))
-                                    private$nMajorVersion <- pnMajorVersion
-                                  ### # minor version
-                                  private$nMinorVersion <- 0
-                                  if (!is.na(pnMinorVersion))
-                                    private$nMinorVersion <- pnMinorVersion
-                                  ### # fix level
-                                  private$nFixLevel <- 900
-                                  if (!is.na(pnFixLevel))
-                                    private$nFixLevel <- pnFixLevel
-                                },
-                                incrementFixLevel = function(){
-                                  private$nFixLevel <- private$nFixLevel + 1
-                                },
-                                incrementMinorVersion = function(){
-                                  private$nMinorVersion <- private$nMinorVersion + 1
-                                  private$nFixLevel <- 0
-                                },
-                                incrementMajorVersion = function(){
-                                  private$nMajorVersion <- private$nMajorVersion + 1
-                                  private$nMinorVersion <- 0
-                                  private$nFixLevel <- 0
-                                },
-                                to_string = function(){
-                                  return(paste(c(private$nMajorVersion, private$nMinorVersion, private$nFixLevel),
-                                               sep = "", collapse = "."))
-                                },
-                                string_parse = function(psVersionString){
-                                  sVersionString <- unlist(strsplit(psVersionString, split = ".", fixed = TRUE))
-                                  stopifnot(identical(length(sVersionString),3L))
-                                  private$nMajorVersion <- as.numeric(sVersionString[1])
-                                  private$nMinorVersion <- as.numeric(sVersionString[2])
-                                  private$nFixLevel <- as.numeric(sVersionString[3])
-                                }
-                              ),
-                              private = list(
-                                nMajorVersion = 0,
-                                nMinorVersion = 0,
-                                nFixLevel     = 0
-                              ))
-
-
 #' @title R6 Class Representing Document Status Objects
 #'
 #' @docType class
@@ -77,10 +16,14 @@ R6ClassVersion <- R6::R6Class(classname = "R6ClassVersion",
 #' of a given document. A core requirement is that the different status
 #' records should be persistent across different compilation runs. That
 #' makes it necessary to store the intermediate states of an \code{R6ClassDocuStatus}
-#' object in a file. Given that requirement we must have methods for
-#' reading status information from a file and for writing status information
-#' to a file. Furthermore, we need a method to add a document status record
-#' and we must be able to display all document status records as a table.
+#' object in a file. The requirement of a persistent document status history
+#' is implemented in private methods. These method create a small history
+#' management system that can read the status history from a history file and
+#' that is able to write the updated document status to a history
+#' file. The only public method is the one that creates the markdown table in
+#' a document. Before that table is created the private history management functions
+#' are called and the complete status information of the document is collected
+#' from the history file and from the current document status.
 #'
 #' @export R6ClassDocuStatus
 #' @usage R6ClassDocuStatus$new()
@@ -109,9 +52,13 @@ R6ClassVersion <- R6::R6Class(classname = "R6ClassVersion",
 #' \describe{
 #'   \item{\code{new()}}{This method instantiates an object of class R6ClassDocuStatus}
 #'   \item{\code{initialize()}}{Initialization of field called after creating the instance}
-#'   \item{\code{include_doc_stat(psTitle)}}{Saves updated document status to the status file.
-#'               Write section header psTitle for document status and write
-#'               markdown table containing the document status.}
+#'   \item{\code{include_doc_stat(psTitle = "Document Status", psFormat = "tab")}}
+#'              {In case a document status history file is found, the document status
+#'               history is read from the history file and is assigend to a dataframe.
+#'               The current status is added to the status history and is written back
+#'               to the status history file. Then the document status section is written
+#'               as a markdown table to the document from where the method is called. This
+#'               is done using the function knitr::kable().}
 #' }
 #' @section Private Methods:
 #' \describe{
@@ -179,7 +126,7 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                    getStatusColnames = function(){
                                      return(private$status_colnames)
                                    },
-                                   include_doc_stat = function(psTitle = "Document Status",psFormat = "tab"){
+                                   include_doc_stat = function(psTitle = "Document Status", psFormat = "tab"){
                                      ### # read status history, if it exists
                                      if (file.exists(private$history_file)){
                                        if (psFormat == "csv2"){
@@ -259,38 +206,3 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                                     dfCurStatus <- private$stat_to_df()
                                                     knitr::kable(dfCurStatus)
                                                   }))
-
-
-#' R6Class Representing A Generic Table Object
-#'
-#'
-R6ClassGenericTable <- R6::R6Class(classname = "R6ClassGenericTable",
-                                   public    = list(
-                                     setTableHeader = function(psTableHeader){
-                                       private$sTableHeader <- psTableHeader
-                                     },
-                                     getTableHeader = function(){
-                                       return(private$sTableHeader)
-                                     },
-                                     setTableBody = function(plTableBody){
-                                       private$lTableBody <- plTableBody
-                                     },
-                                     getTableBody = function(){
-                                       return(private$lTableBody)
-                                     },
-                                     addRow = function(plTableRow){
-                                       private$lTableBody <- c(private$lTableBody, list(plTableRow))
-                                     },
-                                     writeTsvToFile = function(psFileName, pbRowNames = FALSE,
-                                                               pbColNames = FALSE){
-                                       dfTable <- as.data.frame(private$lTableBody)
-                                       colnames(dfTable) <- private$sTableHeader
-                                       write.table(dfTable, file = psFileName,
-                                                   quote = FALSE, sep = "\t",
-                                                   row.names = pbRowNames, col.names = pbColNames)
-                                     }
-                                   ),
-                                   private   = list(sTableHeader = "",
-                                                    lTableBody   = list()))
-
-
