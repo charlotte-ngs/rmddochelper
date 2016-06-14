@@ -11,9 +11,12 @@ knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 
 ```{r DocumentStatus}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
-r6obj_docstat$setVersion(psVersion = "0.0.901")
 r6obj_docstat$setProject(psProject = "rmddochelper")
-r6obj_docstat$setStatus(psStatus = "Initialisation")
+#r6obj_docstat$setVersion(psVersion = "0.0.901")
+#r6obj_docstat$setStatus(psStatus = "Initialisation")
+r6obj_docstat$setVersion(psVersion = "0.0.902")
+r6obj_docstat$setStatus(psStatus = "Extended Introduction")
+
 r6obj_docstat$include_doc_stat()
 ```
 
