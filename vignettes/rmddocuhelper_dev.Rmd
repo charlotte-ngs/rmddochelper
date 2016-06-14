@@ -9,7 +9,7 @@ output: rmarkdown::html_vignette
 knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
-```{r DocumentStatus}
+```{r DocumentStatus, eval=FALSE}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
 r6obj_docstat$setVersion(psVersion = "0.0.901")
 r6obj_docstat$setProject(psProject = "rmddochelper")
@@ -23,7 +23,7 @@ This document is a collection of ideas, plans and specifications that are import
 
 
 ## Introduction
-Creating documents is easy using tools like `Rstudio`, `rmarkdown`, `knitr` and `pandoc`. The source of such a document is written in a special version of markdown called `rmarkdown`. In addition to ordinary markdown, `rmarkdown` allows for direct inclusion of `R`-statements in the document markup source. The `knitr` package is used to convert the rmarkdown sources into ordinary markdown source file. During that conversion all `R`-statements are evaluated and evaluation results are collected and included into the markdown document. The transformation of `rmarkdown` sources to markdown by `knitr` is analogous to what `Sweave` does with `LaTeX` source files. The advantage of using `knitr` and `rmarkdown` is that we have to use considerably less markup instructions compared to `Sweave` and `LaTeX`. On the other hand, if we really need the expressive power of `LaTeX`, we can include chunks of `LaTeX` statements which are automatically converted by the latter used conversion tool pandoc. The document conversion tool `pandoc` converts the produced markdown document into many different output formats, such as HTML or PDF. Although, pandoc is a very powerful conversion tool, there are limits when trying to convert `LaTeX` sources into output formats such as `docx`.  
+Creating documents is easy using tools like `Rstudio`, `rmarkdown`, `knitr` and `pandoc`. The source of such a document is written in a special version of markdown called `rmarkdown`. In addition to ordinary markdown, `rmarkdown` allows for direct inclusion of `R`-statements in the document markup source. The `knitr` package is used to convert the rmarkdown sources into ordinary markdown source file. During that conversion all `R`-statements are evaluated and evaluation results are collected and included into the markdown document. The transformation of `rmarkdown` sources to markdown by `knitr` is analogous to what `Sweave` does with `LaTeX` source files. The advantage of using `knitr` and `rmarkdown` is that we have to use considerably less markup instructions compared to `Sweave` and `LaTeX`. On the other hand, if we really need the expressive power of `LaTeX`, we can include chunks of `LaTeX` statements which are automatically converted by the latter used conversion tool called `pandoc`. The document conversion tool `pandoc` converts the produced markdown document into many different output formats, such as HTML or PDF. Although, pandoc is a very powerful conversion tool, there are limits when trying to convert `LaTeX` sources into output formats such as `docx`. One example of such a restriction is when graphics are included in markdown files using the `LaTeX` statement `\includegraphics`, those diagrams will not show up in a `docx`-formatted document that is produced by pandoc. In that case one has to stick to the markdown syntax for including graphics.  
 
 
 ## Objective
@@ -34,27 +34,36 @@ Scalability and flexibility can be increased by replacing the GUI by a function-
 As an example, we  assume the following template
 
 ```{r DocumentTemplate}
-docu_template <- "---
+docu_template <- "
 title: [REPLACE_WITH_TITLE]
 author: [REPLACE_WITH_AUTHOR]
 date: [REPLACE_WITH_DATE]
 output: rmarkdown::html_vignette
----
 
-## [REPLACE_WITH_SECTION]"
+## [REPLACE_WITH_SECTION]" 
 ```
 
 We want to replace all the `[REPLACE_WITH_*]` tags with information specific for the document to be created. The replacement information will be provided in a list that has names that match the end of the tags.
 
-```{r ReplacementInfo}
+```{r ReplacementInfo, echo=TRUE}
 repl_info <- list(title   = "My First Document",
                   author  = "Peter von Rohr",
                   date    = format(Sys.Date(), "%Y-%m-%d"),
                   section = "First Section")
 
-getReplTag <- function(psTag){
+get_repl_tag <- function(psTag){
   return(paste0("[REPLACE_WITH_", toupper(psTag), "]"))
 }
+
+gsub_templ_pattern <- function(ps_docu_template, pl_repl_info){
+  s_docu_result <- ps_docu_template
+  for (sTag in names(pl_repl_info)){
+    s_docu_result <- gsub(get_repl_tag(psTag = sTag), pl_repl_info[[sTag]], s_docu_result, fixed = TRUE)
+  }
+  return(s_docu_result)
+}
+### # output result of replacement
+cat(gsub_templ_pattern(ps_docu_template = docu_template, pl_repl_info = repl_info))
 ```
 
 
