@@ -80,11 +80,12 @@ create_docu_skeleton <- function(psDocuName,
 #' target directory.
 #'
 #'
-#' @param file          name of the new document
-#' @param template      name of the template
-#' @param package       package where template can be found
-#' @param create_dir    whether or not to create a new directory for this document
-#' @param pbOverwrite   should existing files be overwritten
+#' @param   file          name of the new document
+#' @param   template      name of the template
+#' @param   package       package where template can be found
+#' @param   create_dir    whether or not to create a new directory for this document
+#' @param   pbOverwrite   should existing files be overwritten
+#' @return  file          name of the new document
 rmd_draft <- function(file, template,
                       package = NULL,
                       create_dir = "default",

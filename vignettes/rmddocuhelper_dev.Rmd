@@ -9,13 +9,17 @@ output: rmarkdown::html_vignette
 knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
-```{r DocumentStatus, eval=FALSE}
+```{r DocumentStatus, eval=TRUE}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
 r6obj_docstat$setProject(psProject = "rmddochelper")
 #r6obj_docstat$setVersion(psVersion = "0.0.901")
 #r6obj_docstat$setStatus(psStatus = "Initialisation")
-r6obj_docstat$setVersion(psVersion = "0.0.902")
-r6obj_docstat$setStatus(psStatus = "Extended Introduction")
+# r6obj_docstat$setVersion(psVersion = "0.0.902")
+# r6obj_docstat$setStatus(psStatus = "Extended Introduction")
+# r6obj_docstat$setVersion(psVersion = "0.0.903")
+# r6obj_docstat$setStatus(psStatus = "Describe replacement function")
+r6obj_docstat$setVersion(psVersion = "0.0.904")
+r6obj_docstat$setStatus(psStatus = "Description of document status")
 
 r6obj_docstat$include_doc_stat()
 ```
@@ -34,19 +38,20 @@ The above mentioned tool chain consisting of `Rstudio`, `rmarkdown`, `knitr` and
 
 Scalability and flexibility can be increased by replacing the GUI by a function-based UI when creating new documents and by the very heavy usage of templates. That means, we provide simple functions that create documents based on templates. The document creation functions can be called with parameters that are used to replace placeholders in the templates.
 
+### Template based document creation
 As an example, we  assume the following template
 
-```{r DocumentTemplate}
-docu_template <- "
+```{r DocumentTemplate, echo=TRUE}
+docu_template <- "---
 title: [REPLACE_WITH_TITLE]
 author: [REPLACE_WITH_AUTHOR]
 date: [REPLACE_WITH_DATE]
 output: rmarkdown::html_vignette
-
+---
 ## [REPLACE_WITH_SECTION]" 
 ```
 
-We want to replace all the `[REPLACE_WITH_*]` tags with information specific for the document to be created. The replacement information will be provided in a list that has names that match the end of the tags.
+We want to replace all the `[REPLACE_WITH_*]` tags with information specific for the document to be created. The replacement information will be provided in a list (`repl_info`) that has names that match the end of the tags.
 
 ```{r ReplacementInfo, echo=TRUE}
 repl_info <- list(title   = "My First Document",
@@ -54,19 +59,42 @@ repl_info <- list(title   = "My First Document",
                   date    = format(Sys.Date(), "%Y-%m-%d"),
                   section = "First Section")
 
+#' Convert a tag to a replacement placeholder
+#'
+#' @param    psTag   tag to be converted to a placeholder
+#' @return   replacement placeholder
 get_repl_tag <- function(psTag){
   return(paste0("[REPLACE_WITH_", toupper(psTag), "]"))
 }
 
+#' Replacement of placeholder by replacement list values
+#'
+#' @param    ps_docu_template   document template string
+#' @param    pl_repl_info       replacement info list
+#' @return   s_docu_result      document result string
 gsub_templ_pattern <- function(ps_docu_template, pl_repl_info){
   s_docu_result <- ps_docu_template
   for (sTag in names(pl_repl_info)){
-    s_docu_result <- gsub(get_repl_tag(psTag = sTag), pl_repl_info[[sTag]], s_docu_result, fixed = TRUE)
+    s_docu_result <- gsub(get_repl_tag(psTag = sTag), 
+                          pl_repl_info[[sTag]], 
+                          s_docu_result, 
+                          fixed = TRUE)
   }
   return(s_docu_result)
 }
-### # output result of replacement
-cat(gsub_templ_pattern(ps_docu_template = docu_template, pl_repl_info = repl_info))
 ```
 
+The replacement of the placeholders is done in function `gsub_templ_pattern()`. In that function, we loop over the names of the replacement list and replace occurrences of the placeholders with the associated replacement list values. The names in the replacement list are converted to placeholders using the helper-function `get_repl_tag()`. The result after the replacement is shown below.
 
+```{r OutputAfterReplacement}
+### # output result of replacement
+cat("```\n", gsub_templ_pattern(ps_docu_template = docu_template, pl_repl_info = repl_info), "\n```\n")
+```
+
+# Document status
+The status of a document is shown in a separate section that contains one table. That table contains information about the version of the document, the date, the author, the status and the project to which this document is associated to. This information is important mostly for internal use. Whenever a document is published or sent to external institutions, that information should most likely be hidden in the final output. Hence a useful feature is the possibility to easily be able to hide the whole section on the document status.
+
+In this package `rmddocuhelper`, the document status is implemented in a R6 class called `R6ClassDocuStatus`. This class has fields to store the version, the data, the author, the status and the project. Apart from the getter and setter methods of the fields, there is only one public method that produces the table containing the document status. The resulting output of this method is shown at the beginning of this document.
+
+
+# Abreviation list
