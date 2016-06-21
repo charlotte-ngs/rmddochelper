@@ -101,19 +101,18 @@ cleanup_output <- function(psDocuName  = NULL,
     ### # loop over vector of patterns given in psPattern
     for (p in psPattern) {
       ### # list the files and directories that match the current pattern p
-      curMatch <- list.files(path = sDocuName, pattern = p, full.names = TRUE)
+      curMatch <- list.files(path = dn, pattern = p, full.names = TRUE)
       if (pbIgnoreDir)
         curMatch <- curMatch[!file.info(curMatch)[,"isdir"]]
-      if (!exists("files_to_remove")){
-        files_to_remove <- curMatch
-      } else {
-        files_to_remove <- c(files_to_remove, curMatch)
+      ### # ask whether to delete files
+      if (length(curMatch) > 0){
+        message("Files to be removed from directory: ", dn, "\n", paste(basename(curMatch), collapse = ", "))
+        sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
+        if (tolower(sAnswer) == "y")
+          file.remove(curMatch)
       }
     }
-    message("Files to be removed: ", paste(basename(files_to_remove), collapse = ", "))
-    sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
-    if (tolower(sAnswer) == "y")
-      file.remove(files_to_remove)
+
   }
 
   invisible(TRUE)

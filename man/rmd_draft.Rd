@@ -18,6 +18,9 @@ rmd_draft(file, template, package = NULL, create_dir = "default",
 
 \item{pbOverwrite}{should existing files be overwritten}
 }
+\value{
+file          name of the new document
+}
 \description{
 \code{rmd_draft} corresponds to a local copy of
 \code{rmarkdown::draft}. In contrast to the original

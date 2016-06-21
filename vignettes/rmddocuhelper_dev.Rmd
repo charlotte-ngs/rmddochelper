@@ -20,8 +20,10 @@ r6obj_docstat$setProject(psProject = "rmddochelper")
 # r6obj_docstat$setStatus(psStatus = "Describe replacement function")
 # r6obj_docstat$setVersion(psVersion = "0.0.904")
 # r6obj_docstat$setStatus(psStatus = "Description of document status")
-r6obj_docstat$setVersion(psVersion = "0.0.905")
-r6obj_docstat$setStatus(psStatus = "Minor improvements on structure and description")
+# r6obj_docstat$setVersion(psVersion = "0.0.905")
+# r6obj_docstat$setStatus(psStatus = "Minor improvements on structure and description")
+r6obj_docstat$setVersion(psVersion = "0.0.906")
+r6obj_docstat$setStatus(psStatus = "Table of abbreviation started")
 
 r6obj_docstat$include_doc_stat()
 ```
