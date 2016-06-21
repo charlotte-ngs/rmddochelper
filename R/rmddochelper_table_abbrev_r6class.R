@@ -16,6 +16,6 @@
 #' given document. The R6 class defined here provides functionlity
 #' to automatically generate a table of abbreviation
 #'
-R6ClassTableAbbrev <- R6Class(classname = "R6ClassTableAbbrev",
-                              public    = list(),
-                              private   = list())
+R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
+                                  public    = list(),
+                                  private   = list())

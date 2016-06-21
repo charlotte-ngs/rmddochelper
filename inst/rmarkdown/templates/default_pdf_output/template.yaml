@@ -1,0 +1,5 @@
+name: Default PDF Document (PDF)
+description: >
+  Template for generic pdf_output document. This customises the basic output
+  to take up as little space as possible.
+create_dir: false

@@ -1,0 +1,21 @@
+---
+title:  [REPLACE_WITH_TITLE]
+author: [REPLACE_WITH_AUTHOR]
+date: [REPLACE_WITH_DATE]
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results = 'asis')
+```
+
+```{r DocumentStatus, eval=TRUE}
+r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
+r6obj_docstat$setProject(psProject = "[REPLACE_WITH_PROJECT]")
+r6obj_docstat$setVersion(psVersion = "0.0.901")
+r6obj_docstat$setStatus(psStatus = "Initialisation")
+r6obj_docstat$include_doc_stat()
+```
+
+## [REPLACE_WITH_SECTION]
+

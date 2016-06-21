@@ -7,15 +7,39 @@
 ### ################################################### ###
 
 
-#' @title Create a Rmarkdown (Rmd) document based on the provided template
+#' @title Create a Rmarkdown (Rmd) document with pdf_output
 #'
 #' @description
-#' The \code{rmarkdown} package provides a templating mechanism
-#' within which templates can be stored in the source version
-#' of a package in directory inst/rmarkdown/templates. By default,
-#' we choose the template from the rmarkdown package for rmd
-#' documents
+#' Function {create_pdf_output_skeleton} is a wrapper to
+#' \code{create_docu_skeleton} for easily creating pdf-documents
+#' with reasonable default settings.
 #'
+#' @param   psDocuName           name of the new document
+#' @param   psPkgPath            path where package is located under which document should be created
+#' @param   psRmdTemplate        name of the template to be used
+#' @param   psTemplatePkg        package from where the template should be taken
+#' @param   psDocuSubdir         subdirectory in which document should be saved to
+#' @param   pbDocuHasOwnSubdir   should document be stored in separate subdir
+#' @param   pbOverwrite          flag whether existing files are overwritten
+#' @param   pbEdit               directly open newly created document
+#' @export  create_pdf_output_skeleton
+create_pdf_output_skeleton <- function(psDocuName,
+                                       psPkgPath         = ".",
+                                       psRmdTemplate     = "default_pdf_output",
+                                       psTemplatePkg     = "rmddochelper",
+                                       psDocuSubdir      = "vignettes",
+                                       pDocuHasOwnSubdir = TRUE,
+                                       pbOverwrite       = FALSE,
+                                       pbEdit            = TRUE){
+  create_docu_skeleton(psDocuName        = psDocuName,
+                       psPkgPath         = psPkgPath,
+                       psRmdTemplate     = psRmdTemplate,
+                       psTemplatePkg     = psTemplatePkg,
+                       psDocuSubdir      = psDocuSubdir,
+                       pDocuHasOwnSubdir = pDocuHasOwnSubdir,
+                       pbOverwrite       = pbOverwrite,
+                       pbEdit            = pbEdit)
+}
 
 ### ################################################### ###
 
@@ -118,7 +142,7 @@ rmd_draft <- function(file, template,
     file <- tools::file_path_sans_ext(file)
     if (dir.exists(file))
       stop("The directory '", file, "' already exists.")
-    dir.create(file)
+    dir.create(file, recursive = TRUE)
     file <- file.path(file, basename(file))
   }
   ### # error, in case file itself already exists
