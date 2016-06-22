@@ -25,14 +25,14 @@ r6obj_docstat$setProject(psProject = "rmddochelper")
 r6obj_docstat$setVersion(psVersion = "0.0.906")
 r6obj_docstat$setStatus(psStatus = "Table of abbreviation started")
 
-r6obj_docstat$include_doc_stat()
+r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 ```
 
 \pagebreak
 
 ```{r TableAbbreviation}
 r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
-r6ob_abbrtable$include_abbr_table()
+r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
 ```
 
 

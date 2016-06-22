@@ -19,11 +19,6 @@
 #' @export R6ClassTableAbbrev
 R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                   public    = list(
-                                    initialize = function(){
-                                      private$colHeader <- c("Abbreviation", "Meaning")
-                                      private$sAbbrFile <- "ABBREVIATION"
-                                      private$sAbbrTitle <- "# Abbreviations"
-                                    },
                                     setColHeader = function(pvColHeader){
                                       private$colHeader <- pvColHeader
                                     },
@@ -33,7 +28,7 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                     setAbbrTitle = function(psAbbrTitle){
                                       private$sAbbrTitle <- psAbbrTitle
                                     },
-                                    add_abbrev = function(psAbbrev, psMeaning){
+                                    add_abbrev = function(psAbbrev, psMeaning, pbquote = TRUE){
                                       ### # distinguish between first and later cases
                                       if (is.null(private$dfAbbrTable)){
                                         private$dfAbbrTable <- data.frame(abbr = psAbbrev,
@@ -43,11 +38,18 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                         private$dfAbbrTable <- rbind(private$dfAbbrTable,
                                                                      c(psAbbrev, psMeaning))
                                       }
-                                      cat(psMeaning, "(", psAbbrev, ")", sep = "")
+                                      if (pbquote){
+                                        sresult <- paste0("`", psMeaning, "`", " (", psAbbrev, ")")
+                                      } else {
+                                        sresult <- paste0(psMeaning, " (", psAbbrev, ")")
+                                      }
+                                      return(sresult)
                                     },
-                                    writeToTsvFile = function(psFileName = "ABBREVIATION"){
-                                      sFileName <-psFileName
-                                      if (!is.null(private$sAbbrFile)) {
+                                    writeToTsvFile = function(psFileName = NULL){
+                                      ### # determine name of file to write to
+                                      if (!is.null(psFileName)) {
+                                        sFileName <- psFileName
+                                      } else {
                                         sFileName <- private$sAbbrFile
                                       }
                                       names(private$dfAbbrTable) <- private$colHeader
@@ -58,8 +60,14 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                                   row.names = FALSE,
                                                   fileEncoding = "UTF-8")
                                     },
-                                    include_abbr_table = function(){
-                                      cat(private$sAbbrTitle, "\n", sep = "")
+                                    include_abbr_table = function(psAbbrTitle = NULL){
+                                      ### # determine title of section with abbreviation table
+                                      if (!is.null(psAbbrTitle)){
+                                        sAbbrTitle <- psAbbrTitle
+                                      } else {
+                                        sAbbrTitle <- private$sAbbrTitle
+                                      }
+                                      cat(sAbbrTitle, "\n", sep = "")
                                       if (!file.exists(private$sAbbrFile)){
                                         cat(" ==> Please, knit the document again to include a table of abbreviations\n")
                                       } else{
@@ -75,7 +83,7 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                   ),
                                   private   = list(
                                     dfAbbrTable = NULL,
-                                    colHeader = NULL,
-                                    sAbbrFile = NULL,
-                                    sAbbrTitle = NULL
+                                    colHeader = c("Abbreviation", "Meaning"),
+                                    sAbbrFile = "ABBREVIATION",
+                                    sAbbrTitle = "# Abbreviations"
                                   ))

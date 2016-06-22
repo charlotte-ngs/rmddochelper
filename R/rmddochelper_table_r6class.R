@@ -77,11 +77,8 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                    initialize = function(){
                                      'Initialisation of a new document status object.'
                                      ### # initialize date and author based on Sys functionis
-                                     if (is.null(private$date))
-                                       self$setDate(psDate = as.character(Sys.Date()))
-                                     if (is.null(private$author))
-                                       self$setAuthor(psAuthor = Sys.info()[["user"]])
-
+                                     self$setDate(psDate = as.character(Sys.Date()))
+                                     self$setAuthor(psAuthor = Sys.info()[["user"]])
                                    },
                                    setVersion = function(psVersion){
                                      private$version <- psVersion
@@ -119,7 +116,10 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                    getStatusColnames = function(){
                                      return(private$status_colnames)
                                    },
-                                   include_doc_stat = function(psTitle = "Document Status",psFormat = "tab"){
+                                   setTitle = function(pstitle){
+                                     private$stitle  <- pstitle
+                                   },
+                                   include_doc_stat = function(psTitle = NULL, psFormat = "tab"){
                                      ### # read status history, if it exists
                                      if (file.exists(private$history_file)){
                                        if (psFormat == "csv2"){
@@ -130,18 +130,25 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                      }
                                      ### # write current status plus history to file
                                      private$writeStatusToFile()
-                                     cat(paste("#", psTitle),"\n")
+                                     ### # get the title
+                                     if (!is.null(psTitle)){
+                                       stitle <- psTitle
+                                     } else {
+                                       stitle <- private$stitle
+                                     }
+                                     cat(stitle,"\n", sep = "")
                                      private$knitr_kable()
                                    }
                                  ),
-                                 private   = list(version = "0.0.900",
-                                                  author = NULL,
-                                                  date   = NULL,
-                                                  status = "Init",
-                                                  project = "NA",
+                                 private   = list(version         = "0.0.900",
+                                                  author          = NULL,
+                                                  date            = NULL,
+                                                  status          = "Init",
+                                                  project         = "NA",
                                                   status_colnames = c("Version", "Date", "Author","Status","Project"),
-                                                  status_history = NULL,
-                                                  history_file = "DOCUMENTSTATUS",
+                                                  status_history  = NULL,
+                                                  history_file    = "DOCUMENTSTATUS",
+                                                  stitle          = "# Document Status",
                                                   get_version_col = function(pdfStatus){
                                                     return(which(tolower(names(pdfStatus)) == "version"))
                                                   },
