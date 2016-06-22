@@ -28,6 +28,13 @@ r6obj_docstat$setStatus(psStatus = "Table of abbreviation started")
 r6obj_docstat$include_doc_stat()
 ```
 
+\pagebreak
+
+```{r TableAbbreviation}
+r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
+r6ob_abbrtable$include_abbr_table()
+```
+
 
 ## Disclaimer
 This document is a collection of ideas, plans and specifications that are important for developing the package `rmddocuhelper`.
@@ -117,6 +124,13 @@ Abbreviations are convenient to use for authors because it saves them writing lo
 
 Setting up the table of abbreviations manually is tedious and error-prone. Hence we are looking for a way to generate the table of abbreviations automatically. Before the table of abbreviations can be generated, we have to collect all the abbreviations together with their meanings in the text. This information is used to construct a dataframe which is then shown as table of abbreviations. Because we want to be able to place the table of abbreviations in any position in the text, we have to collect the information about all abbreviations and their meanings in a separate scan over the source text. Since we want to hide implementation details from the user, we choose to use R6 classes and methods to implement this functionality. 
 
+In technical documents, there are often many `r r6ob_abbrtable$add_abbrev(psAbbrev="TLA", psMeaning="Three Letter Acronyms")` included. Most often authors assume that they are known, but not all readers are familiar with them. Hence it is always a good idea to include a `r r6ob_abbrtable$add_abbrev(psAbbrev="ToA", psMeaning="Table of Abbreviations")`. 
+
+In this package `rmddochelper` the table of abbreviation is build automatically, but it requires that the documents are knit twice. 
+
+```{r WriteTableOfAbbreviations, results='hide'}
+r6ob_abbrtable$writeToTsvFile()
+```
 
 
 
