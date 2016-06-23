@@ -7,7 +7,7 @@
 create_pdf_output_skeleton(psDocuName, psPkgPath = ".",
   psRmdTemplate = "default_pdf_output", psTemplatePkg = "rmddochelper",
   psDocuSubdir = "vignettes", pDocuHasOwnSubdir = TRUE,
-  pbOverwrite = FALSE, pbEdit = TRUE)
+  pbOverwrite = FALSE, pbEdit = TRUE, plReplace = NULL)
 }
 \arguments{
 \item{psDocuName}{name of the new document}
@@ -23,6 +23,8 @@ create_pdf_output_skeleton(psDocuName, psPkgPath = ".",
 \item{pbOverwrite}{flag whether existing files are overwritten}
 
 \item{pbEdit}{directly open newly created document}
+
+\item{plReplace}{list with replacement key-values}
 
 \item{pbDocuHasOwnSubdir}{should document be stored in separate subdir}
 }

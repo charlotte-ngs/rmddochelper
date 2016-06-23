@@ -6,7 +6,8 @@
 \usage{
 create_docu_skeleton(psDocuName, psPkgPath = ".", psRmdTemplate,
   psTemplatePkg = NULL, psDocuSubdir = "vignettes",
-  pDocuHasOwnSubdir = TRUE, pbOverwrite = FALSE, pbEdit = TRUE)
+  pDocuHasOwnSubdir = TRUE, pbOverwrite = FALSE, pbEdit = TRUE,
+  plReplace = NULL)
 }
 \arguments{
 \item{psDocuName}{name of the new document}
@@ -22,6 +23,8 @@ create_docu_skeleton(psDocuName, psPkgPath = ".", psRmdTemplate,
 \item{pbOverwrite}{flag whether existing files are overwritten}
 
 \item{pbEdit}{directly open newly created document}
+
+\item{plReplace}{list with replacement key-values}
 
 \item{pbDocuHasOwnSubdir}{should document be stored in separate subdir}
 }

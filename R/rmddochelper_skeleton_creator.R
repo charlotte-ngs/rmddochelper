@@ -22,6 +22,7 @@
 #' @param   pbDocuHasOwnSubdir   should document be stored in separate subdir
 #' @param   pbOverwrite          flag whether existing files are overwritten
 #' @param   pbEdit               directly open newly created document
+#' @param   plReplace            list with replacement key-values
 #' @export  create_pdf_output_skeleton
 create_pdf_output_skeleton <- function(psDocuName,
                                        psPkgPath         = ".",
@@ -30,7 +31,8 @@ create_pdf_output_skeleton <- function(psDocuName,
                                        psDocuSubdir      = "vignettes",
                                        pDocuHasOwnSubdir = TRUE,
                                        pbOverwrite       = FALSE,
-                                       pbEdit            = TRUE){
+                                       pbEdit            = TRUE,
+                                       plReplace         = NULL){
   create_docu_skeleton(psDocuName        = psDocuName,
                        psPkgPath         = psPkgPath,
                        psRmdTemplate     = psRmdTemplate,
@@ -38,7 +40,8 @@ create_pdf_output_skeleton <- function(psDocuName,
                        psDocuSubdir      = psDocuSubdir,
                        pDocuHasOwnSubdir = pDocuHasOwnSubdir,
                        pbOverwrite       = pbOverwrite,
-                       pbEdit            = pbEdit)
+                       pbEdit            = pbEdit,
+                       plReplace         = plReplace)
 }
 
 ### ################################################### ###
@@ -66,6 +69,7 @@ create_pdf_output_skeleton <- function(psDocuName,
 #' @param   pbDocuHasOwnSubdir   should document be stored in separate subdir
 #' @param   pbOverwrite          flag whether existing files are overwritten
 #' @param   pbEdit               directly open newly created document
+#' @param   plReplace            list with replacement key-values
 #' @export create_docu_skeleton
 create_docu_skeleton <- function(psDocuName,
                                  psPkgPath         = ".",
@@ -74,7 +78,8 @@ create_docu_skeleton <- function(psDocuName,
                                  psDocuSubdir      = "vignettes",
                                  pDocuHasOwnSubdir = TRUE,
                                  pbOverwrite       = FALSE,
-                                 pbEdit            = TRUE) {
+                                 pbEdit            = TRUE,
+                                 plReplace         = NULL) {
   ### # do the preparation similar to devtools::use_vignette
   pkg <- devtools::as.package(psPkgPath)
   devtools:::check_suggested("rmarkdown")
@@ -87,7 +92,8 @@ create_docu_skeleton <- function(psDocuName,
                             template    = psRmdTemplate,
                             package     = psTemplatePkg,
                             create_dir  = pDocuHasOwnSubdir,
-                            pbOverwrite = pbOverwrite)
+                            pbOverwrite = pbOverwrite,
+                            plReplace   = plReplace)
 
   if (pbEdit) file.edit(sCreatedFile)
   message("Draft vignette created in ", sCreatedFile)
@@ -109,11 +115,13 @@ create_docu_skeleton <- function(psDocuName,
 #' @param   package       package where template can be found
 #' @param   create_dir    whether or not to create a new directory for this document
 #' @param   pbOverwrite   should existing files be overwritten
+#' @param   plReplace     list with replacement key-values
 #' @return  file          name of the new document
 rmd_draft <- function(file, template,
-                      package = NULL,
-                      create_dir = "default",
-                      pbOverwrite = FALSE){
+                      package     = NULL,
+                      create_dir  = "default",
+                      pbOverwrite = FALSE,
+                      plReplace   = NULL){
   ### # determine the template path which is contained
   ### #  in package "package"
   if (!is.null(package)) {
@@ -161,8 +169,62 @@ rmd_draft <- function(file, template,
       # stop("The file '", basename(f), "' already exists")
       file.copy(from = f, to = to, overwrite = FALSE, recursive = TRUE)
   }
-  file.rename(file.path(dirname(file), "skeleton.Rmd"), file)
-
+  ### # in case a replacement list was specified, use it to replace
+  ### #  placeholders in skeleton file
+  if (is.null(plReplace)){
+    file.rename(file.path(dirname(file), "skeleton.Rmd"), file)
+  } else {
+    replace_placeholders(psTrgFile = file, plReplace = plReplace)
+  }
+  ### # return result file to caller
   return(file)
 
 }
+
+
+#' @title Replacement of placeholders in skeletonfile
+#'
+#' @description
+#' Placeholders in skeleton files are replaced using gsub
+#' functionalities
+#'
+#' @param psTrgFile   path to and including name of targetfile
+#' @param plReplace   replacement list
+replace_placeholders <- function(psTrgFile, plReplace){
+  ### # read skeleton file into a string
+  sSkelFile <- file.path(dirname(psTrgFile), "skeleton.Rmd")
+  con <- file(description = sSkelFile)
+  sSkel <- paste0(readLines(con = con), collapse = "\n")
+  close(con)
+  ### # do the replacement using gsub based function
+  sReplResult <- gsub_templ_pattern(ps_docu_template = sSkel, pl_repl_info = plReplace)
+  ### # writing result to result file
+  cat(sReplResult, "\n", file = psTrgFile)
+  ### # remove skeleton
+  file.remove(sSkelFile)
+}
+
+#' Convert a tag to a replacement placeholder
+#'
+#' @param    psTag   tag to be converted to a placeholder
+#' @return   replacement placeholder
+get_repl_tag <- function(psTag){
+  return(paste0("[REPLACE_WITH_", toupper(psTag), "]"))
+}
+
+#' Replacement of placeholder by replacement list values
+#'
+#' @param    ps_docu_template   document template string
+#' @param    pl_repl_info       replacement info list
+#' @return   s_docu_result      document result string
+gsub_templ_pattern <- function(ps_docu_template, pl_repl_info){
+  s_docu_result <- ps_docu_template
+  for (sTag in names(pl_repl_info)){
+    s_docu_result <- gsub(get_repl_tag(psTag = sTag),
+                          pl_repl_info[[sTag]],
+                          s_docu_result,
+                          fixed = TRUE)
+  }
+  return(s_docu_result)
+}
+

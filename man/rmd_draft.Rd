@@ -5,7 +5,7 @@
 \title{Custom local copy of rmarkdown::draft}
 \usage{
 rmd_draft(file, template, package = NULL, create_dir = "default",
-  pbOverwrite = FALSE)
+  pbOverwrite = FALSE, plReplace = NULL)
 }
 \arguments{
 \item{file}{name of the new document}
@@ -17,6 +17,8 @@ rmd_draft(file, template, package = NULL, create_dir = "default",
 \item{create_dir}{whether or not to create a new directory for this document}
 
 \item{pbOverwrite}{should existing files be overwritten}
+
+\item{plReplace}{list with replacement key-values}
 }
 \value{
 file          name of the new document

@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, results = 'asis')
+knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 ```
 
 ```{r DocumentStatus, eval=TRUE}
@@ -14,8 +14,19 @@ r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
 r6obj_docstat$setProject(psProject = "[REPLACE_WITH_PROJECT]")
 r6obj_docstat$setVersion(psVersion = "0.0.901")
 r6obj_docstat$setStatus(psStatus = "Initialisation")
-r6obj_docstat$include_doc_stat()
+r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
+```
+
+
+```{r TableAbbreviation}
+r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
+r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
 ```
 
 ## [REPLACE_WITH_SECTION]
 
+```{r WriteTableOfAbbreviations, results='hide'}
+r6ob_abbrtable$writeToTsvFile()
+```
+<!-- END of document                 -- 
+  -- Below this must not be anything -->
