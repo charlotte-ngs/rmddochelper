@@ -27,10 +27,12 @@ r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
 This document contains the user manual for package `rmddochelper`. 
 
 ## Introduction
-The toolchain with `Rstudio`, `rmarkdown`, `knitr` and `pandoc` provides very good support to create `r r6ob_abbrtable$add_abbrev(psAbbrev = "rmd", psMeaning = "R Markdown")` documents. The package `rmddochelper` is thought to support the above toolchain for users who are more used to a command-based `r r6ob_abbrtable$add_abbrev(psAbbrev = "UI", psMeaning = "User Interface")` compared to the `r r6ob_abbrtable$add_abbrev(psAbbrev = "GUI", psMeaning = "Graphical User Interface")` provided by RStudio. With command-based UI we mean that the user interfaces or communicates with programs by function calls that are given to an interpreter such as `R` on a commandline. This command-based UI apporach is opposed to the GUI based approach where programs are driven by interaction of the mouse with graphical elements such as buttons and menues.
+The toolchain with `Rstudio`, `rmarkdown`, `knitr` and `pandoc` provides very good support to create `r r6ob_abbrtable$add_abbrev(psAbbrev = "rmd", psMeaning = "R Markdown")` documents. Users interact with this toolchain via the `r r6ob_abbrtable$add_abbrev(psAbbrev = "GUI", psMeaning = "Graphical User Interface")` provided by RStudio. The package `rmddochelper` is thought to support the above toolchain for users who are more used to a command-based `r r6ob_abbrtable$add_abbrev(psAbbrev = "UI", psMeaning = "User Interface")`. With command-based UI we mean that the user interfaces or communicates with programs by function calls that are given to an interpreter such as `R` on a commandline. This command-based UI apporach is opposed to the GUI based approach where programs are driven by interaction of the mouse with graphical elements such as buttons and menues.
 
 The advantage of the command-based approach is its scalability and its reproducability. Scalability means that it takes about the same amount of resources independent of how many documents we create. This can be achieved using a command-based approach, it takes about the same amount of resources whether I create one or ten documents on the command line. With GUI-based approaches the amount of resources increases linearly with the number of documents that I want to create. 
 
+## Creating A Document
+Documents can easily be created using one of the `creation`-functions provided by the `rmddochelper` package. 
 
 ```{r WriteTableOfAbbreviations, results='hide'}
 r6ob_abbrtable$writeToTsvFile()
