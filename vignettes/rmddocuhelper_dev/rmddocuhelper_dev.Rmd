@@ -134,9 +134,12 @@ In this package `rmddochelper` the table of abbreviation is build automatically,
 ## Including Graphics
 Graphics can always be included using ordinary markdown or LaTeX syntax. But if graphics are converted from a different format into pdf or png, then it is more convenient to have a tool that does automatic conversion. This can be done using the function `insertOdgAsPdf()`. This function takes as input the filename of a graphic in odg format and automatically converts it into a pdf-file. This conversion is done using `LibreOffice` which must be installed and available on the search path. For a given graphic file, it can be included using the following function call.
 
-```{r IncludeGraphic, echo=TRUE}
-rmddochelper::insertOdgAsPdf(psOdgFileStem = "RandomScreenShot")
+```{r IncludeGraphic, echo=TRUE,fig.show=TRUE}
+rmddochelper::insertOdgAsPdf(psOdgFileStem = "RandomScreenShot2")
 ```
+
+## TODO
+- Make graphics inclusion work with html output. Use png as graphics format. Test wheter conversion can be done with LibO.
 
 
 ```{r WriteTableOfAbbreviations, results='hide'}

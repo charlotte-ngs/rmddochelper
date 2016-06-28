@@ -5,7 +5,7 @@
 \title{Copy a draft template file for a odg graphics}
 \usage{
 odg_draft(file, template = "odg_figure", package = NULL,
-  create_dir = "default", pbOverwrite = FALSE, plReplace = NULL)
+  create_dir = "default", pbOverwrite = FALSE)
 }
 \arguments{
 \item{file}{name of the new document}

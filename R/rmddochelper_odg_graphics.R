@@ -52,26 +52,32 @@ convertLibOToPdf <- function(psLibOFile, psLibODir = "odg", psFigOutDir = "."){
 #' @param psGraphicName   Format of diagram to be created
 #' @export create_odg_graphic
 create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
+                               psGraphicPath  = "vignettes",
                                psOdgTemplate  = "odg_figure",
                                psTemplatePkg  = "rmddochelper",
                                create_dir     = "default",
                                pbRecursive    = TRUE,
                                pbEdit         = TRUE){
 
+  ### # check whether graphcis path exist, o/w create it
+  if (!dir.exists(psGraphicPath))
+    dir.create(path = psGraphicPath, recursive = pbRecursive)
+  sFile <- file.path(psGraphicPath,psGraphicName)
   ### # use the local function rmd_draft to copy the template
-  sGraphicTrgName <- odg_draft(file        = psGraphicName,
+  sGraphicTrgName <- odg_draft(file        = sFile,
                                template    = psOdgTemplate,
                                package     = psTemplatePkg,
                                create_dir  = create_dir)
 
-  if (pbEdit & file.exists(sGraphicTrgName)){
+  if (!file.exists(sGraphicTrgName))
+    stop(" *** ERROR: could not create graphics file: ", sGraphicTrgName)
+  if (pbEdit){
     ### # depending on platform start open the template file differently
     if (.Platform$OS.type == "windows"){
       file.show(sGraphicTrgName)
     } else {
-      #sSofficeCmd <- paste("soffice --draw", sGraphicFile)
-      #system(sSofficeCmd)
-      file.edit(sGraphicTrgName)
+      sSofficeCmd <- paste("soffice --draw", sGraphicFile)
+      system(sSofficeCmd)
     }
 
   }
