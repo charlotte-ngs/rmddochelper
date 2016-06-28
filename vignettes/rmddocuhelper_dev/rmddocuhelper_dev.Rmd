@@ -22,8 +22,10 @@ r6obj_docstat$setProject(psProject = "rmddochelper")
 # r6obj_docstat$setStatus(psStatus = "Description of document status")
 # r6obj_docstat$setVersion(psVersion = "0.0.905")
 # r6obj_docstat$setStatus(psStatus = "Minor improvements on structure and description")
-r6obj_docstat$setVersion(psVersion = "0.0.906")
-r6obj_docstat$setStatus(psStatus = "Table of abbreviation started")
+# r6obj_docstat$setVersion(psVersion = "0.0.906")
+# r6obj_docstat$setStatus(psStatus = "Table of abbreviation started")
+r6obj_docstat$setVersion(psVersion = "0.0.907")
+r6obj_docstat$setStatus(psStatus = "Including graphics")
 
 r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 ```
@@ -126,7 +128,16 @@ Setting up the table of abbreviations manually is tedious and error-prone. Hence
 
 In technical documents, there are often many `r r6ob_abbrtable$add_abbrev(psAbbrev="TLA", psMeaning="Three Letter Acronyms")` included. Most often authors assume that they are known, but not all readers are familiar with them. Hence it is always a good idea to include a `r r6ob_abbrtable$add_abbrev(psAbbrev="ToA", psMeaning="Table of Abbreviations")`. 
 
-In this package `rmddochelper` the table of abbreviation is build automatically, but it requires that the documents are knit twice. 
+In this package `rmddochelper` the table of abbreviation is build automatically, but it requires that the documents are knit twice.
+
+
+## Including Graphics
+Graphics can always be included using ordinary markdown or LaTeX syntax. But if graphics are converted from a different format into pdf or png, then it is more convenient to have a tool that does automatic conversion. This can be done using the function `insertOdgAsPdf()`. This function takes as input the filename of a graphic in odg format and automatically converts it into a pdf-file. This conversion is done using `LibreOffice` which must be installed and available on the search path. For a given graphic file, it can be included using the following function call.
+
+```{r IncludeGraphic, echo=TRUE}
+rmddochelper::insertOdgAsPdf(psOdgFileStem = "RandomScreenShot")
+```
+
 
 ```{r WriteTableOfAbbreviations, results='hide'}
 r6ob_abbrtable$writeToTsvFile()

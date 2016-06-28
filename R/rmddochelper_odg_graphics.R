@@ -26,7 +26,10 @@ convertLibOToPdf <- function(psLibOFile, psLibODir = "odg", psFigOutDir = "."){
                      paste(sOdgDirWin, psLibOFile, sep = "\\"),
                      file.path(sOdgDir, psLibOFile))
   if (!file.exists(sFigFile))
-    create_odg_graphic(psGraphicName = file.path(sOdgDir, psLibOFile))
+    stop("Cannot find Graphics File: ", sFigFile,
+         ". Please run create_odg_graphic(psGraphicName = ",
+         file.path(sOdgDir, psLibOFile), ") first.")
+    #create_odg_graphic(psGraphicName = file.path(sOdgDir, psLibOFile))
   sConvCommand <- paste(sConvCmdStem, sFigFile)
   system(command = sConvCommand)
   sPdfFile <- gsub("odg$", "pdf", psLibOFile)
@@ -51,12 +54,15 @@ convertLibOToPdf <- function(psLibOFile, psLibODir = "odg", psFigOutDir = "."){
 create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                psOdgTemplate  = "odg_figure",
                                psTemplatePkg  = "rmddochelper",
+                               create_dir     = "default",
+                               pbRecursive    = TRUE,
                                pbEdit         = TRUE){
 
   ### # use the local function rmd_draft to copy the template
   sGraphicTrgName <- odg_draft(file        = psGraphicName,
                                template    = psOdgTemplate,
-                               package     = psTemplatePkg)
+                               package     = psTemplatePkg,
+                               create_dir  = create_dir)
 
   if (pbEdit & file.exists(sGraphicTrgName)){
     ### # depending on platform start open the template file differently
@@ -96,8 +102,7 @@ odg_draft <- function(file,
                       template    = "odg_figure",
                       package     = NULL,
                       create_dir  = "default",
-                      pbOverwrite = FALSE,
-                      plReplace   = NULL){
+                      pbOverwrite = FALSE){
   ### # determine the template path which is contained
   ### #  in package "package"
   if (!is.null(package)) {
