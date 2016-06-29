@@ -11,13 +11,25 @@ create_odg_graphic(psGraphicName = "skeleton.odg",
 }
 \arguments{
 \item{psGraphicName}{Format of diagram to be created}
+
+\item{psGraphicPath}{Path where created odg file should be stored}
+
+\item{psOdgTemplate}{name of the template to be used}
+
+\item{psTemplatePkg}{package where template is stored}
+
+\item{create_dir}{should created odg file be stored in separate directory}
+
+\item{pbRecursive}{recursively create complete path to graphic file}
+
+\item{pbEdit}{directly edit created odg file}
 }
 \description{
-\code{create_odg_graphic} uses the empty template skeleton.odg which
-is stored in the rmarkdown template directory of this package.
-When calling  \code{create_odg_graphic} without any arguments, then the
-template is opened using soffice draw. When a filename for the odg graphic
-which should be created, is specified the template is renamed to the given
-name.
+\code{create_odg_graphic} uses templates which are either provided
+by the caller or which are stored in the rmarkdown/template directory
+of this package `rmddochelper`. When calling  \code{create_odg_graphic}
+without any arguments, then the template is opened using soffice draw.
+When a filename for the odg graphic which should be created, is
+specified the template is renamed to the given name.
 }
 

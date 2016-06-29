@@ -6,22 +6,31 @@
 ###
 ### ###################################################### ###
 
-#' Convert documents from source format into target format used in the document
+#' @title Convert documents from source format into a given target output format
 #'
-#' \code{convertLibOToPdf} assumes that graphics or diagrams are produced by
-#' LibreOffice Draw. Source files are converted on the fly to pdf which are
-#' then included in the source R markdown document
+#' @description
+#' \code{convertLibOToGraphic} assumes that LibreOffice is installed
+#' and available on the search path. Source files are converted on the
+#' fly to the specified output format which are then included in the
+#' source R markdown document
 #'
 #' @param psLibOFile    name of the libre office graphics file
 #' @param psLibODir     source directory of Libre Office files
 #' @param psFigOutDir   output directory where figure pdfs are expected to be
-#' @export convertLibOToPdf
-convertLibOToPdf <- function(psLibOFile, psLibODir = "odg", psFigOutDir = "."){
+convertLibOToGraphic <- function(psLibOFile,
+                                 psOutFormat = NULL,
+                                 psLibODir = "odg",
+                                 psFigOutDir = "."){
+  ### # output format cannot be null
+  if (is.null(psOutFormat))
+    stop(" *** Missing output format: ", psOutFormat)
+  sOutFormat <- tolower(psOutFormat)
   sOdgDir <- psLibODir
   sOdgDirWin <- gsub("/", "\\", sOdgDir, fixed = TRUE)
   sConvCmdStem <- ifelse(.Platform$OS.type == "windows",
-                         '"C:/Program Files (x86)/LibreOffice 5/program/soffice" --headless --convert-to pdf',
-                         "soffice --headless --convert-to pdf")
+                         paste('"C:/Program Files (x86)/LibreOffice 5/program/soffice" --headless --convert-to',
+                               sOutFormat),
+                         paste("soffice --headless --convert-to", sOutFormat))
   sFigFile <- ifelse(.Platform$OS.type == "windows",
                      paste(sOdgDirWin, psLibOFile, sep = "\\"),
                      file.path(sOdgDir, psLibOFile))
@@ -32,24 +41,30 @@ convertLibOToPdf <- function(psLibOFile, psLibODir = "odg", psFigOutDir = "."){
     #create_odg_graphic(psGraphicName = file.path(sOdgDir, psLibOFile))
   sConvCommand <- paste(sConvCmdStem, sFigFile)
   system(command = sConvCommand)
-  sPdfFile <- gsub("odg$", "pdf", psLibOFile)
-  sFigOutFile <- file.path(psFigOutDir, sPdfFile)
-  file.rename(from = sPdfFile, sFigOutFile)
+  sOutFile <- gsub("odg$", sOutFormat, psLibOFile)
+  sFigOutFile <- file.path(psFigOutDir, sOutFile)
+  file.rename(from = sOutFile, sFigOutFile)
   return(sFigOutFile)
 }
 
 
-#' Create an empty odg graphic
+#' @title Create an empty odg graphic
 #'
 #' @description
-#' \code{create_odg_graphic} uses the empty template skeleton.odg which
-#' is stored in the rmarkdown template directory of this package.
-#' When calling  \code{create_odg_graphic} without any arguments, then the
-#' template is opened using soffice draw. When a filename for the odg graphic
-#' which should be created, is specified the template is renamed to the given
-#' name.
+#' \code{create_odg_graphic} uses templates which are either provided
+#' by the caller or which are stored in the rmarkdown/template directory
+#' of this package `rmddochelper`. When calling  \code{create_odg_graphic}
+#' without any arguments, then the template is opened using soffice draw.
+#' When a filename for the odg graphic which should be created, is
+#' specified the template is renamed to the given name.
 #'
 #' @param psGraphicName   Format of diagram to be created
+#' @param psGraphicPath   Path where created odg file should be stored
+#' @param psOdgTemplate   name of the template to be used
+#' @param psTemplatePkg   package where template is stored
+#' @param create_dir      should created odg file be stored in separate directory
+#' @param pbRecursive     recursively create complete path to graphic file
+#' @param pbEdit          directly edit created odg file
 #' @export create_odg_graphic
 create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                psGraphicPath  = "vignettes",
@@ -94,16 +109,35 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
 #'
 #' @description
 #' This function \code{odg_draft} works analogously to
-#' \code{rmarkdown::draft}, but for ODG graphics files
+#' \code{rmarkdown::draft}, but for ODG graphics files.
+#' The template can either be specified with an explicit
+#' path or in connection with the parameter package where
+#' the latter assumes that package is installed and contains
+#' a directory \code{rmarkdown/templates/<template_name>}.
+#' In both options the template-directory must contain a file
+#' called template.yaml with meta information about the template
+#' and a subdirectory skeleton with all the files that
+#' are to be copied to the directory where the target file
+#' is expected to be. When the parameter \code{create_dir} is
+#' specified either as function parameter or as meta-information
+#' a separate directory for the target file is created. In case
+#' it is needed, the appropriate file extension is pasted to the
+#' name of the target file. In this specific case the extension
+#' we are using here is .odg. The list of files in the
+#' skeleton subdirectory of the template directory is copied
+#' to the path where the target file is supposed to be.
+#' The copying of the files can be specified with an
+#' option that indicates whether existing files should be
+#' overwritten. The last step consists of renaming the
+#' skeleton-file to the basename given in the file
+#' parameter.
 #'
-#'
-#' @param   file          name of the new document
+#' @param   file          name of the and path to the new document
 #' @param   template      name of the template
 #' @param   package       package where template can be found
 #' @param   create_dir    whether or not to create a new directory for this document
 #' @param   pbOverwrite   should existing files be overwritten
-#' @param   plReplace     list with replacement key-values
-#' @return  file          name of the new document
+#' @return  file          name of the and path to the new document
 odg_draft <- function(file,
                       template    = "odg_figure",
                       package     = NULL,
@@ -124,13 +158,16 @@ odg_draft <- function(file,
   ### # read info in template.yaml
   template_yaml <- file.path(template_path, "template.yaml")
   if (!file.exists(template_yaml)) {
-    stop("No template.yaml file found for template '", template,
-         "'")
+    stop("No template.yaml file found for template '",
+         template,"'")
   }
+  ### # read yaml info from file into variable
   template_meta <- rmarkdown:::yaml_load_file_utf8(template_yaml)
   if (is.null(template_meta$name) || is.null(template_meta$description)) {
     stop("template.yaml must contain name and description fields")
   }
+  ### # check whether function parameter or meta info specify whether a
+  ### #  separate new directory for file must be created
   if (identical(create_dir, "default"))
     create_dir <- isTRUE(template_meta$create_dir)
   if (create_dir) {
@@ -150,11 +187,7 @@ odg_draft <- function(file,
                                full.names = TRUE)
   to <- dirname(file)
   for (f in skeleton_files) {
-    if (pbOverwrite)
-      file.copy(from = f, to = to, overwrite = pbOverwrite, recursive = TRUE)
-    if (!file.exists(file.path(to, basename(f))))
-      # stop("The file '", basename(f), "' already exists")
-      file.copy(from = f, to = to, overwrite = FALSE, recursive = TRUE)
+    file.copy(from = f, to = to, overwrite = pbOverwrite, recursive = TRUE)
   }
   ### # rename skeleton to final name
   file.rename(file.path(dirname(file), "skeleton.odg"), file)
@@ -166,47 +199,98 @@ odg_draft <- function(file,
 
 
 ## ---- Insert a Odg draw graphic -------------------------------------------
-#' Inserts an odg draw graphic into a rmarkdown text
+#' Inserts an odg graphic in pdf format into a rmarkdown text
 #'
 #' @description
-#' \code{insertOdgAsPdf} takes the name of a file containing a graphic
-#' in odg format, converts the content of that file into pdf using
-#' function \code{convertLibOToPdf} and outputs the string in markdown
-#' format to include the figure. Pdf-formatted graphics are only re-generated
-#' if the pdf-file does not exist or, if the flag pbMustGenerate is TRUE.
+#' This function is a wrapper to the more generic function
+#' \code{includeOdgGraphic} which allows to include graphics
+#' into rmarkdown source files.
 #'
 #' @param  psOdgFileStem    stem of odg figure file
 #' @param  psOdgDir         directory where odg figure file is stored
 #' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
 #' @param  psFigOutDir      directory where output should be placed
 #' @export insertOdgAsPdf
-insertOdgAsPdf <- function(psOdgFileStem, psOdgDir = "odg",
+insertOdgAsPdf <- function(psOdgFileStem,
+                           psOdgDir = "odg",
                            psFigOutDir = ".",
                            pbMustGenerate = FALSE,
                            pnPaperWidthScale = NULL) {
+  includeOdgGraphic(psOdgFileStem     = psOdgFileStem,
+                    psOutFormat       = "pdf",
+                    psOdgDir          = psOdgDir,
+                    psFigOutDir       = psFigOutDir,
+                    pbMustGenerate    = pbMustGenerate,
+                    pnPaperWidthScale = pnPaperWidthScale)
+}
+
+
+#' @title Include an odg graphic in png format into a rmarkdown source file
+#'
+#' @param  psOdgFileStem    stem of odg figure file
+#' @param  psOdgDir         directory where odg figure file is stored
+#' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
+#' @param  psFigOutDir      directory where output should be placed
+#' @export insertOdgAsPng
+insertOdgAsPng <- function(psOdgFileStem,
+                           psOdgDir = "odg",
+                           psFigOutDir = ".",
+                           pbMustGenerate = FALSE,
+                           pnPaperWidthScale = NULL) {
+  includeOdgGraphic(psOdgFileStem     = psOdgFileStem,
+                    psOutFormat       = "png",
+                    psOdgDir          = psOdgDir,
+                    psFigOutDir       = psFigOutDir,
+                    pbMustGenerate    = pbMustGenerate,
+                    pnPaperWidthScale = pnPaperWidthScale)
+}
+
+#' @title Include a graphic file based on an odg template in a given output format
+#'
+#' \code{includeOdgGraphic} takes the name of a file containing a graphic
+#' in odg format, converts the content of that file into a given output format using
+#' function \code{convertLibOToGraphic} and outputs the string in markdown
+#' format to include the figure. Graphic files are only re-generated
+#' if the outputfile does not exist or, if the flag pbMustGenerate is TRUE.
+#'
+#' @param  psOdgFileStem    stem of odg figure file
+#' @param  psOutFormat      output format of the graphic file to be included
+#' @param  psOdgDir         directory where odg figure file is stored
+#' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
+#' @param  psFigOutDir      directory where output should be placed
+includeOdgGraphic <- function(psOdgFileStem,
+                              psOutFormat,
+                              psOdgDir          = "odg",
+                              psFigOutDir       = ".",
+                              pbMustGenerate    = FALSE,
+                              pnPaperWidthScale = NULL){
   ### # check wether pdf file already exists, if so, do nothing
-  sPdfFilename <- paste(psOdgFileStem, "pdf", sep = ".")
-  sPdfFile <- file.path(psFigOutDir,sPdfFilename)
-  if (!file.exists(sPdfFile) | pbMustGenerate){
+  sGraphicFilename <- paste(psOdgFileStem, tolower(psOutFormat), sep = ".")
+  sGraphicFile <- file.path(psFigOutDir,sGraphicFilename)
+  if (!file.exists(sGraphicFile) | pbMustGenerate){
     ### # if pdf files cannot be found, regenerate them, check that psOdgFileName exists
     sOdgFilename <- paste(psOdgFileStem, "odg", sep = ".")
     sOdgFile <- file.path(psOdgDir, sOdgFilename)
     # if (!file.exists(sOdgFile))
     #   stop("Cannot find Odg figure file: ", sOdgFile)
     ### # convert odg file to pdf
-    sConvPdfFileName <- convertLibOToPdf(psLibOFile = sOdgFilename, psLibODir = psOdgDir, psFigOutDir = psFigOutDir)
-    if (!file.exists(sConvPdfFileName))
-      stop("Cannot find created pdf graphics file: ", sConvPdfFileName)
+    sConvGraphicFileName <- convertLibOToGraphic(psLibOFile = sOdgFilename,
+                                                 psOutFormat = psOutFormat,
+                                                 psLibODir = psOdgDir,
+                                                 psFigOutDir = psFigOutDir)
+    if (!file.exists(sConvGraphicFileName))
+      stop("Cannot find created graphics file: ", sConvGraphicFileName)
   }
   ### # at this point the pdf file must exist, either from previous conversion
   ### #  or from converting it right now
-  if (!file.exists(sPdfFile))
-    stop("Cannot find pdf figure file: ", sPdfFile)
+  if (!file.exists(sGraphicFile))
+    stop("Cannot find graphic file: ", sGraphicFile)
   ### # in case a width scale was specified, use it
   if (!is.null(pnPaperWidthScale))
     genericScaledPlot(pnPaperWidthScale = pnPaperWidthScale)
   ### # output the command to include the figure
-  cat("![", psOdgFileStem, "](", sPdfFile, ")\n", sep = "")
+  cat("![", psOdgFileStem, "](", sGraphicFile, ")\n", sep = "")
+
 }
 
 

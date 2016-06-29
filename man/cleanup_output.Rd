@@ -5,7 +5,7 @@
 \title{Cleanup a directory from old output}
 \usage{
 cleanup_output(psDocuName = NULL, psDocuPath = "vignettes",
-  psPattern = "pdf$", pbIgnoreDir = TRUE)
+  psPattern = c("pdf$", "png$"), pbIgnoreDir = TRUE)
 }
 \arguments{
 \item{psDocuName}{Name stem of the directory source}

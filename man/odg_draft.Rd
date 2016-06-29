@@ -8,7 +8,7 @@ odg_draft(file, template = "odg_figure", package = NULL,
   create_dir = "default", pbOverwrite = FALSE)
 }
 \arguments{
-\item{file}{name of the new document}
+\item{file}{name of the and path to the new document}
 
 \item{template}{name of the template}
 
@@ -17,14 +17,33 @@ odg_draft(file, template = "odg_figure", package = NULL,
 \item{create_dir}{whether or not to create a new directory for this document}
 
 \item{pbOverwrite}{should existing files be overwritten}
-
-\item{plReplace}{list with replacement key-values}
 }
 \value{
-file          name of the new document
+file          name of the and path to the new document
 }
 \description{
 This function \code{odg_draft} works analogously to
-\code{rmarkdown::draft}, but for ODG graphics files
+\code{rmarkdown::draft}, but for ODG graphics files.
+The template can either be specified with an explicit
+path or in connection with the parameter package where
+the latter assumes that package is installed and contains
+a directory \code{rmarkdown/templates/<template_name>}.
+In both options the template-directory must contain a file
+called template.yaml with meta information about the template
+and a subdirectory skeleton with all the files that
+are to be copied to the directory where the target file
+is expected to be. When the parameter \code{create_dir} is
+specified either as function parameter or as meta-information
+a separate directory for the target file is created. In case
+it is needed, the appropriate file extension is pasted to the
+name of the target file. In this specific case the extension
+we are using here is .odg. The list of files in the
+skeleton subdirectory of the template directory is copied
+to the path where the target file is supposed to be.
+The copying of the files can be specified with an
+option that indicates whether existing files should be
+overwritten. The last step consists of renaming the
+skeleton-file to the basename given in the file
+parameter.
 }
 

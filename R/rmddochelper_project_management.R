@@ -87,7 +87,7 @@ move_doc_to_subdir <- function(psDocuName, psDocuPath = NULL, pbMoveEverything =
 #' @export cleanup_output
 cleanup_output <- function(psDocuName  = NULL,
                            psDocuPath  = "vignettes",
-                           psPattern   = "pdf$",
+                           psPattern   = c("pdf$", "png$"),
                            pbIgnoreDir = TRUE){
   if (is.null(psDocuName)) {
     sDocuName <- list.files(path = psDocuPath, full.names = TRUE)
