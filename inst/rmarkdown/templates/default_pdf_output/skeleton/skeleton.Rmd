@@ -20,7 +20,9 @@ r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 
 ```{r TableAbbreviation}
 r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
-r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
+### # include table of abbreviations only, if there are any
+if (!r6ob_abbrtable$is_empty_abbr())
+  r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
 ```
 
 ## [REPLACE_WITH_SECTION]

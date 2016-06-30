@@ -52,13 +52,17 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                       } else {
                                         sFileName <- private$sAbbrFile
                                       }
-                                      names(private$dfAbbrTable) <- private$colHeader
-                                      write.table(private$dfAbbrTable,
-                                                  file = sFileName,
-                                                  sep = "\t",
-                                                  quote = FALSE,
-                                                  row.names = FALSE,
-                                                  fileEncoding = "UTF-8")
+                                      ### # only write to file, if there private$dfAbbrTable is not null
+                                      if (!is.null(private$dfAbbrTable)){
+                                        names(private$dfAbbrTable) <- private$colHeader
+                                        write.table(private$dfAbbrTable,
+                                                    file = sFileName,
+                                                    sep = "\t",
+                                                    quote = FALSE,
+                                                    row.names = FALSE,
+                                                    fileEncoding = "UTF-8")
+
+                                      }
                                     },
                                     include_abbr_table = function(psAbbrTitle = NULL){
                                       ### # determine title of section with abbreviation table
@@ -79,6 +83,9 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                                                   fileEncoding = "UTF-8")
                                         knitr::kable(dfAbbrTable)
                                       }
+                                    },
+                                    is_empty_abbr = function(){
+                                      return(is.null(private$dfAbbrTable))
                                     }
                                   ),
                                   private   = list(
