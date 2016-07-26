@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 
 ```{r DocumentStatus, eval=TRUE}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
-r6obj_docstat$setProject(psProject = "rmddochelper")
+# r6obj_docstat$setProject(psProject = "rmddochelper")
 #r6obj_docstat$setVersion(psVersion = "0.0.901")
 #r6obj_docstat$setStatus(psStatus = "Initialisation")
 # r6obj_docstat$setVersion(psVersion = "0.0.902")
@@ -24,8 +24,24 @@ r6obj_docstat$setProject(psProject = "rmddochelper")
 # r6obj_docstat$setStatus(psStatus = "Minor improvements on structure and description")
 # r6obj_docstat$setVersion(psVersion = "0.0.906")
 # r6obj_docstat$setStatus(psStatus = "Table of abbreviation started")
-r6obj_docstat$setVersion(psVersion = "0.0.907")
-r6obj_docstat$setStatus(psStatus = "Including graphics")
+#r6obj_docstat$setVersion(psVersion = "0.0.907")
+#r6obj_docstat$setStatus(psStatus = "Including graphics")
+r6obj_docstat$set_current_status(psVersion = "0.0.908",
+                                 psStatus  = "New version of setting document status",
+                                 psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.909",
+                                 psStatus  = "New version of multi-add document status",
+                                 psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.910",
+                                 psStatus  = "New version of update document status",
+                                 psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.911",
+                                 psStatus  = "New autoincrement of version numbers",
+                                 psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.912",
+                                 psStatus  = "Removed old private fields",
+                                 psProject = "rmddochelper")
+
 
 r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 ```

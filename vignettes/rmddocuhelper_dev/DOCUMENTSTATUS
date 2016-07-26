@@ -1,7 +1,12 @@
 Version	Date	Author	Status	Project
-0.0.901	2016-06-14	pvr	Initialisation	rmddochelper
+0.0.901	2016-07-26	pvr	New autoincrement of version numbers	rmddochelper
 0.0.902	2016-06-15	peter	Extended Introduction	rmddochelper
 0.0.903	2016-06-15	peter	Describe replacement function	rmddochelper
 0.0.904	2016-06-15	pvr	Description of document status	rmddochelper
 0.0.906	2016-06-22	pvr	Table of abbreviation started	rmddochelper
 0.0.907	2016-06-29	peter	Including graphics	rmddochelper
+0.0.908	2016-07-26	pvr	New version of setting document status	rmddochelper
+0.0.909	2016-07-26	pvr	New version of multi-add document status	rmddochelper
+0.0.910	2016-07-26	pvr	New version of update document status	rmddochelper
+0.0.911	2016-07-26	pvr	New autoincrement of version numbers	rmddochelper
+0.0.912	2016-07-26	pvr	Removed old private fields	rmddochelper
