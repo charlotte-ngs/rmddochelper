@@ -65,10 +65,12 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                  public    = list(
                                    initialize = function(psFormat = "tab") {
                                      'Initialisation of a new document status object.'
-                                     if (psFormat == "csv2"){
-                                       private$readCsv2StatusFromFile()
-                                     } else {
-                                       private$readStatusFromFile()
+                                     if (file.exists(private$history_file)) {
+                                       if (psFormat == "csv2"){
+                                         private$readCsv2StatusFromFile()
+                                       } else {
+                                         private$readStatusFromFile()
+                                       }
                                      }
                                    },
                                    set_current_status = function(psVersion = private$auto_increment(),
@@ -157,10 +159,7 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                                                 fileEncoding = "UTF-8")
                                                   },
                                                   readStatusFromFile = function(){
-                                                    sFileName <- private$history_file
-                                                    if (!file.exists(sFileName))
-                                                      stop("CANNOT FIND Status file: ", sFileName)
-                                                    private$status_history <- read.table(file = sFileName,
+                                                    private$status_history <- read.table(file = private$history_file,
                                                                                          header = TRUE,
                                                                                          row.names = NULL,
                                                                                          sep = "\t",
@@ -168,10 +167,7 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                                                                          fileEncoding = "UTF-8")
                                                   },
                                                   readCsv2StatusFromFile = function(){
-                                                    sFileName <- private$history_file
-                                                    if (!file.exists(sFileName))
-                                                      stop("CANNOT FIND Status file: ", sFileName)
-                                                    private$status_history <- read.csv2(file = sFileName,
+                                                    private$status_history <- read.csv2(file = private$history_file,
                                                                                         row.names = NULL,
                                                                                         stringsAsFactors = FALSE,
                                                                                         fileEncoding = "UTF-8")
