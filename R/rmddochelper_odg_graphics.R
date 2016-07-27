@@ -91,7 +91,7 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
     if (.Platform$OS.type == "windows"){
       file.show(sGraphicTrgName)
     } else {
-      sSofficeCmd <- paste("soffice --draw", sGraphicFile)
+      sSofficeCmd <- paste("soffice --draw", sGraphicTrgName)
       system(sSofficeCmd)
     }
 

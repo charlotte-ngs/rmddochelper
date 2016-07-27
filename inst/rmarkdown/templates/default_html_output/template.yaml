@@ -1,0 +1,5 @@
+name: Default HTML Document (HTML)
+description: >
+  Template for generic html_output document. This customises the basic output
+  to take up as little space as possible.
+create_dir: false
