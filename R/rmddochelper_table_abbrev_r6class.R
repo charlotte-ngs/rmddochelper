@@ -9,14 +9,55 @@
 
 #' @title R6 Class To Model Abbreviation Table Objects
 #'
+#' @docType class
+#' @importFrom R6 R6Class
 #' @description
 #' Abbreviation tables are tables with two columns one of which
 #' contains the abbreviations and the second column contains the
 #' meaning of the abbreviations. The tables are specific for a
 #' given document. The R6 class defined here provides functionlity
-#' to automatically generate a table of abbreviation
+#' to automatically collect all abbreviations together with the
+#' associated meanings and to generate the resulting table of
+#' abbreviations. Method \code{add_abbrev} is used to add new
+#' abbreviations. At the end of a document the list of collected
+#' abbreviations together with their meanings is written to a file.
+#' This file is the source for automatically generating the table
+#' of abbreviations. Since, we want to allow for including the
+#' table of abbreviations at any position within the document,
+#' two compilation runs are required when new abbreviations are
+#' added to the list of abbreviations. The first run collects
+#' all abbreviations and writes them to the file and the second
+#' run is used to generate the table of abbreviations.
 #'
 #' @export R6ClassTableAbbrev
+#' @usage R6ClassTableAbbrev$new()
+#' @return R6 Object of type \code{\link{R6ClassTableAbbrev}} with
+#' fields and methods to collect abbreviations and generate a table
+#' of abbreviations
+#' @examples
+#' r6objAbr <- R6ClassTableAbbrev$new()
+#' r6objAbr$setAbbrFile(psAbbrFile = "ABBREVIATIONS")
+#' r6objAbr$add_abbrev(psAbbrev = "Abr", psMeaning = "Abbreviation")
+#' \dontrun{
+#' r6objAbr$writeToTsvFile()
+#' r6objAbr$include_abbr_table()
+#' }
+#' @field dfAbbrTable dataframe with abbreviations
+#' @field colHeader column header for table of abbreviations
+#' @field sAbbrFile name of the file where abbreviations are written to
+#' @field sAbbrTitle title to be used in document above table of abbreviations
+#'
+#' @section Public methods:
+#' \describe{
+#'   \item{\code{new()}}{Instantiation of R6 object of class R6ClassTableAbbrev}
+#'   \item{\code{setColHeader}}{setter for column header}
+#'   \item{\code{setAbbrFile}}{setter for abbreviation file}
+#'   \item{\code{setAbbrTitle}}{setter for abbreviation title}
+#'   \item{\code{add_abbrev}}{add new pair of abbreviation and meaning to list of abbreviations}
+#'   \item{\code{writeToTsvFile}}{Write list of abbreviations in tab-separated format to file}
+#'   \item{\code{include_abbr_table}}{Include table of abbreviations in a document}
+#'   \item{\code{is_empty_abbr}}{Check whether list of abbreviations is empty}
+#' }
 R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                   public    = list(
                                     setColHeader = function(pvColHeader){

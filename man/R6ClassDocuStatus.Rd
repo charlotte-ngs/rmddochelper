@@ -26,14 +26,6 @@ and we must be able to display all document status records as a table.
 \describe{
 \item{\code{version}}{current version of the document}
 
-\item{\code{author}}{author of the change leading to the current status of the document}
-
-\item{\code{date}}{date of the current change}
-
-\item{\code{status}}{description of document status}
-
-\item{\code{project}}{project this document belongs to}
-
 \item{\code{status_colnames}}{vector of column names shown in the document table}
 
 \item{\code{status_history}}{dataframe with the document history read from the history file}
@@ -44,7 +36,7 @@ and we must be able to display all document status records as a table.
 
 \describe{
   \item{\code{new()}}{This method instantiates an object of class R6ClassDocuStatus}
-  \item{\code{initialize()}}{Initialization of field called after creating the instance}
+  \item{\code{initialize(psFormat)}}{Initialization after creating the instance. Reads history file if it exists}
   \item{\code{include_doc_stat(psTitle)}}{Saves updated document status to the status file.
               Write section header psTitle for document status and write
               markdown table containing the document status.}
@@ -54,32 +46,25 @@ and we must be able to display all document status records as a table.
 \section{Private Methods}{
 
 \describe{
-  \item{\code{writeStatusToFile(psFileName = NULL)}}{Writes current status and history
+  \item{\code{writeStatusToFile()}}{Writes current status and history
               to a tab-separated file. Tab-separated format is chosen, because TAB-characters
-              are less likely to occur in any of the table fields. If argument
-              psFileName is not null the name of the output file is set to psFileName,
-              otherwise the value in field history_file is used. File encoding is set
+              are less likely to occur in any of the table fields. File encoding is set
               to "UTF-8" in order to preserve German Umlauts}
-  \item{\code{readStatusFromFile(psFileName = NULL)}}{Document status history is read
-              from the history file. The name of the
-              history file is either taken from the method argument psFileName or from
-              the object field history_file.}
-  \item{\code{readCsv2StatusFromFile(psFileName = NULL)}}{Reading method for old csv2
+  \item{\code{readStatusFromFile()}}{Document status history is read
+              from the history file.}
+  \item{\code{readCsv2StatusFromFile()}}{Reading method for old csv2
               formatted status history files. This is mainly used for converting history
               files from old csv2 format to new tab-separated format.}
-  \item{\code{knitr_kable}}{Add current document status info to document history and
-              convert it to a dataframe. Then use \code{knitr::kable} to convert the
-              dataframe into a markdown-table}
-  \item{\code{stat_to_df}}{}
+  \item{\code{knitr_kable}}{Complete status history is written to a table using
+        \code{knitr::kable} to convert the dataframe into a markdown-table}
+  \item{\code{auto_increment()}}{Autoincrementing minor version number}
 }
 }
 \examples{
 r6objDocuStat <- R6ClassDocuStatus$new()
-r6objDocuStat$setProject(psProject = "DEXSeq")
-r6objDocuStat$setVersion(psVersion = "0.0.900")
-r6objDocuStat$setDate(psDate = "31.03.2016")
-r6objDocuStat$setAuthor(psAuthor = "pvr")
-r6objDocuStat$setStatus(psStatus = "Init")
+r6obj_docstat$set_current_status(psVersion = "0.0.908",
+                                 psStatus  = "New version of setting document status",
+                                 psProject = "rmddochelper")
 \dontrun{
 r6objDocuStat$writeStatusToFile()
 r6objDocuStat$knitr_kable()
