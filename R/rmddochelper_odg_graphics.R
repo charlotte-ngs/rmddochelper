@@ -68,6 +68,8 @@ convertLibOToGraphic <- function(psLibOFile,
 #' @export create_odg_graphic
 create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                psGraphicPath  = "vignettes",
+                               psRmdSrcFile,
+                               psGrFmt        = "pdf",
                                psOdgTemplate  = "odg_figure",
                                psTemplatePkg  = "rmddochelper",
                                create_dir     = "default",
@@ -83,9 +85,21 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                template    = psOdgTemplate,
                                package     = psTemplatePkg,
                                create_dir  = create_dir)
-
+  ### # if the graphics target name does not exist, there is a problem
   if (!file.exists(sGraphicTrgName))
     stop(" *** ERROR: could not create graphics file: ", sGraphicTrgName)
+
+  ### # insert command to include graphics file into source file
+  conRmdSrc <- file(description = psRmdSrcFile)
+  vRmdSrc <- readLines(con = conRmdSrc)
+  close(con = conRmdSrc)
+  vRmdSrc <- include_graphics_cmd(psGraphicName = psGraphicName,
+                                  pvRmdSrc = vRmdSrc,
+                                  psGrFmt = psGrFmt)
+  cat(vRmdSrc, "\n", file = psRmdSrcFile, sep = "\n")
+
+
+  ### # depending on flag, open graphics file
   if (pbEdit){
     ### # depending on platform start open the template file differently
     if (.Platform$OS.type == "windows"){
@@ -103,6 +117,49 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
   return(sGraphicTrgName)
 }
 
+
+#' @title Add statement to include graphic into Rmarkdown source
+#'
+#' @description
+#' \code{include_graphics_cmd} assumes that in the Rmarkdown source
+#' file a chunk is inserted which will contain the statement that
+#' includes the graphic file. The chunk needs to be labelled with
+#' the name of the graphic file to be included. This function searches
+#' for this chunk and inserts the statement. If the chunk is not
+#' found, the graphics statement is included above the end of
+#' document marker.
+#'
+#' @param psGraphicName   name of the graphic file to be included
+#' @param pvRmdSrc        name of the Rmarkdown source file
+#' @param psGrFmt         graphic format
+#' @return vRmdSrc        vector with extended Rmarkdown sources
+#'
+include_graphics_cmd <- function(psGraphicName, pvRmdSrc, psGrFmt) {
+  ### # insertion command depends on psGrFmd
+  if (psGrFmt == "png"){
+    sGrInsCmd <- 'rmddochelper::insertOdgAsPng(psOdgFileStem = "'
+  } else {
+    sGrInsCmd <- 'rmddochelper::insertOdgAsPdf(psOdgFileStem = "'
+  }
+  vRmdSrc <- pvRmdSrc
+  ### # the search pattern is define by what RStudio inserts when
+  ### #  inserting a new code-chunk
+  sSearchPattern <- paste0("```{r ", psGraphicName, "}")
+  nGrInclLineIdx <- grep(pattern = sSearchPattern, vRmdSrc, fixed = TRUE)
+  ### # in case the graphics inclusion statement was found add the command here
+  if (length(nGrInclLineIdx) > 0){
+    ### # depending on format
+    vRmdSrc[nGrInclLineIdx+1] <- paste0(sGrInsCmd, psGraphicName, '")')
+  } else {
+    nGrInclLineIdx <- grep(pattern = "<!-- END of document", vRmdSrc, fixed = TRUE)
+    vRmdSrc <- c(vRmdSrc[1:(nGrInclLineIdx-1)],
+                 sSearchPattern,
+                 paste0(sGrInsCmd, psGraphicName, '")'),
+                 "```",
+                 vRmdSrc[nGrInclLineIdx:length(vRmdSrc)])
+  }
+  return(vRmdSrc)
+}
 
 
 #' @title Copy a draft template file for a odg graphics

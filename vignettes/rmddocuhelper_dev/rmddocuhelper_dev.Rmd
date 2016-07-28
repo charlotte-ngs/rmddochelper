@@ -156,13 +156,9 @@ rmddochelper::insertOdgAsPng(psOdgFileStem = "RandomScreenShot2")
 
 When knitting the rmarkdown file to pdf, it makes more sense to use the function `insertOdgAsPdf()`.
 
-In many documents, graphics to be inserted are based on screenshots or other images which are not directly produced by one of the R-graphics systems. Then it would be convenient to have the command to include the graphic directly inserted into the Rmarkdown source file.
+In many documents, graphics to be inserted are based on screenshots or other images which are not directly produced by one of the R-graphics systems. Then it would be convenient to have the command to include the graphic directly inserted into the Rmarkdown source file. Screenshots are included in Rmarkdown source documents by pasting the screenshot into an empty LibreOffice graphics file which is opened by the function `rmddochelper::create_odg_graphic()`. The the file is saved. In the Rmarkdown source file, the graphics file is included using `rmddochelper::insertOdgAsPng()` or `rmddochelper::insertOdgAsPdf()`. 
 
-```{r AutoIncludeGraphic}
-getwd()
-list.files(pattern = "Rmd$")
-```
-
+In the current version, if we start by including a chunk with the label that is the same as the name of the graphics file, the creation function `create_odg_graphic()` of the odg-graphics includes the statement that inserts the graphic file directly into the Rmarkdown source file.
 
 
 ```{r WriteTableOfAbbreviations, results='hide'}
