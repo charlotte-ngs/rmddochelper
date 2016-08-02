@@ -1,7 +1,7 @@
 ---
 title: rmddocuhelper Package Development
 author: Peter von Rohr
-date: `r Sys.Date()`
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 ---
 
@@ -40,6 +40,9 @@ r6obj_docstat$set_current_status(psVersion = "0.0.911",
                                  psProject = "rmddochelper")
 r6obj_docstat$set_current_status(psVersion = "0.0.912",
                                  psStatus  = "Removed old private fields",
+                                 psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.913",
+                                 psStatus  = "Specify package options",
                                  psProject = "rmddochelper")
 
 
@@ -156,12 +159,21 @@ rmddochelper::insertOdgAsPng(psOdgFileStem = "RandomScreenShot2")
 
 When knitting the rmarkdown file to pdf, it makes more sense to use the function `insertOdgAsPdf()`.
 
-In many documents, graphics to be inserted are based on screenshots or other images which are not directly produced by one of the R-graphics systems. Then it would be convenient to have the command to include the graphic directly inserted into the Rmarkdown source file.
+In many documents, graphics to be inserted are based on screenshots or other images which are not directly produced by one of the R-graphics systems. Then it would be convenient to have the command to include the graphic directly inserted into the Rmarkdown source file. This can be done by first inserting the R-chunk into the Rmarkdown source document and giving a label to that chunk which is the same as the filename (without extension) of the graphics file to be included. The creation function of the odg-graphic searches in the Rmarkdown source file after the label and inserts the command to include the graphics file.
 
-```{r AutoIncludeGraphic}
-getwd()
-list.files(pattern = "Rmd$")
+
+## Package global options
+In package `knitr` you have the possiblities to specify package global options. These options are stored in 
+
+```{r KnitrOptsKnit}
+knitr::opts_knit
 ```
+
+which outputs a list with default options. They include setter- and getter-like methods.
+
+Something similar can be done with RC or R6 classes where methods are called without parenthesis.
+
+ 
 
 
 
