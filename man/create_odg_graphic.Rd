@@ -5,9 +5,9 @@
 \title{Create an empty odg graphic}
 \usage{
 create_odg_graphic(psGraphicName = "skeleton.odg",
-  psGraphicPath = "vignettes", psOdgTemplate = "odg_figure",
-  psTemplatePkg = "rmddochelper", create_dir = "default",
-  pbRecursive = TRUE, pbEdit = TRUE)
+  psGraphicPath = "vignettes", psRmdSrcFile, psGrFmt = "pdf",
+  psOdgTemplate = "odg_figure", psTemplatePkg = "rmddochelper",
+  create_dir = "default", pbRecursive = TRUE, pbEdit = TRUE)
 }
 \arguments{
 \item{psGraphicName}{Format of diagram to be created}
