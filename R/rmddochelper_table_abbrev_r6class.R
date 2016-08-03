@@ -53,7 +53,10 @@
 #'   \item{\code{setColHeader}}{setter for column header}
 #'   \item{\code{setAbbrFile}}{setter for abbreviation file}
 #'   \item{\code{setAbbrTitle}}{setter for abbreviation title}
-#'   \item{\code{add_abbrev}}{add new pair of abbreviation and meaning to list of abbreviations}
+#'   \item{\code{add_abbrevpsAbbrev, psMeaning, pbquote = TRUE, pbOut = TRUE}}
+#'        {add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations.
+#'         Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag
+#'         pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}
 #'   \item{\code{writeToTsvFile}}{Write list of abbreviations in tab-separated format to file}
 #'   \item{\code{include_abbr_table}}{Include table of abbreviations in a document}
 #'   \item{\code{is_empty_abbr}}{Check whether list of abbreviations is empty}
@@ -69,7 +72,7 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                     setAbbrTitle = function(psAbbrTitle){
                                       private$sAbbrTitle <- psAbbrTitle
                                     },
-                                    add_abbrev = function(psAbbrev, psMeaning, pbquote = TRUE){
+                                    add_abbrev = function(psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE){
                                       ### # distinguish between first and later cases
                                       if (is.null(private$dfAbbrTable)){
                                         private$dfAbbrTable <- data.frame(abbr = psAbbrev,
@@ -79,12 +82,19 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                         private$dfAbbrTable <- rbind(private$dfAbbrTable,
                                                                      c(psAbbrev, psMeaning))
                                       }
-                                      if (pbquote){
+                                      if (pbQuote){
                                         sresult <- paste0("`", psMeaning, "`", " (", psAbbrev, ")")
                                       } else {
                                         sresult <- paste0(psMeaning, " (", psAbbrev, ")")
                                       }
-                                      return(sresult)
+                                      ### # depending on whether abbreviation and meaning should appear in
+                                      ### #  output
+                                      if (pbOut) {
+                                        return(sresult)
+                                      } else {
+                                        return(invisible(NULL))
+                                      }
+
                                     },
                                     writeToTsvFile = function(psFileName = NULL){
                                       ### # determine name of file to write to
