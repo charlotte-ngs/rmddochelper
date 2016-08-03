@@ -11,3 +11,4 @@ Version	Date	Author	Status	Project
 0.0.911	2016-08-02	peter	New autoincrement of version numbers	rmddochelper
 0.0.912	2016-08-02	peter	Removed old private fields	rmddochelper
 0.0.913	2016-08-02	peter	Specify package options	rmddochelper
+0.0.914	2016-08-02	peter	Active bindings in R6	rmddochelper

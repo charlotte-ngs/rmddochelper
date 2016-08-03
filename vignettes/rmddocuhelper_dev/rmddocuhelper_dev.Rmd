@@ -6,10 +6,10 @@ output: rmarkdown::html_vignette
 ---
 
 ```{r DocumentSetup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, results = 'asis')
+knitr::opts_chunk$set(echo = TRUE, results = 'asis')
 ```
 
-```{r DocumentStatus, eval=TRUE}
+```{r DocumentStatus, eval=TRUE, echo=FALSE}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
 # r6obj_docstat$setProject(psProject = "rmddochelper")
 #r6obj_docstat$setVersion(psVersion = "0.0.901")
@@ -44,6 +44,9 @@ r6obj_docstat$set_current_status(psVersion = "0.0.912",
 r6obj_docstat$set_current_status(psVersion = "0.0.913",
                                  psStatus  = "Specify package options",
                                  psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.914",
+                                 psStatus  = "Active bindings in R6",
+                                 psProject = "rmddochelper")
 
 
 r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
@@ -51,7 +54,7 @@ r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 
 \pagebreak
 
-```{r TableAbbreviation}
+```{r TableAbbreviation, echo=FALSE}
 r6ob_abbrtable <- rmddochelper::R6ClassTableAbbrev$new()
 r6ob_abbrtable$include_abbr_table(psAbbrTitle = "## Abbreviations")
 ```
@@ -173,10 +176,48 @@ knitr::opts_knit
 
 which outputs a list with default options. They include setter- and getter-like methods.
 
-Something similar can be done with RC or R6 classes where methods are called without parenthesis.
+Something similar can be done with RC or R6 classes where methods are called without parenthesis. The concept that allows for this is called __active binding__. The introductory vignette of the R6 package describes active binding. Active bindings are like fields but each time they are accessed, they call a function. They are always publically visible. 
 
+```{r ActiveBindingExample}
+Numbers <- R6::R6Class("Numbers",
+  public = list(
+    x = 100
+  ),
+  active = list(
+    x2 = function(value) {
+      if (missing(value)) return(self$x * 2)
+      else self$x <- value/2
+    },
+    rand = function() rnorm(1)
+  )
+)
 
-```{r WriteTableOfAbbreviations, results='hide'}
+n <- Numbers$new()
+n$x
+```
+
+When an active binding is accessed, as if reading out a value, the function is called with the argument `value` treated as being missing. 
+
+```{r ActiveBindingNoArgument}
+n$x2
+```
+
+When a value is assigned, the assigned value is taken as an argument to the function
+
+```{r ActiveBindingWithArgument}
+n$x2 <- 1000
+n$x
+```
+
+If the function does not take any argument, the assignment is not possible.
+
+```{r ActiveBindingNoAssignment}
+n$rand
+```
+
+We want to explore active bindings of R6 classes to implement options that persist on different levels. A first and an important level of persistence is the level of a given document. That means we want to be able to specify a set of options that are persistent for a given document. This is comparable to what is usually done with `knitr::opts_knit$set()` at the beginning of each Rmarkdown source document. 
+
+```{r WriteTableOfAbbreviations, echo=FALSE, results='hide'}
 r6ob_abbrtable$writeToTsvFile()
 ```
 
