@@ -221,6 +221,3 @@ We want to explore active bindings of R6 classes to implement options that persi
 r6ob_abbrtable$writeToTsvFile()
 ```
 
-
-
-

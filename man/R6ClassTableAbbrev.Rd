@@ -49,7 +49,10 @@ run is used to generate the table of abbreviations.
   \item{\code{setColHeader}}{setter for column header}
   \item{\code{setAbbrFile}}{setter for abbreviation file}
   \item{\code{setAbbrTitle}}{setter for abbreviation title}
-  \item{\code{add_abbrev}}{add new pair of abbreviation and meaning to list of abbreviations}
+  \item{\code{add_abbrevpsAbbrev, psMeaning, pbquote = TRUE, pbOut = TRUE}}
+       {add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations.
+        Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag
+        pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}
   \item{\code{writeToTsvFile}}{Write list of abbreviations in tab-separated format to file}
   \item{\code{include_abbr_table}}{Include table of abbreviations in a document}
   \item{\code{is_empty_abbr}}{Check whether list of abbreviations is empty}
