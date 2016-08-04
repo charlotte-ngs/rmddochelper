@@ -53,7 +53,7 @@
 #'   \item{\code{setColHeader}}{setter for column header}
 #'   \item{\code{setAbbrFile}}{setter for abbreviation file}
 #'   \item{\code{setAbbrTitle}}{setter for abbreviation title}
-#'   \item{\code{add_abbrevpsAbbrev, psMeaning, pbquote = TRUE, pbOut = TRUE}}
+#'   \item{\code{add_abbrev(psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE)}}
 #'        {add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations.
 #'         Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag
 #'         pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}
