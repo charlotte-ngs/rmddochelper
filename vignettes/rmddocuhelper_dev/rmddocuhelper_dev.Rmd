@@ -170,7 +170,7 @@ In the current version, if we start by including a chunk with the label that is 
 ## Package global options
 In package `knitr` you have the possiblities to specify package global options. These options are stored in 
 
-```{r KnitrOptsKnit}
+```{r KnitrOptsKnit, results='hide'}
 knitr::opts_knit
 ```
 

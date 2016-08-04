@@ -40,6 +40,14 @@ and we must be able to display all document status records as a table.
   \item{\code{include_doc_stat(psTitle)}}{Saves updated document status to the status file.
               Write section header psTitle for document status and write
               markdown table containing the document status.}
+  \item{\code{set_current_status(psVersion, psDate, psAuthor, psProject)}}{Main method for setting status
+              information in a Rmarkdown source document. Status information consists of version, date,
+              author, status description and project. All theses components are passed to the method as arguments.
+              In case there exists document status history, it is assumed that it is available in
+              private$status_history. If status history is not empty, the current status is row-bound to the
+              status history. If the version number of the current status already exists, then we assume that
+              an existing entry should be updated. The date of a status entry is only updated, if it is explicitly
+              set as method argument psDate, otherwise, the existing date is used.}
 }
 }
 

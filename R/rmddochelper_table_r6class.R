@@ -45,6 +45,14 @@
 #'   \item{\code{include_doc_stat(psTitle)}}{Saves updated document status to the status file.
 #'               Write section header psTitle for document status and write
 #'               markdown table containing the document status.}
+#'   \item{\code{set_current_status(psVersion, psDate, psAuthor, psProject)}}{Main method for setting status
+#'               information in a Rmarkdown source document. Status information consists of version, date,
+#'               author, status description and project. All theses components are passed to the method as arguments.
+#'               In case there exists document status history, it is assumed that it is available in
+#'               private$status_history. If status history is not empty, the current status is row-bound to the
+#'               status history. If the version number of the current status already exists, then we assume that
+#'               an existing entry should be updated. The date of a status entry is only updated, if it is explicitly
+#'               set as method argument psDate, otherwise, the existing date is used.}
 #' }
 #' @section Private Methods:
 #' \describe{
@@ -74,18 +82,24 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                      }
                                    },
                                    set_current_status = function(psVersion = private$auto_increment(),
-                                                                 psDate = as.character(Sys.Date()),
+                                                                 psDate = NULL, #as.character(Sys.Date()),
                                                                  psAuthor = Sys.info()[["user"]],
                                                                  psStatus = NULL,
                                                                  psProject = "NA"){
+                                     ### # create local copy of data
+                                     sDate <- psDate
+                                     ### # in case date is not specified, use Sys.Date()
+                                     if (is.null(sDate))
+                                       sDate <- as.character(Sys.Date())
                                      ### # in case status is not null, add status, o/w do nothing
                                      if (!is.null(psStatus)) {
                                        dfCurStatus <- data.frame(Version = psVersion,
-                                                                 Date = psDate,
+                                                                 Date = sDate,
                                                                  Author = psAuthor,
                                                                  Status = psStatus,
                                                                  Project = psProject,
                                                                  stringsAsFactors = FALSE)
+                                       ### # in case there is no history read from the file, just use current status
                                        if (is.null(private$status_history)){
                                          private$status_history <- dfCurStatus
                                        } else {
@@ -93,7 +107,13 @@ R6ClassDocuStatus <- R6::R6Class(classname = "R6ClassDocuStatus",
                                          ### #  update other fields
                                          if (is.element(psVersion, private$status_history$Version)){
                                            nUpdateRow <- which(psVersion == private$status_history$Version)
+                                           ### # if psDate is not passed as argument, use old version of date
+                                           sHistoryDate <-sDate
+                                           if (is.null(psDate)){
+                                             sHistoryDate <- private$status_history$Date[nUpdateRow]
+                                           }
                                            private$status_history[nUpdateRow,] <- dfCurStatus[1,]
+                                           private$status_history$Date[nUpdateRow] <- sHistoryDate
                                          } else {
                                            private$status_history <- rbind(private$status_history,
                                                                            dfCurStatus,
