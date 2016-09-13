@@ -41,6 +41,8 @@ run is used to generate the table of abbreviations.
 \item{\code{sAbbrFile}}{name of the file where abbreviations are written to}
 
 \item{\code{sAbbrTitle}}{title to be used in document above table of abbreviations}
+
+\item{\code{bQuote}}{flag whether to put text in quotes}
 }}
 \section{Public methods}{
 
@@ -49,7 +51,8 @@ run is used to generate the table of abbreviations.
   \item{\code{setColHeader}}{setter for column header}
   \item{\code{setAbbrFile}}{setter for abbreviation file}
   \item{\code{setAbbrTitle}}{setter for abbreviation title}
-  \item{\code{add_abbrevpsAbbrev, psMeaning, pbquote = TRUE, pbOut = TRUE}}
+  \item{\code{setQuote}}{setter for bQuote flag}
+  \item{\code{add_abbrev( psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE )}}
        {add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations.
         Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag
         pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}

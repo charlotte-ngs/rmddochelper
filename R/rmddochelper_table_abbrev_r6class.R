@@ -46,6 +46,7 @@
 #' @field colHeader column header for table of abbreviations
 #' @field sAbbrFile name of the file where abbreviations are written to
 #' @field sAbbrTitle title to be used in document above table of abbreviations
+#' @field bQuote flag whether to put text in quotes
 #'
 #' @section Public methods:
 #' \describe{
@@ -53,7 +54,8 @@
 #'   \item{\code{setColHeader}}{setter for column header}
 #'   \item{\code{setAbbrFile}}{setter for abbreviation file}
 #'   \item{\code{setAbbrTitle}}{setter for abbreviation title}
-#'   \item{\code{add_abbrev(psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE)}}
+#'   \item{\code{setQuote}}{setter for bQuote flag}
+#'   \item{\code{add_abbrev( psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE )}}
 #'        {add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations.
 #'         Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag
 #'         pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}
@@ -72,7 +74,16 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                     setAbbrTitle = function(psAbbrTitle){
                                       private$sAbbrTitle <- psAbbrTitle
                                     },
-                                    add_abbrev = function(psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE){
+                                    setQuote = function(pbQuote){
+                                      private$bQuote <- pbQuote
+                                    },
+                                    add_abbrev = function(psAbbrev, psMeaning, pbQuote = NULL, pbOut = TRUE){
+                                      ### # determine flag for quotation of text
+                                      if (!is.null(pbQuote)){
+                                        bQuote <- pbQuote
+                                      } else {
+                                        bQuote <- private$bQuote
+                                      }
                                       ### # distinguish between first and later cases
                                       if (is.null(private$dfAbbrTable)){
                                         private$dfAbbrTable <- data.frame(abbr = psAbbrev,
@@ -82,7 +93,8 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                         private$dfAbbrTable <- rbind(private$dfAbbrTable,
                                                                      c(psAbbrev, psMeaning))
                                       }
-                                      if (pbQuote){
+                                      ### # depending on quotation flag insert quotes
+                                      if (bQuote){
                                         sresult <- paste0("`", psMeaning, "`", " (", psAbbrev, ")")
                                       } else {
                                         sresult <- paste0(psMeaning, " (", psAbbrev, ")")
@@ -143,5 +155,6 @@ R6ClassTableAbbrev <- R6::R6Class(classname = "R6ClassTableAbbrev",
                                     dfAbbrTable = NULL,
                                     colHeader = c("Abbreviation", "Meaning"),
                                     sAbbrFile = "ABBREVIATION",
-                                    sAbbrTitle = "# Abbreviations"
+                                    sAbbrTitle = "# Abbreviations",
+                                    bQuote = TRUE
                                   ))

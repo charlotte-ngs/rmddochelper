@@ -11,9 +11,9 @@ knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 
 ```{r DocumentStatus, eval=TRUE}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
-r6obj_docstat$setProject(psProject = "[REPLACE_WITH_PROJECT]")
-r6obj_docstat$setVersion(psVersion = "0.0.901")
-r6obj_docstat$setStatus(psStatus = "Initialisation")
+r6obj_docstat$set_current_status(psVersion = "0.0.901",
+                                 psStatus  = "Initialisation",
+                                 psProject = "[REPLACE_WITH_PROJECT]")
 r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 ```
 
