@@ -2,27 +2,25 @@
 % Please edit documentation in R/rmddochelper_project_management.R
 \name{cleanup_output}
 \alias{cleanup_output}
-\title{Cleanup a directory from old output}
+\title{Cleanup a directory from temporary output files}
 \usage{
-cleanup_output(psDocuName = NULL, psDocuPath = "vignettes",
-  psPattern = c("pdf$", "png$"), pbIgnoreDir = TRUE)
+cleanup_output(psDocuPath = "vignettes", psPattern = c("pdf$", "png$"),
+  pbIgnoreDir = TRUE)
 }
 \arguments{
-\item{psDocuName}{Name stem of the directory source}
-
 \item{psDocuPath}{Name of the document path}
 
 \item{psPattern}{Pattern to match by files to be deleted}
 }
 \description{
-Remove all files and directories that were generated
-as ouput from a previous compilation of a document
-given by psDocuName and match the pattern specified by
-psPattern. By default, directories are ignored,
-even if they match the given pattern.
-}
-\details{
-In case psDocuName is left NULL then all subdirectories of
-psDocuPath are searched for files to be removed
+Remove all files and possibly also directories that
+were generated as ouput from a previous compilation
+of a document in directory psDocuPath. All files that
+match the pattern specified by psPattern are selected
+for deletion. The user is asked whether the files should
+be deleted before actually deleting them. By default,
+directories are ignored, even if they match the given
+pattern. In case directories are to be included the
+argument pbIgnoreDir must be set to FALSE.
 }
 

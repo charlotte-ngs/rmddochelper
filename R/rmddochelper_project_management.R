@@ -68,54 +68,40 @@ move_doc_to_subdir <- function(psDocuName, psDocuPath = NULL, pbMoveEverything =
 
 ### ################################################### ###
 
-#' @title Cleanup a directory from old output
+#' @title Cleanup a directory from temporary output files
 #'
 #' @description
-#' Remove all files and directories that were generated
-#' as ouput from a previous compilation of a document
-#' given by psDocuName and match the pattern specified by
-#' psPattern. By default, directories are ignored,
-#' even if they match the given pattern.
+#' Remove all files and possibly also directories that
+#' were generated as ouput from a previous compilation
+#' of a document in directory psDocuPath. All files that
+#' match the pattern specified by psPattern are selected
+#' for deletion. The user is asked whether the files should
+#' be deleted before actually deleting them. By default,
+#' directories are ignored, even if they match the given
+#' pattern. In case directories are to be included the
+#' argument pbIgnoreDir must be set to FALSE.
 #'
-#' @details
-#' In case psDocuName is left NULL then all subdirectories of
-#' psDocuPath are searched for files to be removed
-#'
-#' @param psDocuName   Name stem of the directory source
 #' @param psDocuPath   Name of the document path
 #' @param psPattern    Pattern to match by files to be deleted
 #' @export cleanup_output
-cleanup_output <- function(psDocuName  = NULL,
-                           psDocuPath  = "vignettes",
+cleanup_output <- function(psDocuPath  = "vignettes",
                            psPattern   = c("pdf$", "png$"),
                            pbIgnoreDir = TRUE){
-  if (is.null(psDocuName)) {
-    sDocuName <- list.files(path = psDocuPath, full.names = TRUE)
-  } else {
-    sDocuName <- file.path(psDocuPath, psDocuName)
-  }
-
-  ### # loop over vector of sDocuName which are document source directories
-  for (dn in sDocuName) {
-
-    ### # loop over vector of patterns given in psPattern
-    for (p in psPattern) {
-      ### # list the files and directories that match the current pattern p
-      curMatch <- list.files(path = dn, pattern = p, full.names = TRUE)
-      if (pbIgnoreDir)
-        curMatch <- curMatch[!file.info(curMatch)[,"isdir"]]
-      ### # ask whether to delete files
-      if (length(curMatch) > 0){
-        message("Files to be removed from directory: ", dn, "\n", paste(basename(curMatch), collapse = ", "))
-        sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
-        if (tolower(sAnswer) == "y")
-          file.remove(curMatch)
-      }
+  ### # loop over vector of patterns given in psPattern
+  for (p in psPattern) {
+    ### # list the files and directories that match the current pattern p
+    curMatch <- list.files(path = psDocuPath, pattern = p, full.names = TRUE)
+    if (pbIgnoreDir)
+      curMatch <- curMatch[!file.info(curMatch)[,"isdir"]]
+    ### # ask whether to delete files
+    if (length(curMatch) > 0){
+      message("Files to be removed from directory: ", psDocuPath,
+              "\n", paste(basename(curMatch), collapse = ", "))
+      sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
+      if (tolower(sAnswer) == "y")
+        file.remove(curMatch)
     }
 
   }
-
   invisible(TRUE)
-
-
 }

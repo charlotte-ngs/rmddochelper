@@ -7,6 +7,7 @@
 #'   \item{\code{create_odg_graphic}}{create a skeleton odg graphic}
 #'   \item{\code{insertOdgAsPdf}}{convert an odg graphic to pdf format and insert it in a pdf document}
 #'   \item{\code{insertOdgAsPng}}{convert an odg graphic to png format and insert it in a html document}
+#'   \item{\code{cleanup_output}}{cleanup of temporary document compilation output}
 #' }
 #'
 #' @section R6 classes:

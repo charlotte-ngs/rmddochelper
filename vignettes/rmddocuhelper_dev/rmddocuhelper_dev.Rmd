@@ -47,6 +47,9 @@ r6obj_docstat$set_current_status(psVersion = "0.0.913",
 r6obj_docstat$set_current_status(psVersion = "0.0.914",
                                  psStatus  = "Active bindings in R6",
                                  psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.915",
+                                 psStatus  = "Test temporary document cleanup",
+                                 psProject = "rmddochelper")
 
 
 r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
@@ -216,6 +219,11 @@ n$rand
 ```
 
 We want to explore active bindings of R6 classes to implement options that persist on different levels. A first and an important level of persistence is the level of a given document. That means we want to be able to specify a set of options that are persistent for a given document. This is comparable to what is usually done with `knitr::opts_knit$set()` at the beginning of each Rmarkdown source document. 
+
+
+## Cleanup of temporary document compilation output
+The function `cleanup_output()` was changed such that the data to be cleaned up is determined by the argument `psDocuPath`. The function no longer has an argument `psDocuName` that allowed for specification of the source document from which the temporary output was produced. The reason for dropping the argument `psDocuName` was that it was unclear how `psDocuName` and `psDocuPath` interacted. Now the behavior is much clearer. Potential data to be cleaned up is searched in the directory given by `psDocuPath` and is selected according to the patterns that are specified. The user is presented with a list of files and or directories that are found and asked whether the files should be deleted. If the answer is `y` then the files are deleted.
+
 
 ```{r WriteTableOfAbbreviations, echo=FALSE, results='hide'}
 r6ob_abbrtable$writeToTsvFile()
