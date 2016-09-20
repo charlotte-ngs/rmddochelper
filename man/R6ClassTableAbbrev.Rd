@@ -52,10 +52,7 @@ run is used to generate the table of abbreviations.
   \item{\code{setAbbrFile}}{setter for abbreviation file}
   \item{\code{setAbbrTitle}}{setter for abbreviation title}
   \item{\code{setQuote}}{setter for bQuote flag}
-  \item{\code{add_abbrev( psAbbrev, psMeaning, pbQuote = TRUE, pbOut = TRUE )}}
-       {add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations.
-        Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag
-        pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}
+  \item{\code{add_abbrev(psAbbrev,psMeaning,psShowText=NULL,pbQuote=NULL,pbOut=TRUE)}}{add new pair of abbreviation(psAbbrev) and meaning(psMeaning) to list of abbreviations. In case psShowText is not null, use it to be shown in the text, otherwise use psMeaning in the text. Flag pbQuote determines whether abbreviation and meaning are enclosed in quotes. Flag pbOut determines whether abbreviation and meaning should be written to Rmarkdown source file.}
   \item{\code{writeToTsvFile}}{Write list of abbreviations in tab-separated format to file}
   \item{\code{include_abbr_table}}{Include table of abbreviations in a document}
   \item{\code{is_empty_abbr}}{Check whether list of abbreviations is empty}

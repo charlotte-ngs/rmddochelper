@@ -119,14 +119,19 @@ create_docu_skeleton <- function(psDocuName,
                                  pbOverwrite       = FALSE,
                                  pbEdit            = TRUE,
                                  plReplace         = NULL) {
-  ### # do the preparation similar to devtools::use_vignette
-  pkg <- devtools::as.package(psPkgPath)
-  devtools:::check_suggested("rmarkdown")
-  devtools:::add_desc_package(pkg, "Suggests", "knitr")
-  devtools:::add_desc_package(pkg, "Suggests", "rmarkdown")
-  devtools:::add_desc_package(pkg, "VignetteBuilder", "knitr")
+  ### # if psPkgPath contains a package, do the preparation similar to devtools::use_vignette
+  if (devtools::is.package(psPkgPath)){
+    pkg <- devtools::as.package(psPkgPath)
+    devtools:::check_suggested("rmarkdown")
+    devtools:::add_desc_package(pkg, "Suggests", "knitr")
+    devtools:::add_desc_package(pkg, "Suggests", "rmarkdown")
+    devtools:::add_desc_package(pkg, "VignetteBuilder", "knitr")
+    sPkgPath <- pkg$path
+  } else {
+    sPkgPath <- psPkgPath
+  }
   ### # put together path and file name
-  sDocuPath <- file.path(pkg$path, psDocuSubdir, paste0(psDocuName, ".Rmd"))
+  sDocuPath <- file.path(sPkgPath, psDocuSubdir, paste0(psDocuName, ".Rmd"))
   sCreatedFile <- rmd_draft(file        = sDocuPath,
                             template    = psRmdTemplate,
                             package     = psTemplatePkg,
