@@ -1,0 +1,33 @@
+---
+title: [REPLACE_WITH_TITLE]
+author: [REPLACE_WITH_AUTHOR]
+date: [REPLACE_WITH_DATE]
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Slide 1
+
+Text
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+

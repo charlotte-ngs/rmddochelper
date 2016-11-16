@@ -5,12 +5,16 @@
 \title{Cleanup a directory from temporary output files}
 \usage{
 cleanup_output(psDocuPath = "vignettes", psPattern = c("pdf$", "png$"),
-  pbIgnoreDir = TRUE)
+  pbIgnoreDir = TRUE, pbInteractive = TRUE)
 }
 \arguments{
 \item{psDocuPath}{Name of the document path}
 
 \item{psPattern}{Pattern to match by files to be deleted}
+
+\item{pbIgnoreDir}{Flag indicating whether directories should be ignored}
+
+\item{pbInteractive}{Should user be asked whether to delete files}
 }
 \description{
 Remove all files and possibly also directories that

@@ -83,6 +83,47 @@ create_pdf_output_skeleton <- function(psDocuName,
 
 ### ################################################### ###
 
+#' Create a beamer presentation Rmarkdown (Rmd) document
+#'
+#' @description
+#' The function \code{create_beamer_presentation} is a wrapper
+#' to create_docu_skeleton using template default_pdf_beamer_presentation
+#' to generate a skeleton Rmarkdown (Rmd) document. The skeleton
+#' can be used to generate a beamer presentation.
+#'
+#' #' @param   psDocuName           name of the new document
+#' @param   psPkgPath            path where package is located under which document should be created
+#' @param   psRmdTemplate        name of the template to be used
+#' @param   psTemplatePkg        package from where the template should be taken
+#' @param   psDocuSubdir         subdirectory in which document should be saved to
+#' @param   pbDocuHasOwnSubdir   should document be stored in separate subdir
+#' @param   pbOverwrite          flag whether existing files are overwritten
+#' @param   pbEdit               directly open newly created document
+#' @param   plReplace            list with replacement key-values
+#' @export  create_beamer_presentation
+create_beamer_presentation <- function(psDocuName,
+                                       psPkgPath         = ".",
+                                       psRmdTemplate     = "default_pdf_beamer_presentation",
+                                       psTemplatePkg     = "rmddochelper",
+                                       psDocuSubdir      = "vignettes",
+                                       pDocuHasOwnSubdir = TRUE,
+                                       pbOverwrite       = FALSE,
+                                       pbEdit            = TRUE,
+                                       plReplace         = NULL){
+  create_docu_skeleton(psDocuName        = psDocuName,
+                       psPkgPath         = psPkgPath,
+                       psRmdTemplate     = psRmdTemplate,
+                       psTemplatePkg     = psTemplatePkg,
+                       psDocuSubdir      = psDocuSubdir,
+                       pDocuHasOwnSubdir = pDocuHasOwnSubdir,
+                       pbOverwrite       = pbOverwrite,
+                       pbEdit            = pbEdit,
+                       plReplace         = plReplace)
+
+}
+
+### ################################################### ###
+
 #' Create a skeleton for a new Rmarkdown (Rmd) document
 #'
 #' @description

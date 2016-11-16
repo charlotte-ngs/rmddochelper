@@ -2,7 +2,9 @@
 
 export(R6ClassDocuStatus)
 export(R6ClassTableAbbrev)
+export(cleanup_all)
 export(cleanup_output)
+export(create_beamer_presentation)
 export(create_docu_skeleton)
 export(create_html_output_skeleton)
 export(create_odg_graphic)

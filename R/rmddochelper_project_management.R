@@ -81,12 +81,15 @@ move_doc_to_subdir <- function(psDocuName, psDocuPath = NULL, pbMoveEverything =
 #' pattern. In case directories are to be included the
 #' argument pbIgnoreDir must be set to FALSE.
 #'
-#' @param psDocuPath   Name of the document path
-#' @param psPattern    Pattern to match by files to be deleted
+#' @param psDocuPath     Name of the document path
+#' @param psPattern      Pattern to match by files to be deleted
+#' @param pbIgnoreDir    Flag indicating whether directories should be ignored
+#' @param pbInteractive  Should user be asked whether to delete files
 #' @export cleanup_output
-cleanup_output <- function(psDocuPath  = "vignettes",
-                           psPattern   = c("pdf$", "png$"),
-                           pbIgnoreDir = TRUE){
+cleanup_output <- function(psDocuPath    = "vignettes",
+                           psPattern     = c("pdf$", "png$"),
+                           pbIgnoreDir   = TRUE,
+                           pbInteractive = TRUE){
   ### # loop over vector of patterns given in psPattern
   for (p in psPattern) {
     ### # list the files and directories that match the current pattern p
@@ -98,10 +101,30 @@ cleanup_output <- function(psDocuPath  = "vignettes",
       message("Files to be removed from directory: ", psDocuPath,
               "\n", paste(basename(curMatch), collapse = ", "))
       sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
-      if (tolower(sAnswer) == "y")
+      if (tolower(sAnswer) == "y" | !pbInteractive)
         file.remove(curMatch)
     }
 
   }
+  invisible(TRUE)
+}
+
+
+#' Recursively cleanup all directories of psDocuPath
+#'
+#' This is a wrapper over cleanup_output using sapply
+#' over the result of list.files(psDocuPath)
+#'
+#' @param psDocuPath   Name of the document path
+#' @param psPattern    Pattern to match by files to be deleted
+#' @export cleanup_all
+cleanup_all <- function(psDocuPath  = "vignettes",
+                        psPattern   = c("pdf$", "png$"),
+                        pbIgnoreDir = TRUE){
+  sapply(list.files(path = psDocuPath, full.names = TRUE),
+         function(x) cleanup_output(psDocuPath = x,
+                                    psPattern = psPattern,
+                                    pbIgnoreDir = pbIgnoreDir,
+                                    pbInteractive = TRUE))
   invisible(TRUE)
 }
