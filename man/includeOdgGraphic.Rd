@@ -23,5 +23,7 @@ includeOdgGraphic(psOdgFileStem, psOutFormat, psOdgDir = "odg",
 \item{psFigOutDir}{directory where output should be placed}
 
 \item{pbMustGenerate}{flag to indicate whether pdf-graphics must be regenerated}
+
+\item{pnPaperWidthScale}{scale factor for produced graphic}
 }
 

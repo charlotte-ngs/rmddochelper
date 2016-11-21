@@ -15,6 +15,8 @@ insertOdgAsPdf(psOdgFileStem, psOdgDir = "odg", psFigOutDir = ".",
 \item{psFigOutDir}{directory where output should be placed}
 
 \item{pbMustGenerate}{flag to indicate whether pdf-graphics must be regenerated}
+
+\item{pnPaperWidthScale}{scale factor for produced graphic}
 }
 \description{
 This function is a wrapper to the more generic function

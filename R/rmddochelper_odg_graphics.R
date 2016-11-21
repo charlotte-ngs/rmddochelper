@@ -41,7 +41,8 @@ convertLibOToGraphic <- function(psLibOFile,
     #create_odg_graphic(psGraphicName = file.path(sOdgDir, psLibOFile))
   sConvCommand <- paste(sConvCmdStem, sFigFile)
   system(command = sConvCommand)
-  sOutFile <- gsub("odg$", sOutFormat, psLibOFile)
+  # sOutFile <- gsub("odg$", sOutFormat, psLibOFile)
+  sOutFile <- paste(tools::file_path_sans_ext(psLibOFile), psOutFormat, sep = ".")
   sFigOutFile <- file.path(psFigOutDir, sOutFile)
   file.rename(from = sOutFile, sFigOutFile)
   return(sFigOutFile)
@@ -267,6 +268,7 @@ odg_draft <- function(file,
 #' @param  psOdgDir         directory where odg figure file is stored
 #' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
 #' @param  psFigOutDir      directory where output should be placed
+#' @param  pnPaperWidthScale  scale factor for produced graphic
 #' @export insertOdgAsPdf
 insertOdgAsPdf <- function(psOdgFileStem,
                            psOdgDir = "odg",
@@ -288,6 +290,7 @@ insertOdgAsPdf <- function(psOdgFileStem,
 #' @param  psOdgDir         directory where odg figure file is stored
 #' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
 #' @param  psFigOutDir      directory where output should be placed
+#' @param  pnPaperWidthScale  scale factor for produced graphic
 #' @export insertOdgAsPng
 insertOdgAsPng <- function(psOdgFileStem,
                            psOdgDir = "odg",
@@ -315,6 +318,7 @@ insertOdgAsPng <- function(psOdgFileStem,
 #' @param  psOdgDir         directory where odg figure file is stored
 #' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
 #' @param  psFigOutDir      directory where output should be placed
+#' @param  pnPaperWidthScale  scale factor for produced graphic
 includeOdgGraphic <- function(psOdgFileStem,
                               psOutFormat,
                               psOdgDir          = "odg",
@@ -371,4 +375,75 @@ genericScaledPlot <- function(pData = NULL, pnPaperWidthScale, pfPlotMethod = NU
   cat("\\setkeys{Gin}{width=", pnPaperWidthScale, "\\paperwidth}\n", sep = "")
   if (!is.null(pfPlotMethod))
     pfPlotMethod(pData, ...)
+}
+
+
+## --- Insert an Ods-table as graphic -----------------------------------------------------
+##
+#' Insert an LibreOffice table into a Rmd document
+#'
+#'
+#' @param  psOdsFileStem    stem of ods file
+#' @param  psOdsDir         directory where ods file is stored
+#' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
+#' @param  psFigOutDir      directory where output should be placed
+#' @param  pnPaperWidthScale  scale factor for produced graphic
+#' @export insertOdsAsPdf
+insertOdsAsPdf <- function(psOdsFileStem,
+                           psOdsDir = "ods",
+                           psFigOutDir = ".",
+                           pbMustGenerate = FALSE,
+                           pnPaperWidthScale = NULL) {
+  includeOdsTable( psOdsFileStem     = psOdsFileStem,
+                   psOutFormat       = "pdf",
+                   psOdsDir          = psOdsDir,
+                   psFigOutDir       = psFigOutDir,
+                   pbMustGenerate    = pbMustGenerate,
+                   pnPaperWidthScale = pnPaperWidthScale )
+}
+
+#' Generic Method to include Ods tables as graphics
+#'
+#' This function works the same as includeOdgGraphic, but
+#' it converts LibreOffice Tables from ods-format to pdf.
+#'
+#' @param  psOdsFileStem    stem of odg figure file
+#' @param  psOutFormat      output format of the graphic file to be included
+#' @param  psOdsDir         directory where odg figure file is stored
+#' @param  pbMustGenerate   flag to indicate whether pdf-graphics must be regenerated
+#' @param  psFigOutDir      directory where output should be placed
+#' @param  pnPaperWidthScale  scale factor for produced graphic
+includeOdsTable <- function( psOdsFileStem,
+                             psOutFormat       = "pdf",
+                             psOdsDir,
+                             psFigOutDir       = ".",
+                             pbMustGenerate    = FALSE,
+                             pnPaperWidthScale = NULL ){
+  ### # check wether pdf file already exists, if so, do nothing
+  sTableFilename <- paste(psOdsFileStem, tolower(psOutFormat), sep = ".")
+  sTableFile <- file.path(psFigOutDir,sTableFilename)
+  if (!file.exists(sTableFile) | pbMustGenerate){
+    ### # if pdf files cannot be found, regenerate them, check that psOdgFileName exists
+    sOdsFilename <- paste(psOdsFileStem, "ods", sep = ".")
+    sOdsFile <- file.path(psOdsDir, sOdsFilename)
+    ### # convert Ods file to pdf
+    sConvTableFileName <- convertLibOToGraphic( psLibOFile  = sOdsFilename,
+                                                psOutFormat = psOutFormat,
+                                                psLibODir   = psOdsDir,
+                                                psFigOutDir = psFigOutDir)
+    if (!file.exists(sConvTableFileName))
+      stop("Cannot find created graphics file: ", sConvTableFileName)
+  }
+  ### # at this point the pdf file must exist, either from previous conversion
+  ### #  or from converting it right now
+  if (!file.exists(sTableFile))
+    stop("Cannot find graphic file: ", sTableFile)
+  ### # in case a width scale was specified, use it
+  if (!is.null(pnPaperWidthScale))
+    genericScaledPlot(pnPaperWidthScale = pnPaperWidthScale)
+  ### # output the command to include the figure
+  cat("![", psOdsFileStem, "](", sTableFile, ")\n", sep = "")
+
+  invisible(NULL)
+
 }
