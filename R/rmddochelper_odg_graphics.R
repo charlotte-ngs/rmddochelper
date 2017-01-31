@@ -59,8 +59,17 @@ convertLibOToGraphic <- function(psLibOFile,
 #' When a filename for the odg graphic which should be created, is
 #' specified the template is renamed to the given name.
 #'
+#' @details
+#' If the parameter psRmdSrcFile is specified, a command to include the
+#' created graphic file in the specified format is inserted into the
+#' rmd-source file. If psRmdSrcFile is left at its default (null) then
+#' no include command is inserted. The command to include graphics
+#' is based on the function \code{knitr::include_graphics()}
+#'
 #' @param psGraphicName   Format of diagram to be created
 #' @param psGraphicPath   Path where created odg file should be stored
+#' @param psRmdSrcFile    rmd source file where include statement is inserted
+#' @param psGrFmt         graphics format
 #' @param psOdgTemplate   name of the template to be used
 #' @param psTemplatePkg   package where template is stored
 #' @param create_dir      should created odg file be stored in separate directory
@@ -69,7 +78,7 @@ convertLibOToGraphic <- function(psLibOFile,
 #' @export create_odg_graphic
 create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                psGraphicPath  = "vignettes",
-                               psRmdSrcFile,
+                               psRmdSrcFile   = NULL,
                                psGrFmt        = "pdf",
                                psOdgTemplate  = "odg_figure",
                                psTemplatePkg  = "rmddochelper",
@@ -90,14 +99,16 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
   if (!file.exists(sGraphicTrgName))
     stop(" *** ERROR: could not create graphics file: ", sGraphicTrgName)
 
-  ### # insert command to include graphics file into source file
-  conRmdSrc <- file(description = psRmdSrcFile)
-  vRmdSrc <- readLines(con = conRmdSrc)
-  close(con = conRmdSrc)
-  vRmdSrc <- include_graphics_cmd(psGraphicName = psGraphicName,
-                                  pvRmdSrc = vRmdSrc,
-                                  psGrFmt = psGrFmt)
-  cat(vRmdSrc, "\n", file = psRmdSrcFile, sep = "\n")
+  ### # insert command to include graphics file into source file, if
+  ### #  the name of the rmd-src-file is specified
+  if (!is.null(psRmdSrcFile)){
+    conRmdSrc <- file(description = psRmdSrcFile)
+    vRmdSrc <- readLines(con = conRmdSrc)
+    close(con = conRmdSrc)
+    vRmdSrc <- knitr_include_graphics_pdf(psGraphicName = psGraphicName,
+                                          pvRmdSrc = vRmdSrc)
+    cat(vRmdSrc, "\n", file = psRmdSrcFile, sep = "\n")
+  }
 
 
   ### # depending on flag, open graphics file
@@ -117,6 +128,33 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
   ### # return graphics name
   return(sGraphicTrgName)
 }
+
+
+#' @title Add statement to include graphic via knitr::include_graphics()
+#'
+#' @description
+#'
+#'
+#' @param psGraphicName   name of the graphic file to be included
+#' @param pvRmdSrc        name of the Rmarkdown source file
+#' @return vector with extended Rmarkdown sources
+#'
+knitr_include_graphics_pdf <- function(psGraphicName, pvRmdSrc){
+  sGrInsCmd <- 'knitr::include_graphics(path = "'
+  vRmdSrc <- pvRmdSrc
+  ### # the search pattern is define by what RStudio inserts when
+  ### #  inserting a new code-chunk
+  sSearchPattern <- paste0("```{r ", psGraphicName)
+  nGrInclLineIdx <- grep(pattern = sSearchPattern, vRmdSrc, fixed = TRUE)
+  ### # in case the graphics inclusion statement was found,
+  ### #  add the command here, if it is not found we do nothing
+  if (length(nGrInclLineIdx) > 0){
+    ### # depending on format
+    vRmdSrc[nGrInclLineIdx+1] <- paste0(sGrInsCmd, psGraphicName, ".pdf", '")')
+  }
+  return(vRmdSrc)
+}
+
 
 
 #' @title Add statement to include graphic into Rmarkdown source
@@ -446,4 +484,38 @@ includeOdsTable <- function( psOdsFileStem,
 
   invisible(NULL)
 
+}
+
+## --- Odg-graphics converter hook-function -------------------------------------------------
+##
+#' @title Hook function for odg-graphics conversion
+#'
+#' @description
+#' \code{odg.graphics.conv.hook} is a hook function for knitr chunks which include
+#' given graphics using function \code{knitr::include_graphics()}. Whenever graphics
+#' are produced using LibreOffice Draw and saved as odg-files this hook function can
+#' be used to automatically convert the odg-graphics files into pdf-files.
+#'
+#' @param before  flat to indicate which statements must be executed before the chunk
+#' @param options list of options passed from the chunk header to the hook function
+#' @param envir   environment
+#' @export odg.graphics.conv.hook
+odg.graphics.conv.hook <- function(before, options, envir) {
+  if (is.null(options$label))
+    stop(" *** ERROR: chunk must be labelled\n")
+  if (is.null(options$odg.path)){
+    odg.path <- "odg"
+  } else {
+    odg.path <- options$odg.path
+  }
+  odg.fname <- paste(options$label, "odg", sep = ".")
+  odg.fig.src  <- file.path(odg.path, odg.fname)
+  trg.fig <- paste(options$label, "pdf", sep = ".")
+  if (before) {
+    if (!file.exists(odg.fig.src))
+      create_odg_graphic(psGraphicName = odg.fname, psGraphicPath = odg.path, pbEdit = FALSE)
+    if (!file.exists(trg.fig) | !options$odg.graph.cache)
+      convertLibOToGraphic(psLibOFile = odg.fname, psOutFormat = "pdf", psLibODir = odg.path)
+  }
+  return(invisible(TRUE))
 }

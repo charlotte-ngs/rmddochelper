@@ -5,7 +5,7 @@
 \title{Create an empty odg graphic}
 \usage{
 create_odg_graphic(psGraphicName = "skeleton.odg",
-  psGraphicPath = "vignettes", psRmdSrcFile, psGrFmt = "pdf",
+  psGraphicPath = "vignettes", psRmdSrcFile = NULL, psGrFmt = "pdf",
   psOdgTemplate = "odg_figure", psTemplatePkg = "rmddochelper",
   create_dir = "default", pbRecursive = TRUE, pbEdit = TRUE)
 }
@@ -13,6 +13,10 @@ create_odg_graphic(psGraphicName = "skeleton.odg",
 \item{psGraphicName}{Format of diagram to be created}
 
 \item{psGraphicPath}{Path where created odg file should be stored}
+
+\item{psRmdSrcFile}{rmd source file where include statement is inserted}
+
+\item{psGrFmt}{graphics format}
 
 \item{psOdgTemplate}{name of the template to be used}
 
@@ -31,5 +35,12 @@ of this package `rmddochelper`. When calling  \code{create_odg_graphic}
 without any arguments, then the template is opened using soffice draw.
 When a filename for the odg graphic which should be created, is
 specified the template is renamed to the given name.
+}
+\details{
+If the parameter psRmdSrcFile is specified, a command to include the
+created graphic file in the specified format is inserted into the
+rmd-source file. If psRmdSrcFile is left at its default (null) then
+no include command is inserted. The command to include graphics
+is based on the function \code{knitr::include_graphics()}
 }
 
