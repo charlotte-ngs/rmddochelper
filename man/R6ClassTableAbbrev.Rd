@@ -48,7 +48,7 @@ run is used to generate the table of abbreviations.
 
 \describe{
   \item{\code{new()}}{Instantiation of R6 object of class R6ClassTableAbbrev}
-  \item{\code{setColHeader}}{setter for column header}
+  \item{\code{setColHeader(pvColHeader)}}{setter for column header}
   \item{\code{setAbbrFile}}{setter for abbreviation file}
   \item{\code{setAbbrTitle}}{setter for abbreviation title}
   \item{\code{setQuote}}{setter for bQuote flag}
