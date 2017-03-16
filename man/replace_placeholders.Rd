@@ -15,4 +15,3 @@ replace_placeholders(psTrgFile, plReplace)
 Placeholders in skeleton files are replaced using gsub
 functionalities
 }
-

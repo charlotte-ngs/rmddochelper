@@ -43,4 +43,3 @@ rmd-source file. If psRmdSrcFile is left at its default (null) then
 no include command is inserted. The command to include graphics
 is based on the function \code{knitr::include_graphics()}
 }
-

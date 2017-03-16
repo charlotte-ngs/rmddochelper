@@ -20,4 +20,3 @@ and available on the search path. Source files are converted on the
 fly to the specified output format which are then included in the
 source R markdown document
 }
-

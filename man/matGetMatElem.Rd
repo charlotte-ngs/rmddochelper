@@ -16,4 +16,3 @@ matGetMatElem(psBaseElement, pnNrRow, pnNrCol)
 \description{
 Matrix with character elements and column and row indices
 }
-

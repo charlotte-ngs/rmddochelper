@@ -15,4 +15,3 @@ replacement placeholder
 \description{
 Convert a tag to a replacement placeholder
 }
-

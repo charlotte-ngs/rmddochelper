@@ -17,4 +17,3 @@ vector with extended Rmarkdown sources
 \description{
 
 }
-
