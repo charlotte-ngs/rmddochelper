@@ -4,14 +4,14 @@
 \alias{vecGetVecElem}
 \title{Vector with base elements and index}
 \usage{
-vecGetVecElem(psBaseElement, pnVecLen, psSepChar = "_")
+vecGetVecElem(psBaseElement, pnVecLen, psResult = "raw")
 }
 \arguments{
 \item{psBaseElement}{suffix of the vector elements}
 
 \item{pnVecLen}{number of elements in the vector}
 
-\item{psSepChar}{separating character (default = "_")}
+\item{psResult}{format of result (default = "raw")}
 }
 \value{
 Vector with string elements that each have psBaseElement as
@@ -20,7 +20,7 @@ Vector with string elements that each have psBaseElement as
 \description{
 The result is a vector of elements that have psBaseElement
 as prefix and that have the index of the corresponding
-vector element as suffix. The separating charcter might be
-given by psSepChar
+vector element as suffix. The result may be in raw format
+or in LaTeX-Math format.
 }
 

@@ -1,17 +1,17 @@
 #' @title Convert matrix to LaTeX array
 #'
-#' @description 
+#' @description
 #' The matrix specified by pmatAMatrix is converted to a LaTeX array
-#' using function \code{xtable::xtable}. The function \code{xtable::xtable} 
-#' produces a tabular LaTeX-object which is converted to a LaTeX-array using 
+#' using function \code{xtable::xtable}. The function \code{xtable::xtable}
+#' produces a tabular LaTeX-object which is converted to a LaTeX-array using
 #' simple string replacement of the LaTeX environment specifiers. Some
 #' lines at the beginning and at the end are ignored. The number
 #' of lines that are ignored can be specified using the parameters
 #' pnOutStartLine and pnEndIgnoreLines.
-#' 
-#' @details 
-#' Because in R vectors and matrices are different objects, when we want 
-#' to use this function for a vector, it has to be converted to a matrix 
+#'
+#' @details
+#' Because in R vectors and matrices are different objects, when we want
+#' to use this function for a vector, it has to be converted to a matrix
 #' first.
 #'
 #' @param  pmatAMatrix        Matrix to be represented in tex format
@@ -34,15 +34,40 @@ sConvertMatrixToLaTexArray <- function(pmatAMatrix, pnOutStartLine = 5, pnEndIgn
   return(sResultTexMatrix)
 }
 
-#' Matrix with character elements and column and row indices
+#' @title Matrix of strings from base-element and column and row indices
+#'
+#' @description
+#' Given a symbolic Matrix M with a certain dimension, we want to specify
+#' the components of M based on a given prefix of the components and the
+#' column and row indices of each component.
+#'
+#' @details
+#' The result can either be in raw format Mij or in LaTeX-Math notation M_{ij}.
+#' The type of result is specified by the option psResultFmt. The only options
+#' that are currently recogized are latex and raw. If anything else is specified
+#' as format, it is raw per default.
+#'
 #'
 #' @param psBaseElement   character prefix shown in front of indices
 #' @param pnNrRow         number of rows
 #' @param pnNrCol         number of columns
-matGetMatElem <- function(psBaseElement, pnNrRow, pnNrCol){
+#' @param psResultFmt     format of result, currently only raw or latex is considered
+#' @return Matrix of strings containing the components
+#' @export matGetMatElem
+matGetMatElem <- function(psBaseElement, pnNrRow, pnNrCol, psResult = "raw"){
+  if (tolower(psResult) == "latex"){
+    pastefun <- function(x,y,psPrefix){
+      return(paste0(psPrefix, "_{", x%/%y+1, x%%y+1,"}"))
+    }
+  } else {
+    pastefun <- function(x,y,psPrefix){
+      return(paste0(psPrefix, x%/%y+1, x%%y+1))
+    }
+  }
   return(matrix(sapply(0:(pnNrRow*pnNrCol-1),
-                       function(x,y) paste(psBaseElement, x%/%y+1, x%%y+1, sep = ""),
-                       pnNrCol),
+                       pastefun,
+                       pnNrCol,
+                       psBaseElement),
                 nrow = pnNrRow,
                 ncol = pnNrCol,
                 byrow = TRUE))
@@ -67,15 +92,23 @@ matDiag <- function(psBaseElement, pnNrRow, pnNrCol) {
 #'
 #' The result is a vector of elements that have psBaseElement
 #' as prefix and that have the index of the corresponding
-#' vector element as suffix. The separating charcter might be
-#' given by psSepChar
+#' vector element as suffix. The result may be in raw format
+#' or in LaTeX-Math format.
 #'
 #' @param psBaseElement   suffix of the vector elements
 #' @param pnVecLen        number of elements in the vector
-#' @param psSepChar       separating character (default = "_")
+#' @param psResult        format of result (default = "raw")
 #' @return Vector with string elements that each have psBaseElement as
 #'         prefix and the index as suffix, separated by psSepChar
 #' @export vecGetVecElem
-vecGetVecElem <- function(psBaseElement, pnVecLen, psSepChar = "_"){
-  return(sapply(1:pnVecLen, function(x) paste(psBaseElement, x, sep = psSepChar)))
+vecGetVecElem <- function(psBaseElement, pnVecLen, psResult = "raw"){
+  if (tolower(psResult) == "latex"){
+    pastefun <- function(x, psPrefix)
+      return(paste0(psPrefix, "_{", x, "}"))
+  } else {
+    pastefun <- function(x,psPrefix){
+      return(paste0(psPrefix, x))
+    }
+  }
+  return(sapply(1:pnVecLen, pastefun, psBaseElement))
 }

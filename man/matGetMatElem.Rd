@@ -2,9 +2,9 @@
 % Please edit documentation in R/tex_helper.R
 \name{matGetMatElem}
 \alias{matGetMatElem}
-\title{Matrix with character elements and column and row indices}
+\title{Matrix of strings from base-element and column and row indices}
 \usage{
-matGetMatElem(psBaseElement, pnNrRow, pnNrCol)
+matGetMatElem(psBaseElement, pnNrRow, pnNrCol, psResult = "raw")
 }
 \arguments{
 \item{psBaseElement}{character prefix shown in front of indices}
@@ -12,8 +12,21 @@ matGetMatElem(psBaseElement, pnNrRow, pnNrCol)
 \item{pnNrRow}{number of rows}
 
 \item{pnNrCol}{number of columns}
+
+\item{psResultFmt}{format of result, currently only raw or latex is considered}
+}
+\value{
+Matrix of strings containing the components
 }
 \description{
-Matrix with character elements and column and row indices
+Given a symbolic Matrix M with a certain dimension, we want to specify
+the components of M based on a given prefix of the components and the
+column and row indices of each component.
+}
+\details{
+The result can either be in raw format Mij or in LaTeX-Math notation M_{ij}.
+The type of result is specified by the option psResultFmt. The only options
+that are currently recogized are latex and raw. If anything else is specified
+as format, it is raw per default.
 }
 

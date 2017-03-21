@@ -23,16 +23,16 @@ string containing tex representation of matrix
 }
 \description{
 The matrix specified by pmatAMatrix is converted to a LaTeX array
-using function \code{xtable::xtable}. The function \code{xtable::xtable} 
-produces a tabular LaTeX-object which is converted to a LaTeX-array using 
+using function \code{xtable::xtable}. The function \code{xtable::xtable}
+produces a tabular LaTeX-object which is converted to a LaTeX-array using
 simple string replacement of the LaTeX environment specifiers. Some
 lines at the beginning and at the end are ignored. The number
 of lines that are ignored can be specified using the parameters
 pnOutStartLine and pnEndIgnoreLines.
 }
 \details{
-Because in R vectors and matrices are different objects, when we want 
-to use this function for a vector, it has to be converted to a matrix 
+Because in R vectors and matrices are different objects, when we want
+to use this function for a vector, it has to be converted to a matrix
 first.
 }
 
