@@ -21,4 +21,3 @@ insertOdsAsPdf(psOdsFileStem, psOdsDir = "ods", psFigOutDir = ".",
 \description{
 Insert an LibreOffice table into a Rmd document
 }
-

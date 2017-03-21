@@ -33,4 +33,3 @@ create_html_output_skeleton(psDocuName, psPkgPath = ".",
 \code{create_docu_skeleton} for easily creating html-documents
 with reasonable default settings.
 }
-

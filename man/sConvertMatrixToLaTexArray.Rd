@@ -35,4 +35,3 @@ Because in R vectors and matrices are different objects, when we want
 to use this function for a vector, it has to be converted to a matrix
 first.
 }
-

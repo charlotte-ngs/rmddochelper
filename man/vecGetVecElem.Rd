@@ -23,4 +23,3 @@ as prefix and that have the index of the corresponding
 vector element as suffix. The result may be in raw format
 or in LaTeX-Math format.
 }
-

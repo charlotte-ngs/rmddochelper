@@ -17,4 +17,3 @@ s_docu_result      document result string
 \description{
 Replacement of placeholder by replacement list values
 }
-

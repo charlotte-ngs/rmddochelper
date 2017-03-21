@@ -19,4 +19,3 @@ given graphics using function \code{knitr::include_graphics()}. Whenever graphic
 are produced using LibreOffice Draw and saved as odg-files this hook function can
 be used to automatically convert the odg-graphics files into pdf-files.
 }
-

@@ -30,4 +30,3 @@ either via the parameter psDocuPath or it can also be
 included in the parameter psDocuName. But if the latter
 option is chosen, then psDocuPath must be NULL.
 }
-
