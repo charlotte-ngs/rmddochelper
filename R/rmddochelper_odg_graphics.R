@@ -494,7 +494,9 @@ includeOdsTable <- function( psOdsFileStem,
 #' \code{odg.graphics.conv.hook} is a hook function for knitr chunks which include
 #' given graphics using function \code{knitr::include_graphics()}. Whenever graphics
 #' are produced using LibreOffice Draw and saved as odg-files this hook function can
-#' be used to automatically convert the odg-graphics files into pdf-files.
+#' be used to automatically convert the odg-graphics files into files of a given format.
+#' The output format is specified by options$out.format. When no output format is specified,
+#' "pdf" is assumed to be the default.
 #'
 #' @param before  flat to indicate which statements must be executed before the chunk
 #' @param options list of options passed from the chunk header to the hook function
@@ -503,19 +505,26 @@ includeOdsTable <- function( psOdsFileStem,
 odg.graphics.conv.hook <- function(before, options, envir) {
   if (is.null(options$label))
     stop(" *** ERROR: chunk must be labelled\n")
+  ### # assume default location of odg.path
   if (is.null(options$odg.path)){
     odg.path <- "odg"
   } else {
     odg.path <- options$odg.path
   }
+  ### # assume default output format to be pdf
+  if (is.null(options$out.format)){
+    out.format <- "pdf"
+  } else {
+    out.format <- options$out.format
+  }
   odg.fname <- paste(options$label, "odg", sep = ".")
   odg.fig.src  <- file.path(odg.path, odg.fname)
-  trg.fig <- paste(options$label, "pdf", sep = ".")
+  trg.fig <- paste(options$label, options$out.format, sep = ".")
   if (before) {
     if (!file.exists(odg.fig.src))
       create_odg_graphic(psGraphicName = odg.fname, psGraphicPath = odg.path, pbEdit = FALSE)
     if (!file.exists(trg.fig) | !options$odg.graph.cache)
-      convertLibOToGraphic(psLibOFile = odg.fname, psOutFormat = "pdf", psLibODir = odg.path)
+      convertLibOToGraphic(psLibOFile = odg.fname, psOutFormat = out.format, psLibODir = odg.path)
   }
   return(invisible(TRUE))
 }

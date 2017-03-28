@@ -17,5 +17,7 @@ odg.graphics.conv.hook(before, options, envir)
 \code{odg.graphics.conv.hook} is a hook function for knitr chunks which include
 given graphics using function \code{knitr::include_graphics()}. Whenever graphics
 are produced using LibreOffice Draw and saved as odg-files this hook function can
-be used to automatically convert the odg-graphics files into pdf-files.
+be used to automatically convert the odg-graphics files into files of a given format.
+The output format is specified by options$out.format. When no output format is specified,
+"pdf" is assumed to be the default.
 }
