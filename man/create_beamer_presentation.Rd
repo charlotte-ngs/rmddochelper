@@ -35,3 +35,4 @@ can be used to generate a beamer presentation.
 
 #' @param   psDocuName           name of the new document
 }
+

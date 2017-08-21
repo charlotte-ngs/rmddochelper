@@ -43,3 +43,4 @@ The basic functionality follows the function
 \code{devtools::use_vignette}, except for the possibility
 of specifying any given template from any package.
 }
+

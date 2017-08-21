@@ -9,3 +9,4 @@ matLowerTri(psBaseElement, pnNrRow, pnNrCol, pvecDiag = NULL)
 \description{
 Lower triangular matrix
 }
+

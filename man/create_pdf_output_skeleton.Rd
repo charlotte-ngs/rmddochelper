@@ -33,3 +33,4 @@ Function {create_pdf_output_skeleton} is a wrapper to
 \code{create_docu_skeleton} for easily creating pdf-documents
 with reasonable default settings.
 }
+

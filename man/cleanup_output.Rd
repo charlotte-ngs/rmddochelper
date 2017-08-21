@@ -27,3 +27,4 @@ directories are ignored, even if they match the given
 pattern. In case directories are to be included the
 argument pbIgnoreDir must be set to FALSE.
 }
+

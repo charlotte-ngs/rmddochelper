@@ -494,7 +494,12 @@ includeOdsTable <- function( psOdsFileStem,
 #' \code{odg.graphics.conv.hook} is a hook function for knitr chunks which include
 #' given graphics using function \code{knitr::include_graphics()}. Whenever graphics
 #' are produced using LibreOffice Draw and saved as odg-files this hook function can
-#' be used to automatically convert the odg-graphics files into pdf-files.
+#' be used to automatically convert the odg-graphics files into files of a different format.
+#'
+#' @details
+#' The output format is either set by default to pdf or it is taken from options$out.format.
+#' In the current version no validity checks for the output format is done. Whatever can be
+#' handled by LibreOffice which is doing the conversion is fine.
 #'
 #' @param before  flat to indicate which statements must be executed before the chunk
 #' @param options list of options passed from the chunk header to the hook function
@@ -503,10 +508,17 @@ includeOdsTable <- function( psOdsFileStem,
 odg.graphics.conv.hook <- function(before, options, envir) {
   if (is.null(options$label))
     stop(" *** ERROR: chunk must be labelled\n")
+  ### # set path either to odg per default, or take it from options
   if (is.null(options$odg.path)){
     odg.path <- "odg"
   } else {
     odg.path <- options$odg.path
+  }
+  ### # set output format be default to pdf or take it from options
+  if (is.null(options$out.format)){
+    sOutFormat <- "pdf"
+  } else {
+    sOutFormat <- options$out.format
   }
   odg.fname <- paste(options$label, "odg", sep = ".")
   odg.fig.src  <- file.path(odg.path, odg.fname)
@@ -515,7 +527,7 @@ odg.graphics.conv.hook <- function(before, options, envir) {
     if (!file.exists(odg.fig.src))
       create_odg_graphic(psGraphicName = odg.fname, psGraphicPath = odg.path, pbEdit = FALSE)
     if (!file.exists(trg.fig) | !options$odg.graph.cache)
-      convertLibOToGraphic(psLibOFile = odg.fname, psOutFormat = "pdf", psLibODir = odg.path)
+      convertLibOToGraphic(psLibOFile = odg.fname, psOutFormat = sOutFormat, psLibODir = odg.path)
   }
   return(invisible(TRUE))
 }

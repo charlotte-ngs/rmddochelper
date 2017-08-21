@@ -26,3 +26,4 @@ includeOdgGraphic(psOdgFileStem, psOutFormat, psOdgDir = "odg",
 
 \item{pnPaperWidthScale}{scale factor for produced graphic}
 }
+

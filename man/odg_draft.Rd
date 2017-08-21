@@ -46,3 +46,4 @@ overwritten. The last step consists of renaming the
 skeleton-file to the basename given in the file
 parameter.
 }
+

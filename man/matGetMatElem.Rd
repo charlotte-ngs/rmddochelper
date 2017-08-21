@@ -29,3 +29,4 @@ The type of result is specified by the option psResultFmt. The only options
 that are currently recogized are latex and raw. If anything else is specified
 as format, it is raw per default.
 }
+

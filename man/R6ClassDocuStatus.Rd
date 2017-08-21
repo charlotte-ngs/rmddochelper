@@ -32,7 +32,6 @@ and we must be able to display all document status records as a table.
 
 \item{\code{history_file}}{name of the file containing the document history}
 }}
-
 \section{Public Methods}{
 
 \describe{
@@ -69,7 +68,6 @@ and we must be able to display all document status records as a table.
   \item{\code{auto_increment()}}{Autoincrementing minor version number}
 }
 }
-
 \examples{
 r6objDocuStat <- R6ClassDocuStatus$new()
 r6obj_docstat$set_current_status(psVersion = "0.0.908",
@@ -81,3 +79,4 @@ r6objDocuStat$knitr_kable()
 }
 }
 \keyword{datasets}
+

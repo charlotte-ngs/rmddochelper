@@ -23,3 +23,4 @@ This function is a wrapper to the more generic function
 \code{includeOdgGraphic} which allows to include graphics
 into rmarkdown source files.
 }
+

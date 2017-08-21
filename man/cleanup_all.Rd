@@ -16,3 +16,4 @@ cleanup_all(psDocuPath = "vignettes", psPattern = c("pdf$", "png$"),
 This is a wrapper over cleanup_output using sapply
 over the result of list.files(psDocuPath)
 }
+

@@ -18,3 +18,4 @@ insertOdgAsPng(psOdgFileStem, psOdgDir = "odg", psFigOutDir = ".",
 
 \item{pnPaperWidthScale}{scale factor for produced graphic}
 }
+

@@ -44,7 +44,6 @@ run is used to generate the table of abbreviations.
 
 \item{\code{bQuote}}{flag whether to put text in quotes}
 }}
-
 \section{Public methods}{
 
 \describe{
@@ -59,7 +58,6 @@ run is used to generate the table of abbreviations.
   \item{\code{is_empty_abbr}}{Check whether list of abbreviations is empty}
 }
 }
-
 \examples{
 r6objAbr <- R6ClassTableAbbrev$new()
 r6objAbr$setAbbrFile(psAbbrFile = "ABBREVIATIONS")
@@ -70,3 +68,4 @@ r6objAbr$include_abbr_table()
 }
 }
 \keyword{datasets}
+
