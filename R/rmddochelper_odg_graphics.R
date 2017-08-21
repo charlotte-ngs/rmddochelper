@@ -522,7 +522,7 @@ odg.graphics.conv.hook <- function(before, options, envir) {
   }
   odg.fname <- paste(options$label, "odg", sep = ".")
   odg.fig.src  <- file.path(odg.path, odg.fname)
-  trg.fig <- paste(options$label, "pdf", sep = ".")
+  trg.fig <- paste(options$label, options$out.format, sep = ".")
   if (before) {
     if (!file.exists(odg.fig.src))
       create_odg_graphic(psGraphicName = odg.fname, psGraphicPath = odg.path, pbEdit = FALSE)
