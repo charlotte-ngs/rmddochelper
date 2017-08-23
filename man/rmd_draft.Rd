@@ -30,4 +30,3 @@ version, this version allows for the use of templates
 with skeleton files which are already found in the
 target directory.
 }
-

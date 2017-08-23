@@ -24,4 +24,3 @@ The output format is either set by default to pdf or it is taken from options$ou
 In the current version no validity checks for the output format is done. Whatever can be
 handled by LibreOffice which is doing the conversion is fine.
 }
-
