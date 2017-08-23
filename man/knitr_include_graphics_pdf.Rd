@@ -4,17 +4,25 @@
 \alias{knitr_include_graphics_pdf}
 \title{Add statement to include graphic via knitr::include_graphics()}
 \usage{
-knitr_include_graphics_pdf(psGraphicName, pvRmdSrc)
+knitr_include_graphics_pdf(psGraphicName, pvRmdSrc, psGrFmt, psChunkLabel)
 }
 \arguments{
 \item{psGraphicName}{name of the graphic file to be included}
 
-\item{pvRmdSrc}{name of the Rmarkdown source file}
+\item{pvRmdSrc}{vector with Rmd-source text}
+
+\item{psGrFmt}{graphics format}
+
+\item{psChunkLabel}{string of chunk labels to be added}
 }
 \value{
 vector with extended Rmarkdown sources
 }
 \description{
-
+Statement of knitr::include_graphics with correct graphic name is added
+on a new line inside the Rmarkdown (rmd) source document text given in
+the parameter pvRmdSrc. The parameter psGrFmt can be used to specify
+different formats of the graphics file to be included. The string
+in psChunkLabel is treated as additional chunk labels which are
+inserted in the chunk that includes the graphics file.
 }
-

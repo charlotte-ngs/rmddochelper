@@ -9,4 +9,3 @@ matDiag(psBaseElement, pnNrRow, pnNrCol)
 \description{
 Diagonal matrix
 }
-

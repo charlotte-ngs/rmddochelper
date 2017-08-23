@@ -25,4 +25,3 @@ for this chunk and inserts the statement. If the chunk is not
 found, the graphics statement is included above the end of
 document marker.
 }
-

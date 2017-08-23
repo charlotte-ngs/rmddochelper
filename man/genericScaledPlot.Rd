@@ -23,4 +23,3 @@ The function \code{genericScaledPlot} can also be used to just produce the
 LaTeX statement that sets the Gin key. This can be done when leaving
 pfPlotMethod NULL.
 }
-

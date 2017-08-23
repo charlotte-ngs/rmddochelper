@@ -7,7 +7,8 @@
 create_odg_graphic(psGraphicName = "skeleton.odg",
   psGraphicPath = "vignettes", psRmdSrcFile = NULL, psGrFmt = "pdf",
   psOdgTemplate = "odg_figure", psTemplatePkg = "rmddochelper",
-  create_dir = "default", pbRecursive = TRUE, pbEdit = TRUE)
+  create_dir = "default", pbRecursive = TRUE, pbEdit = TRUE,
+  psChunkLabel = "echo=FALSE, odg.conv=TRUE, odg.path=\\"../odg\\", odg.graph.cache=TRUE")
 }
 \arguments{
 \item{psGraphicName}{Format of diagram to be created}
@@ -27,6 +28,8 @@ create_odg_graphic(psGraphicName = "skeleton.odg",
 \item{pbRecursive}{recursively create complete path to graphic file}
 
 \item{pbEdit}{directly edit created odg file}
+
+\item{psChunkLabel}{string with additional chunk labels}
 }
 \description{
 \code{create_odg_graphic} uses templates which are either provided
@@ -41,6 +44,7 @@ If the parameter psRmdSrcFile is specified, a command to include the
 created graphic file in the specified format is inserted into the
 rmd-source file. If psRmdSrcFile is left at its default (null) then
 no include command is inserted. The command to include graphics
-is based on the function \code{knitr::include_graphics()}
+is based on the function \code{knitr::include_graphics()}. When
+specifying the parameter psChunkLabel an additional chunk label
+can be specified.
 }
-

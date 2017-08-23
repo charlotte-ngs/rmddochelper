@@ -24,4 +24,3 @@ includeOdsTable(psOdsFileStem, psOutFormat = "pdf", psOdsDir,
 This function works the same as includeOdgGraphic, but
 it converts LibreOffice Tables from ods-format to pdf.
 }
-

@@ -64,7 +64,9 @@ convertLibOToGraphic <- function(psLibOFile,
 #' created graphic file in the specified format is inserted into the
 #' rmd-source file. If psRmdSrcFile is left at its default (null) then
 #' no include command is inserted. The command to include graphics
-#' is based on the function \code{knitr::include_graphics()}
+#' is based on the function \code{knitr::include_graphics()}. When
+#' specifying the parameter psChunkLabel an additional chunk label
+#' can be specified.
 #'
 #' @param psGraphicName   Format of diagram to be created
 #' @param psGraphicPath   Path where created odg file should be stored
@@ -75,6 +77,7 @@ convertLibOToGraphic <- function(psLibOFile,
 #' @param create_dir      should created odg file be stored in separate directory
 #' @param pbRecursive     recursively create complete path to graphic file
 #' @param pbEdit          directly edit created odg file
+#' @param psChunkLabel    string with additional chunk labels
 #' @export create_odg_graphic
 create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                psGraphicPath  = "vignettes",
@@ -84,7 +87,8 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                psTemplatePkg  = "rmddochelper",
                                create_dir     = "default",
                                pbRecursive    = TRUE,
-                               pbEdit         = TRUE){
+                               pbEdit         = TRUE,
+                               psChunkLabel   = 'echo=FALSE, odg.conv=TRUE, odg.path="../odg", odg.graph.cache=TRUE'){
 
   ### # check whether graphcis path exist, o/w create it
   if (!dir.exists(psGraphicPath))
@@ -106,7 +110,9 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
     vRmdSrc <- readLines(con = conRmdSrc)
     close(con = conRmdSrc)
     vRmdSrc <- knitr_include_graphics_pdf(psGraphicName = psGraphicName,
-                                          pvRmdSrc = vRmdSrc)
+                                          pvRmdSrc      = vRmdSrc,
+                                          psGrFmt       = psGrFmt,
+                                          psChunkLabel  = psChunkLabel )
     cat(vRmdSrc, "\n", file = psRmdSrcFile, sep = "\n")
   }
 
@@ -133,13 +139,21 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
 #' @title Add statement to include graphic via knitr::include_graphics()
 #'
 #' @description
+#' Statement of knitr::include_graphics with correct graphic name is added
+#' on a new line inside the Rmarkdown (rmd) source document text given in
+#' the parameter pvRmdSrc. The parameter psGrFmt can be used to specify
+#' different formats of the graphics file to be included. The string
+#' in psChunkLabel is treated as additional chunk labels which are
+#' inserted in the chunk that includes the graphics file.
 #'
 #'
 #' @param psGraphicName   name of the graphic file to be included
-#' @param pvRmdSrc        name of the Rmarkdown source file
+#' @param pvRmdSrc        vector with Rmd-source text
+#' @param psGrFmt         graphics format
+#' @param psChunkLabel    string of chunk labels to be added
 #' @return vector with extended Rmarkdown sources
 #'
-knitr_include_graphics_pdf <- function(psGraphicName, pvRmdSrc){
+knitr_include_graphics_pdf <- function(psGraphicName, pvRmdSrc, psGrFmt, psChunkLabel){
   sGrInsCmd <- 'knitr::include_graphics(path = "'
   vRmdSrc <- pvRmdSrc
   ### # the search pattern is define by what RStudio inserts when
@@ -149,8 +163,13 @@ knitr_include_graphics_pdf <- function(psGraphicName, pvRmdSrc){
   ### # in case the graphics inclusion statement was found,
   ### #  add the command here, if it is not found we do nothing
   if (length(nGrInclLineIdx) > 0){
+    ### # if list of chunk labels is specified, add them
+    if (!is.null(psChunkLabel)) {
+      ### # put additional
+      vRmdSrc[nGrInclLineIdx] <- paste0("```{r ", psGraphicName, ",", psChunkLabel, "}")
+    }
     ### # depending on format
-    vRmdSrc[nGrInclLineIdx+1] <- paste0(sGrInsCmd, psGraphicName, ".pdf", '")')
+    vRmdSrc[nGrInclLineIdx+1] <- paste0(sGrInsCmd, psGraphicName, ".", psGrFmt, '")')
   }
   return(vRmdSrc)
 }
