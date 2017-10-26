@@ -2,10 +2,19 @@
 % Please edit documentation in R/tex_helper.R
 \name{matLowerTri}
 \alias{matLowerTri}
-\title{Lower triangular matrix}
+\title{Lower triangular matrix from a base element}
 \usage{
 matLowerTri(psBaseElement, pnNrRow, pnNrCol, pvecDiag = NULL)
 }
+\arguments{
+\item{psBaseElement}{constant prefix of each matrix element}
+
+\item{pnNrRow}{number of rows}
+
+\item{pnNrCol}{number of columns}
+
+\item{pvecDiag}{vector specifying diagonal elements}
+}
 \description{
-Lower triangular matrix
+Lower triangular matrix from a base element
 }

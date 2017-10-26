@@ -44,6 +44,8 @@ convertLibOToGraphic <- function(psLibOFile,
   # sOutFile <- gsub("odg$", sOutFormat, psLibOFile)
   sOutFile <- paste(tools::file_path_sans_ext(psLibOFile), psOutFormat, sep = ".")
   sFigOutFile <- file.path(psFigOutDir, sOutFile)
+  if (!dir.exists(psFigOutDir))
+    dir.create(path = psFigOutDir)
   file.rename(from = sOutFile, sFigOutFile)
   return(sFigOutFile)
 }
@@ -525,28 +527,81 @@ includeOdsTable <- function( psOdsFileStem,
 #' @param envir   environment
 #' @export odg.graphics.conv.hook
 odg.graphics.conv.hook <- function(before, options, envir) {
+  rdhlogfile <- NULL
+  if (!is.null(getOption("rdhlogfile"))){
+    rdhlogfile <- getOption("rdhlogfile")
+  }
+  ### # add some statements for debugging
+  if (getOption("verbose") & !is.null(rdhlogfile))
+    cat(" *** * calling odg.graphics.conv.hook with root.dir: ", knitr::opts_knit$get("root.dir"), "\n",
+        file = rdhlogfile)
+
+  ### # make sure that chunk has a label
   if (is.null(options$label))
     stop(" *** ERROR: chunk must be labelled\n")
+  if (getOption("verbose"))
+    cat(" *** * chunk label: ", options$label, "\n",
+        file = rdhlogfile)
+
   ### # set path either to odg per default, or take it from options
   if (is.null(options$odg.path)){
     odg.path <- "odg"
   } else {
     odg.path <- options$odg.path
   }
-  ### # set output format be default to pdf or take it from options
-  if (is.null(options$out.format)){
-    sOutFormat <- "pdf"
+  ### # add some statements for debugging
+  if (getOption("verbose") & !is.null(rdhlogfile))
+    cat(" *** * odg.path: ", odg.path, "\n",
+        file = rdhlogfile)
+  ### # set vector of output formats to be "pdf" by default or take it from options
+  if (is.null(options$odg.out.format)){
+    vecOutFormat <- c("pdf")
   } else {
-    sOutFormat <- options$out.format
+    vecOutFormat <- options$odg.out.format
   }
+  ### # add some statements for debugging
+  if (getOption("verbose") & !is.null(rdhlogfile)) {
+    cat(" *** * output formats: \n",
+        file = rdhlogfile)
+    print(vecOutFormat)
+  }
+
+  ### # odg file name and source
   odg.fname <- paste(options$label, "odg", sep = ".")
   odg.fig.src  <- file.path(odg.path, odg.fname)
-  trg.fig <- paste(options$label, options$out.format, sep = ".")
-  if (before) {
-    if (!file.exists(odg.fig.src))
-      create_odg_graphic(psGraphicName = odg.fname, psGraphicPath = odg.path, pbEdit = FALSE)
-    if (!file.exists(trg.fig) | !options$odg.graph.cache)
-      convertLibOToGraphic(psLibOFile = odg.fname, psOutFormat = sOutFormat, psLibODir = odg.path)
+  if (getOption("verbose") & !is.null(rdhlogfile))
+    cat(" *** * odg.filename: ", odg.fname, "\n", " *** * odg.figure.source: ", odg.fig.src, "\n",
+        file = rdhlogfile)
+  ### # output directory
+  out.dir <- "png"
+  if (!is.null(options$odg.out.dir))
+    out.dir <- options.$odg.out.dir
+  if (getOption("verbose") & !is.null(rdhlogfile))
+    cat(" *** * output dir: ", out.dir, "\n",
+        file = rdhlogfile)
+
+  ### # vector of output formats
+  for (sOutFormat in vecOutFormat) {
+    trg.fig <- paste(options$label, sOutFormat, sep = ".")
+    if (before) {
+      if (!file.exists(odg.fig.src))
+        stop("Cannot find diagram source file: ", trg.fig)
+      if (!file.exists(file.path(out.dir, trg.fig)) | !options$odg.graph.cache){
+        if (getOption("verbose") & !is.null(rdhlogfile))
+          cat(" *** * call convertLibOToGraphic with args:",
+              "\n   *** * > psLibOFile: ", odg.fname,
+              "\n   *** * > psOutFormat: ", sOutFormat,
+              "\n   *** * > psLibODir: ", odg.path,
+              "\n   *** * > psFigOutDir: ", out.dir,
+              file = rdhlogfile)
+          convertLibOToGraphic(psLibOFile  = odg.fname,
+                             psOutFormat = sOutFormat,
+                             psLibODir   = odg.path,
+                             psFigOutDir = out.dir)
+
+      }
+    }
+
   }
   return(invisible(TRUE))
 }

@@ -11,6 +11,8 @@ create_beamer_presentation(psDocuName, psPkgPath = ".",
   plReplace = NULL)
 }
 \arguments{
+\item{psDocuName}{name of the new document}
+
 \item{psPkgPath}{path where package is located under which document should be created}
 
 \item{psRmdTemplate}{name of the template to be used}
@@ -32,6 +34,4 @@ The function \code{create_beamer_presentation} is a wrapper
 to create_docu_skeleton using template default_pdf_beamer_presentation
 to generate a skeleton Rmarkdown (Rmd) document. The skeleton
 can be used to generate a beamer presentation.
-
-#' @param   psDocuName           name of the new document
 }

@@ -1,8 +1,10 @@
 ---
-title:  rmddochelper User Manual
-author: Peter von Rohr
-date: 2016-06-23
-output: pdf_document
+title: "rmddochelper User Manual"
+author: "Peter von Rohr"
+date: '2016-06-23'
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -11,9 +13,13 @@ knitr::opts_chunk$set(echo = FALSE, results = 'asis')
 
 ```{r DocumentStatus, eval=TRUE}
 r6obj_docstat <- rmddochelper::R6ClassDocuStatus$new()
-r6obj_docstat$setProject(psProject = "rmddochelper")
-r6obj_docstat$setVersion(psVersion = "0.0.901")
-r6obj_docstat$setStatus(psStatus = "Initialisation")
+r6obj_docstat$set_current_status(psVersion = "0.0.901",
+                                 psStatus = "Initialisation",
+                                 psProject = "rmddochelper")
+r6obj_docstat$set_current_status(psVersion = "0.0.902",
+                                 psStatus = "Extending project status",
+                                 psProject = "rmddochelper")
+
 r6obj_docstat$include_doc_stat(psTitle = "## Document Status")
 ```
 

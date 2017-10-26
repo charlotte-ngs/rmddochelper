@@ -73,7 +73,13 @@ matGetMatElem <- function(psBaseElement, pnNrRow, pnNrCol, psResult = "raw"){
                 byrow = TRUE))
 }
 
-#' Lower triangular matrix
+#' Lower triangular matrix from a base element
+#'
+#' @param psBaseElement  constant prefix of each matrix element
+#' @param pnNrRow        number of rows
+#' @param pnNrCol        number of columns
+#' @param pvecDiag       vector specifying diagonal elements
+#' @export matLowerTri
 matLowerTri <- function(psBaseElement, pnNrRow, pnNrCol, pvecDiag = NULL) {
   matResult <- matGetMatElem(psBaseElement = psBaseElement, pnNrRow = pnNrRow, pnNrCol = pnNrCol)
   matResult[upper.tri(matResult)] <- "0"
@@ -82,6 +88,11 @@ matLowerTri <- function(psBaseElement, pnNrRow, pnNrCol, pvecDiag = NULL) {
 }
 
 #' Diagonal matrix
+#'
+#' @param psBaseElement constant prefix of each matrix element
+#' @param pnNrRow       number of rows
+#' @param pnNrCol       number of columns
+#' @export matDiag
 matDiag <- function(psBaseElement, pnNrRow, pnNrCol) {
   matResult <- matGetMatElem(psBaseElement = psBaseElement, pnNrRow = pnNrRow, pnNrCol = pnNrCol)
   matResult[upper.tri(matResult) | lower.tri(matResult)]  <- "0"

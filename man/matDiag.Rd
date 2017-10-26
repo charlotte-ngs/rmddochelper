@@ -6,6 +6,13 @@
 \usage{
 matDiag(psBaseElement, pnNrRow, pnNrCol)
 }
+\arguments{
+\item{psBaseElement}{constant prefix of each matrix element}
+
+\item{pnNrRow}{number of rows}
+
+\item{pnNrCol}{number of columns}
+}
 \description{
 Diagonal matrix
 }

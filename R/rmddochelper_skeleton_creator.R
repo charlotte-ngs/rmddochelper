@@ -91,7 +91,7 @@ create_pdf_output_skeleton <- function(psDocuName,
 #' to generate a skeleton Rmarkdown (Rmd) document. The skeleton
 #' can be used to generate a beamer presentation.
 #'
-#' #' @param   psDocuName           name of the new document
+#' @param   psDocuName           name of the new document
 #' @param   psPkgPath            path where package is located under which document should be created
 #' @param   psRmdTemplate        name of the template to be used
 #' @param   psTemplatePkg        package from where the template should be taken
