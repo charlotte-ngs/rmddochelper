@@ -18,7 +18,7 @@
 #' @param pspattern pattern matching the files to be deleted
 #'
 #' @export bookdown_cleanup
-bookdown_cleanup <- function(pspath = "cn", pspattern = "_main") {
+bookdown_cleanup <- function(pspath = ".", pspattern = "_main") {
   suppressWarnings( rmarkdown::clean_site(input = pspath) )
   bfrmresult <- file.remove(list.files(path = pspath,
                                        pattern = pspattern,

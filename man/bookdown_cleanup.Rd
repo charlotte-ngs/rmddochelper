@@ -4,7 +4,7 @@
 \alias{bookdown_cleanup}
 \title{Clean up all files after a failed bookdown build}
 \usage{
-bookdown_cleanup(pspath = "cn", pspattern = "_main")
+bookdown_cleanup(pspath = ".", pspattern = "_main")
 }
 \arguments{
 \item{pspath}{directory where the bookdown files are built}
