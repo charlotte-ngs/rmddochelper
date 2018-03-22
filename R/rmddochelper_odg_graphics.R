@@ -10,7 +10,10 @@
 #'
 #' @description
 #' \code{convertLibOToGraphic} assumes that LibreOffice is installed
-#' and available on the search path. Source files are converted on the
+#' and is ideally available on the search path. Because more recent
+#' versions of windows and mac osx appear to have problems with that
+#' we started to use absolute paths to LibO installations. Source files
+#' which are assumed to LibO-draw files in .odg-format are converted on the
 #' fly to the specified output format which are then included in the
 #' source R markdown document
 #'
@@ -27,10 +30,16 @@ convertLibOToGraphic <- function(psLibOFile,
   sOutFormat <- tolower(psOutFormat)
   sOdgDir <- psLibODir
   sOdgDirWin <- gsub("/", "\\", sOdgDir, fixed = TRUE)
-  sConvCmdStem <- ifelse(.Platform$OS.type == "windows",
-                         paste('"C:/Program Files (x86)/LibreOffice 5/program/soffice" --headless --convert-to',
-                               sOutFormat),
-                         paste("soffice --headless --convert-to", sOutFormat))
+  s_os_name <- get_os()
+  if (s_os_name == "windows"){
+    sConvCmdStem <- '"C:/Program Files (x86)/LibreOffice 5/program/soffice"'
+  } else if (s_os_name == "osx"){
+    sConvCmdStem <- '/Applications/LibreOffice.app/Contents/MacOS/soffice'
+  } else {
+    sConvCmdStem <- 'soffice'
+  }
+  sConvCmdStem <- paste(sConvCmdStem, '--headless --convert-to', sOutFormat)
+  ### # construct path to figure file
   sFigFile <- ifelse(.Platform$OS.type == "windows",
                      paste(sOdgDirWin, psLibOFile, sep = "\\"),
                      file.path(sOdgDir, psLibOFile))

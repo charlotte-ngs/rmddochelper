@@ -16,7 +16,10 @@ convertLibOToGraphic(psLibOFile, psOutFormat = NULL, psLibODir = "odg",
 }
 \description{
 \code{convertLibOToGraphic} assumes that LibreOffice is installed
-and available on the search path. Source files are converted on the
+and is ideally available on the search path. Because more recent
+versions of windows and mac osx appear to have problems with that
+we started to use absolute paths to LibO installations. Source files
+which are assumed to LibO-draw files in .odg-format are converted on the
 fly to the specified output format which are then included in the
 source R markdown document
 }
