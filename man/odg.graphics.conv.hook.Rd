@@ -23,4 +23,23 @@ be used to automatically convert the odg-graphics files into files of a differen
 The output format is either set by default to pdf or it is taken from options$out.format.
 In the current version no validity checks for the output format is done. Whatever can be
 handled by LibreOffice which is doing the conversion is fine.
+
+Please have a look at the examples section, to see how this hook function can be used. At
+least two things must be done. First the hook function must be registered using the
+function \code{knitr::knit_hooks$set()} and secondly the code junk must activate the
+usage of the hook-function by setting the label used in the activation function to TRUE.
+
+Paths in the chunk-labels are either absolute or relative to the location of the Rmd-file
+}
+\examples{
+\dontrun{
+# activation of hook function somewhere at the top of the document
+```{r setup, include=FALSE}
+knitr::knit_hooks$set(odg.conv = rmddochelper::odg.graphics.conv.hook)
+```
+# ... later in the document use the hook function in a junk
+```{r some_graphic, odg.conv = TRUE, odg.path="<path-to-odg-files", odg.out.dir="path-to-odg.out.dir"}
+knitr::include_graphics(path = "<path-to-odg.out.dir>/some_graphic")
+```
+ }
 }

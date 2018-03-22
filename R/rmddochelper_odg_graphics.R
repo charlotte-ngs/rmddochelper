@@ -522,9 +522,27 @@ includeOdsTable <- function( psOdsFileStem,
 #' In the current version no validity checks for the output format is done. Whatever can be
 #' handled by LibreOffice which is doing the conversion is fine.
 #'
+#' Please have a look at the examples section, to see how this hook function can be used. At
+#' least two things must be done. First the hook function must be registered using the
+#' function \code{knitr::knit_hooks$set()} and secondly the code junk must activate the
+#' usage of the hook-function by setting the label used in the activation function to TRUE.
+#'
+#' Paths in the chunk-labels are either absolute or relative to the location of the Rmd-file
+#'
 #' @param before  flat to indicate which statements must be executed before the chunk
 #' @param options list of options passed from the chunk header to the hook function
 #' @param envir   environment
+#' @examples
+#' \dontrun{
+#' # activation of hook function somewhere at the top of the document
+#' ```{r setup, include=FALSE}
+#' knitr::knit_hooks$set(odg.conv = rmddochelper::odg.graphics.conv.hook)
+#' ```
+#' # ... later in the document use the hook function in a junk
+#' ```{r some_graphic, odg.conv = TRUE, odg.path="<path-to-odg-files", odg.out.dir="path-to-odg.out.dir"}
+#' knitr::include_graphics(path = "<path-to-odg.out.dir>/some_graphic")
+#' ```
+#'  }
 #' @export odg.graphics.conv.hook
 odg.graphics.conv.hook <- function(before, options, envir) {
   rdhlogfile <- NULL
@@ -575,7 +593,7 @@ odg.graphics.conv.hook <- function(before, options, envir) {
   ### # output directory
   out.dir <- "png"
   if (!is.null(options$odg.out.dir))
-    out.dir <- options.$odg.out.dir
+    out.dir <- options$odg.out.dir
   if (getOption("verbose") & !is.null(rdhlogfile))
     cat(" *** * output dir: ", out.dir, "\n",
         file = rdhlogfile)
