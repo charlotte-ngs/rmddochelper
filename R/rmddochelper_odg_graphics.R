@@ -575,7 +575,7 @@ odg.graphics.conv.hook <- function(before, options, envir) {
   ### # output directory
   out.dir <- "png"
   if (!is.null(options$odg.out.dir))
-    out.dir <- options.$odg.out.dir
+    out.dir <- options$odg.out.dir
   if (getOption("verbose") & !is.null(rdhlogfile))
     cat(" *** * output dir: ", out.dir, "\n",
         file = rdhlogfile)
