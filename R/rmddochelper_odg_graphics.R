@@ -131,8 +131,12 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
   ### # depending on flag, open graphics file
   if (pbEdit){
     ### # depending on platform start open the template file differently
-    if (.Platform$OS.type == "windows"){
+    ### # decide os-type based on built-in function get_os()
+    s_os_type <- get_os()
+    if (s_os_type == "windows"){
       file.show(sGraphicTrgName)
+    } else if (s_os_type == "osx") {
+      sSofficeCmd <- paste('/Applications/LibreOffice.app/Contents/MacOS/soffice --draw', sGraphicTrgName)
     } else {
       sSofficeCmd <- paste("soffice --draw", sGraphicTrgName)
       system(sSofficeCmd)
