@@ -34,6 +34,23 @@ sConvertMatrixToLaTexArray <- function(pmatAMatrix, pnOutStartLine = 5, pnEndIgn
   return(sResultTexMatrix)
 }
 
+
+#' @title Convert vector to LaTeX array
+#'
+#' @description
+#' The specified vector is converted to a LaTeX array. We first
+#' put the vector into a one column matrix and use sConvertMatrixToLaTexArray
+#' on this one-column matrix
+#'
+#' @param pvec_avector Vector to be converted
+#' @return vector converted to LaTeX-array
+#' @export sConvertVectorToLaTexArray
+sConvertVectorToLaTexArray <- function(pvec_avector){
+  mat_from_vec <- matrix(pvec_avector, ncol = 1)
+  return(sConvertMatrixToLaTexArray(pmatAMatrix = mat_from_vec))
+}
+
+
 #' @title Matrix of strings from base-element and column and row indices
 #'
 #' @description
@@ -104,7 +121,8 @@ matDiag <- function(psBaseElement, pnNrRow, pnNrCol) {
 #' The result is a vector of elements that have psBaseElement
 #' as prefix and that have the index of the corresponding
 #' vector element as suffix. The result may be in raw format
-#' or in LaTeX-Math format.
+#' or in LaTeX-Math format. The latter is produced when
+#' argument psResult is set to "latex".
 #'
 #' @param psBaseElement   suffix of the vector elements
 #' @param pnVecLen        number of elements in the vector
