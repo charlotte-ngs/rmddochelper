@@ -21,5 +21,6 @@ Vector with string elements that each have psBaseElement as
 The result is a vector of elements that have psBaseElement
 as prefix and that have the index of the corresponding
 vector element as suffix. The result may be in raw format
-or in LaTeX-Math format.
+or in LaTeX-Math format. The latter is produced when
+argument psResult is set to "latex".
 }

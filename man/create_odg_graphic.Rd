@@ -8,7 +8,7 @@ create_odg_graphic(psGraphicName = "skeleton.odg",
   psGraphicPath = "vignettes", psRmdSrcFile = NULL, psGrFmt = "pdf",
   psOdgTemplate = "odg_figure", psTemplatePkg = "rmddochelper",
   create_dir = "default", pbRecursive = TRUE, pbEdit = TRUE,
-  psChunkLabel = "echo=FALSE, odg.conv=TRUE, odg.path=\\"../odg\\", odg.graph.cache=TRUE")
+  psChunkLabel = "echo=FALSE, odg.conv=TRUE, odg.path=\\"odg\\", odg.graph.cache=TRUE")
 }
 \arguments{
 \item{psGraphicName}{Format of diagram to be created}

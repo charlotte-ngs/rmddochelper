@@ -99,7 +99,7 @@ create_odg_graphic <- function(psGraphicName  = "skeleton.odg",
                                create_dir     = "default",
                                pbRecursive    = TRUE,
                                pbEdit         = TRUE,
-                               psChunkLabel   = 'echo=FALSE, odg.conv=TRUE, odg.path="../odg", odg.graph.cache=TRUE'){
+                               psChunkLabel   = 'echo=FALSE, odg.conv=TRUE, odg.path="odg", odg.graph.cache=TRUE'){
 
   ### # check whether graphcis path exist, o/w create it
   if (!dir.exists(psGraphicPath))
@@ -636,3 +636,37 @@ odg.graphics.conv.hook <- function(before, options, envir) {
   }
   return(invisible(TRUE))
 }
+
+
+
+### ############################################################## ###
+###                                                                ###
+#
+#' Return Path To Program Used To Create ODG-graphics
+#'
+#' The path to the program used to create odg-graphics depends
+#' on the OS. We use the function get_os() to determine on which
+#' OS, we are running and based on that, we are returning a
+#' fixed string corresponding to the path to the program for
+#' odg-graphics. In most cases,
+#' LibreOffice draw is used to create the odg-graphics files.
+#'
+#' @examples
+#' \dontrun{
+#' get_odg_prog_path()
+#' # returns /Applications/LibreOffice.app/Contents/MacOS/soffice on OSX
+#' }
+#' @export get_odg_prog_path
+get_odg_prog_path <- function(){
+  ### # first we have to know the os
+  s_os <- get_os()
+  ### # fix the path according to the os
+  if (s_os == "windows"){
+    return("c/Program Files/LibreOffice/program/soffice")
+  } else if (s_os == "osx"){
+    return("/Applications/LibreOffice.app/Contents/MacOS/soffice")
+  } else {
+    return("soffice")
+  }
+}
+
