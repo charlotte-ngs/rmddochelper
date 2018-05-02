@@ -1,0 +1,39 @@
+---
+title: "Include Odg Graphics"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Include Odg Graphics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Disclaimer
+This vignette describes the search for and the design for an easy to use functionality to include ODG-Graphics into an rmarkdown document. The ODG-Graphics file is not included directly into the rmd-document, but it is converted into a format such as pdf or png, that can then be used as graphics in an rmd-document.
+
+
+## Introduction
+One basic requirements for document authors is the ability to include graphics into a document. The technical details of how that is done depends on the document authoring system that is used. 
+
+### WYSIWYG
+Most such systems have their own graphics functionality included. Alternatively it is also possible to prepare the graphics in a specialized program, and then include the graphics via drag-and-drop into the document or some menu-based functionality for graphics inclusion can be used. 
+
+
+### LaTeX
+According to lshort there are some packages to produce graphics directly in the LaTeX-source document. Graphics can also be produced outside of LaTeX and can then be included into the document using the function `\includegraphics`. 
+
+
+### HTML
+In HTML documents, graphics are produced in a separate program and are included using the `<img src>`-tag.
+
+
+## Methods
+Depending on the format of output produced from an rmd-document, graphics can be included in one of two ways according to LaTeX or according to HTML. The R-package `knitr` provides the function `include_graphics()` which can be used for both output formats. That is why, we will be using this functionality.  
