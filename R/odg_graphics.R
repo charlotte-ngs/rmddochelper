@@ -6,6 +6,9 @@
 ###
 ### ###################################################### ###
 
+
+## ---- Conversion of Odg draw graphics -------------------------------------------
+
 #' @title Convert documents from source format into a given target output format
 #'
 #' @description
@@ -59,6 +62,32 @@ convertLibOToGraphic <- function(psLibOFile,
   return(sFigOutFile)
 }
 
+
+## ---- Creation and drafting of  odg graphics -------------------------------------------
+
+#' @title Add ODG Graphic To A Document
+#'
+#' @description
+#' Similar to the \code{devtools::use_*} functions, we add an ODG
+#' graphic file to a document. The file to be added is copied from
+#' a template which is stored in this package. After copying the
+#' template, we have to modify the template which is done by a
+#' pre-defined program or tool. Once we are done with the modification,
+#' the ODG graphic is converted into a pre-defined set of output
+#' formats. Those output files will then be included in the document.
+#'
+#' @examples
+#' \dontrun{
+#' rmddochelper::use_odg_graphic()
+#' }
+#'
+#' @param ps_odg_file   file name including path of ODG graphic
+#' @export use_odg_graphic
+use_odg_graphic <- function(ps_odg_file,
+                            ps_odg_template = "odg_figure"){
+  ### # start by copying the template
+
+}
 
 #' @title Create an empty odg graphic
 #'
@@ -639,11 +668,11 @@ odg.graphics.conv.hook <- function(before, options, envir) {
 
 
 
-### ############################################################## ###
-###                                                                ###
+## --- Helper functions related to Odg-graphics -------------------------------------------------
 #
-#' Return Path To Program Used To Create ODG-graphics
+#' @title Return Path To Program Used To Create ODG-graphics
 #'
+#' @description
 #' The path to the program used to create odg-graphics depends
 #' on the OS. We use the function get_os() to determine on which
 #' OS, we are running and based on that, we are returning a

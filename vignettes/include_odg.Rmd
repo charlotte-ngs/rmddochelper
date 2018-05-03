@@ -37,3 +37,5 @@ In HTML documents, graphics are produced in a separate program and are included 
 
 ## Methods
 Depending on the format of output produced from an rmd-document, graphics can be included in one of two ways according to LaTeX or according to HTML. The R-package `knitr` provides the function `include_graphics()` which can be used for both output formats. That is why, we will be using this functionality.  
+
+This package `rmddochelper` has already an existing method of creating an odg-graphic using the function `create_odg_graphic()`. This function is called not from within a document, but outside of the document in a separate R-console (e.g. in RStudio). This function is rather complicated to use, because it offers many parameters. A first approach might very well be to simplify this function. 
