@@ -4,10 +4,12 @@
 \alias{sConvertVectorToLaTexArray}
 \title{Convert vector to LaTeX array}
 \usage{
-sConvertVectorToLaTexArray(pvec_avector)
+sConvertVectorToLaTexArray(pvec_avector, pnDigits = 2)
 }
 \arguments{
 \item{pvec_avector}{Vector to be converted}
+
+\item{pnDigits}{specify the number of digits to be used}
 }
 \value{
 vector converted to LaTeX-array

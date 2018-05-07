@@ -43,11 +43,12 @@ sConvertMatrixToLaTexArray <- function(pmatAMatrix, pnOutStartLine = 5, pnEndIgn
 #' on this one-column matrix
 #'
 #' @param pvec_avector Vector to be converted
+#' @param pnDigits           specify the number of digits to be used
 #' @return vector converted to LaTeX-array
 #' @export sConvertVectorToLaTexArray
-sConvertVectorToLaTexArray <- function(pvec_avector){
+sConvertVectorToLaTexArray <- function(pvec_avector, pnDigits = 2){
   mat_from_vec <- matrix(pvec_avector, ncol = 1)
-  return(sConvertMatrixToLaTexArray(pmatAMatrix = mat_from_vec))
+  return(sConvertMatrixToLaTexArray(pmatAMatrix = mat_from_vec, pnDigits = pnDigits))
 }
 
 

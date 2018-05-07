@@ -78,16 +78,51 @@ convertLibOToGraphic <- function(psLibOFile,
 #'
 #' @examples
 #' \dontrun{
-#' rmddochelper::use_odg_graphic()
+#' rmddochelper::use_odg_graphic(ps_odg_file = "my_odg_graphic.odg")
 #' }
 #'
 #' @param ps_odg_file   file name including path of ODG graphic
 #' @export use_odg_graphic
 use_odg_graphic <- function(ps_odg_file,
-                            ps_odg_template = "odg_figure"){
-  ### # start by copying the template
+                            ps_odg_template     = "odg_figure",
+                            ps_template_package = "rmddochelper",
+                            pb_recursive        = TRUE,
+                            pb_edit             = TRUE ){
+  ### # extract basename and dirname from ps_odg_file
+  s_odg_dir <- dirname(ps_odg_file)
+  s_odg_base <- basename(ps_odg_file)
+  ### # in recursive mode, if s_odg_dir does not exist, create it
+  if (!dir.exists(s_odg_dir)) {
+    if (pb_recursive){
+      dir.create(s_odg_dir)
+    } else {
+      stop(" *** ERROR: Cannot find s_odg_dir: ", s_odg_dir)
+    }
+  }
+
+  ### # copying the draft from the template, if it does not exist
+  ### # use the local function rmd_draft to copy the template
+  if ( !file.exists(ps_odg_file) ) {
+    s_odg_trg <- odg_draft( file        = ps_odg_file,
+                            template    = ps_odg_template,
+                            package     = ps_template_package )
+
+  } else {
+    s_odg_trg <- ps_odg_file
+  }
+
+  ### # in case pb_edit is TRUE, open the created draft file
+  if (pb_edit){
+    s_odg_tool_path <- get_odg_prog_path()
+    s_odg_edit_cmd <- paste(s_odg_tool_path, "--draw", s_odg_trg)
+    system(s_odg_edit_cmd)
+  }
+
+  ### # return name of odg target
+  return(s_odg_trg)
 
 }
+
 
 #' @title Create an empty odg graphic
 #'
