@@ -52,6 +52,22 @@ sConvertVectorToLaTexArray <- function(pvec_avector, pnDigits = 2){
 }
 
 
+#' @title Convert row vector to LaTeX array
+#'
+#' @description
+#' We are given a vector and it should be printed as a row vector
+#'
+#' @param pvec_avector Vector to be converted
+#' @param pnDigits           specify the number of digits to be used
+#' @return row-vector converted to LaTeX-array
+#' @export sConvertRowVectorToLaTexArray
+sConvertRowVectorToLaTexArray <- function(pvec_avector, pnDigits = 2){
+  mat_from_vec <- matrix(pvec_avector, nrow = 1)
+  return(sConvertMatrixToLaTexArray(pmatAMatrix = mat_from_vec, pnDigits = pnDigits))
+
+}
+
+
 #' @title Matrix of strings from base-element and column and row indices
 #'
 #' @description
