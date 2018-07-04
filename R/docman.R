@@ -6,6 +6,7 @@
 ###
 ### ############################################# ###
 
+## --- Bookdown related helper functions -------------------------
 #' Clean up all files after a failed bookdown build
 #'
 #' Whenever an error occurs during a build of a bookdown document
@@ -27,6 +28,7 @@ bookdown_cleanup <- function(pspath = ".", pspattern = "_main") {
 }
 
 
+## --- Document meta-information --------------------------------------
 #' Write data-time and user that has done latest changes to a document
 #'
 #' The information about who has done the latest changes to a document
@@ -55,4 +57,36 @@ get_latest_change <- function(ps_msg = "Latest Changes"){
   st_result <- paste0("\n---\n\n"," _", ps_msg, ": ",
                       Sys.time(), " (", Sys.info()[["user"]], ")_", collapse = "")
   return(st_result)
+}
+
+
+#' @title Get the name and the path to the current rmd-file
+#'
+#' @description
+#' Analogously, to \code{rprojroot::this_file()}, we want to determine
+#' the name and the path to the currently active rmd-source document.
+#' The solution with \code{rprojroot::this_file()} works only, when the
+#' document is knitted, but not when run from inside an R-chunk.
+#' Given the name and the path a a rmd-source document project
+#' follow a certain pattern, the full path and the name of an
+#' rmd-source document can be determined based on the result
+#' of the function \code{getwd()}.
+#'
+#' @param ps_wd full path of current working directory
+#' @return name and full path to current rmd-source file.
+#' @export get_this_rmd
+get_this_rmd <- function(ps_wd = getwd()){
+  # subdirectory for the format
+  s_format <- basename(ps_wd)
+  # full path of document
+  s_fp_doc <- dirname(ps_wd)
+  # document name
+  s_doc_name <- basename(s_fp_doc)
+  # content of ps_wd
+  vec_content <- list.files(path = ps_wd)
+  # in case we have more than one file in vec_content,
+  #  determine which is the one to be returned
+  s_res_idx <- which(tolower(paste(s_doc_name, s_format, sep=".")) == (tolower(vec_content)))
+  # return the result
+  return(file.path(ps_wd, vec_content[s_res_idx]))
 }
