@@ -2,23 +2,31 @@
 % Please edit documentation in R/odg_graphics.R
 \name{use_odg_graphic}
 \alias{use_odg_graphic}
-\title{Add ODG Graphic To A Document}
+\title{Create New ODG Graphics Object}
 \usage{
-use_odg_graphic(ps_odg_file, ps_odg_template = "odg_figure",
+use_odg_graphic(ps_path, ps_odg_template = "odg_figure",
   ps_template_package = "rmddochelper", pb_recursive = TRUE,
   pb_edit = TRUE)
 }
 \arguments{
-\item{ps_odg_file}{file name including path of ODG graphic}
+\item{ps_path}{file name including path of ODG graphics object file}
+
+\item{ps_odg_template}{name of the template to be used}
+
+\item{ps_template_package}{package from which template should be taken from}
+
+\item{pb_recursive}{flag whether missing directory should be created}
+
+\item{pb_edit}{flag to indicate whether odg file should be opened}
 }
 \description{
-Similar to the \code{devtools::use_*} functions, we add an ODG
-graphic file to a document. The file to be added is copied from
-a template which is stored in this package. After copying the
-template, we have to modify the template which is done by a
-pre-defined program or tool. Once we are done with the modification,
-the ODG graphic is converted into a pre-defined set of output
-formats. Those output files will then be included in the document.
+Similar to the \code{devtools::use_*} functions, we want to
+create a new ODG graphics object. This new graphics object
+will be stored in a file which is copied from
+a template from a given R-package. By default, the template
+used is called odg_figure from the rmddochelper package.
+After copying the template, it can be modified using a
+pre-defined tool. By default this tool is LibreOffice draw.
 }
 \examples{
 \dontrun{
