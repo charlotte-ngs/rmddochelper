@@ -4,12 +4,16 @@
 \alias{use_odg_graphic}
 \title{Create New ODG Graphics Object}
 \usage{
-use_odg_graphic(ps_path, ps_odg_template = "odg_figure",
-  ps_template_package = "rmddochelper", pb_recursive = TRUE,
-  pb_edit = TRUE)
+use_odg_graphic(ps_path, ps_cwd = getwd(), ps_rmd_src = NULL,
+  ps_odg_template = "odg_figure", ps_template_package = "rmddochelper",
+  pb_recursive = TRUE, pb_edit = TRUE)
 }
 \arguments{
 \item{ps_path}{file name including path of ODG graphics object file}
+
+\item{ps_cwd}{current working directory}
+
+\item{ps_rmd_src}{explicit file name of rmd-source file}
 
 \item{ps_odg_template}{name of the template to be used}
 
@@ -18,6 +22,9 @@ use_odg_graphic(ps_path, ps_odg_template = "odg_figure",
 \item{pb_recursive}{flag whether missing directory should be created}
 
 \item{pb_edit}{flag to indicate whether odg file should be opened}
+}
+\value{
+s_odg_trg          name of and path to the created odg graphics file
 }
 \description{
 Similar to the \code{devtools::use_*} functions, we want to

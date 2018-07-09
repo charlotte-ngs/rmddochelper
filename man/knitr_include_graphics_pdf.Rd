@@ -19,10 +19,14 @@ knitr_include_graphics_pdf(psGraphicName, pvRmdSrc, psGrFmt, psChunkLabel)
 vector with extended Rmarkdown sources
 }
 \description{
-Statement of knitr::include_graphics with correct graphic name is added
-on a new line inside the Rmarkdown (rmd) source document text given in
-the parameter pvRmdSrc. The parameter psGrFmt can be used to specify
-different formats of the graphics file to be included. The string
-in psChunkLabel is treated as additional chunk labels which are
-inserted in the chunk that includes the graphics file.
+Statement of knitr::include_graphics with correct graphic name
+is added on a new line inside the Rmarkdown (rmd) source document text given
+in the parameter pvRmdSrc. The parameter psGrFmt can be used to specify
+different formats of the graphics file to be included. The string in
+psChunkLabel is treated as additional chunk labels which are inserted in the
+chunk that includes the graphics file.
+}
+\details{
+The use of this function is deprecated. Use the newer functionality
+around the function \code{rmddochelper::use_odg_graphic()}
 }

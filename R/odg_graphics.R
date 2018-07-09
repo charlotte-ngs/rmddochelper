@@ -155,12 +155,35 @@ insert_include_command <- function(ps_path,
   ### # in case rmd-source file is not given by ps_rmd_src parameter, try
   ### #  to determine it via a search of ps_path in all files in ps_cwd
   if (is.null(ps_rmd_src)){
-    s_rmd_src <- get_current_rmd_src(ps_path = ps_path, ps_cwd = ps_cwd)
+    # s_rmd_src <- get_current_rmd_src(ps_path = ps_path, ps_cwd = ps_cwd)
+    l_rmd_src <- get_rmd_src_with_pos(ps_path = ps_path, ps_cwd = ps_cwd)
+
   } else {
-    s_rmd_src <- ps_rmd_src
+    l_rmd_src <- list(name = ps_rmd_src,
+                      position = get_pat_pos(ps_file = ps_rmd_src, ps_pattern = ps_path))
   }
 
+  ### # if rmd-source file was specified or was found, we try and insert
+  if (!is.null(l_rmd_src$position)){
+    con_rmd <- file(description = l_rmd_src$name)
+    vec_rmd_src <- readLines(con = con_rmd)
+    close(con_rmd)
+    ### # loop over positions and insert the include command
+    for (pids in seq_along(l_rmd_src$position)){
+      p <- l_rmd_src$position[pids]
+      vec_rmd_src[p] <- paste0('#', vec_rmd_src[p])
+      vec_rmd_src[p+1] <- paste0('knitr::include_graphics(ps_path = "',
+                                 gsub(pattern = "odg$", replacement = "png", x = ps_path),
+                                 '")\n',
+                                 vec_rmd_src[p+1], collapse = '')
 
+    }
+    ### # write output back again
+    cat(paste0(vec_rmd_src, collapse = "\n"), "\n", file = l_rmd_src$name)
+
+  }
+
+  return(invisible(TRUE))
 }
 
 
@@ -199,13 +222,134 @@ get_odg_prog_path <- function(){
 #' @title Find Name of Current Rmd-Source Document
 #'
 #' @description
+#' Given the value passed by the parameter ps_path, we can
+#' assume that there must be a Rmd-source file in the
+#' current working directory ps_cwd which contains the path
+#' to the odg graphics file given in ps_path. Hence, we
+#' can search through all Rmd-files in ps_cwd for the
+#' value in ps_path. If we find a match in a single Rmd-source
+#' file, we return the name of that file, otherwise we
+#' return NULL.
 #'
-#' @param
-#' @param
+#' @param ps_path name of and path to odg-graphics file
+#' @param ps_cwd  current working directory
+#'
+#' @return s_rmd_src_result resulting Rmd-source file
 get_current_rmd_src <- function(ps_path, ps_cwd){
+  ### # initialize the result to be NULL
+  s_rmd_src_result <- NULL
+  ### # get the name of all Rmd-source documents in ps_cwd
+  vec_rmd_src <- list.files(path = ps_cwd, pattern = "Rmd$")
+  ### # in case any Rmd-source files are found search through them
+  if (length(vec_rmd_src) > 0){
+    n_rmd_src_idx <- which(sapply(vec_rmd_src,
+                            function(x) has_file_search_pat(ps_file = x, ps_pattern = ps_path),
+                            USE.NAMES = FALSE))
+    ### # result is only used, if s_pattern occurs in just one file
+    if (length(n_rmd_src_idx) == 1)
+      s_rmd_src_result <- vec_rmd_src[n_rmd_src_idx]
+  }
 
+  ### # return result
+  return(s_rmd_src_result)
 }
 
+
+
+#' Return rmd source file with positions where search pattern occurs
+#'
+#' Given a search pattern in ps_path and given the path of the current
+#' working directory, all files with extension .Rmd are searched whether
+#' the string in ps_path occurs in the rmd-source file. If the pattern
+#' is found, the name of the rmd-source file and the positions where
+#' the pattern was found is returned. If the pattern is not found,
+#' NULL is returned.
+#'
+#' @param ps_path name of and path to odg-graphics file
+#' @param ps_cwd current working directory
+#'
+#' @return l_rmd_src_result list with name of rmd source file and positions where search pattern occurs
+get_rmd_src_with_pos <- function(ps_path, ps_cwd){
+  ### # initialize the result to be NULL
+  l_rmd_src_result <- NULL
+  ### # get the name of all Rmd-source documents in ps_cwd
+  vec_rmd_src <- list.files(path = ps_cwd, pattern = "Rmd$", full.names = TRUE)
+  ### # in case any Rmd-source files are found search through them
+  if (length(vec_rmd_src) > 0){
+    l_rmd_src <- lapply(vec_rmd_src, function(x) get_pat_pos(x, ps_pattern = ps_path))
+    ### # get indices of l_rmd_src of entries which are not NA
+    n_rmd_src_idx <- which(!is.na(l_rmd_src))
+
+    ### # result is only used, if s_pattern occurs in just one file
+     if (length(n_rmd_src_idx) == 1)
+       l_rmd_src_result <- list(name = vec_rmd_src[n_rmd_src_idx], position = l_rmd_src[[n_rmd_src_idx]])
+  }
+  ### # return result
+  return(l_rmd_src_result)
+}
+
+
+
+
+#' Get position where search pattern occurs in a file
+#'
+#' Given a search pattern and given a file that is specified
+#' by its complete path, the positions where the search
+#' pattern occurs is returned. Positions correspond to
+#' vector indices when the content of the file is read
+#' using the function \code{readLines}. These vector indices
+#' are equivalent to line numbers of the text. In case
+#' when the search pattern is not found, NA is returned.
+#'
+#' @param ps_pattern search pattern for which we search in the file
+#' @param ps_file name of the file to search for pattern
+#' @return vec_pos_found vector of positions where pattern occurs,
+#'                       NA if pattern was not found
+get_pat_pos <- function(ps_file, ps_pattern){
+  ### # check wheter ps_file is found
+  if (!file.exists(ps_file)) stop(" *** * ERROR[has_file_search_pat]: cannot find file ", ps_file)
+  ### # open connection to ps_file
+  con <- file(description = ps_file)
+  ### # read content into character vector
+  vec_rmd_src <- readLines(con = con)
+  ### # close connection con
+  close(con)
+  ### # search for pattern and return the positions
+  ### #  where the pattern was found
+  vec_pos_found <- grep(pattern = ps_pattern, x = vec_rmd_src, fixed = TRUE)
+  ### # return the result, if pattern was not found
+  ### #  return NA
+  if (length(vec_pos_found) == 0) return(NA)
+  return(vec_pos_found)
+}
+
+
+#' Check whether ps_pattern is found in ps_file
+#'
+#' The check is done via grep for the pattern in the
+#' file. First, the file content is read into a character
+#' vector, then we search for the pattern. We are
+#' only interested in exact matches, hence the argument
+#' fixed=TRUE is specified for grep().
+#'
+#' @param ps_file name of file in which search is done
+#' @param ps_pattern pattern for which we search for
+#'
+#' @return TRUE, if we have an exact match of ps_pattern in ps_file, FALSE otherwise
+has_file_search_pat <- function(ps_file, ps_pattern){
+  ### # check wheter ps_file is found
+  if (!file.exists(ps_file)) stop(" *** * ERROR[has_file_search_pat]: cannot find file ", ps_file)
+  ### # open connection to ps_file
+  con <- file(description = ps_file)
+  ### # read content into character vector
+  vec_rmd_src <- readLines(con = con)
+  ### # close connection con
+  close(con)
+  ### # search for pattern
+  b_pattern_found <- grepl(pattern = ps_pattern, x = vec_rmd_src, fixed = TRUE)
+  ### # return TRUE, if pattern was found at least once
+  return(any(b_pattern_found))
+}
 
 
 ## ---- Old versions of Creation and drafting of  odg graphics -------------------------------------------

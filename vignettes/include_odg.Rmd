@@ -59,7 +59,8 @@ An author is writing a document and decides to include a diagram, a figure or a 
 One possible way of creating such a graphical object would be to run an R-function which might be called `rmddochelper::use_odg_graphic` inside an R-code-chunk in that text as shown below and this would open the external program such that we could create our graphical object.
 
 ```{r my_first_graphic, eval=FALSE}
-rmddochelper::use_odg_graphic(ps_path = "my_first_graphic.odg")
+#rmddochelper::use_odg_graphic(ps_path = "my_first_graphic.odg")
+knitr::include_graphics(ps_path = "my_first_graphic.png")
 ```
 
 When executing this function inside the Rmd-source-file, an odg-file is created in the directory where this rmd-file is located. The above shown function is supposed to work like the `devtools::use_*` class of functions. An important pre-requisite of the shown function is that we have a tool available to create a graphical object in an odg-format. One example of such a tool is `LibreOffice draw`. 
@@ -71,6 +72,9 @@ In most cases the original version of the graphical object is in a format that c
 ```{r my_frist_graphic_knitr, eval=FALSE}
 knitr::include_graphics(path = "my_first_graphic.png")
 ```
+
+In the end this chunk will consist of several parts. One part is the statement that calls the `knitr::include_graphics()` function. This function call gets the converted graphic file as argument. Furthermore, it is required that the chunk label has the same name as the included graphic file without extension. This requirement comes from the automated format conversion. 
+
 
 
 ### Format conversion
@@ -125,4 +129,4 @@ rmddochelper::use_odg_graphic(ps_odg_file = s_odg_file)
 
 ## List of Source Document Information
 
-
+  
