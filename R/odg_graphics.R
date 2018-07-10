@@ -7,62 +7,6 @@
 ### ###################################################### ###
 
 
-## ---- Conversion of Odg draw graphics -------------------------------------------
-
-#' @title Convert documents from source format into a given target output format
-#'
-#' @description
-#' \code{convertLibOToGraphic} assumes that LibreOffice is installed
-#' and is ideally available on the search path. Because more recent
-#' versions of windows and mac osx appear to have problems with that
-#' we started to use absolute paths to LibO installations. Source files
-#' which are assumed to LibO-draw files in .odg-format are converted on the
-#' fly to the specified output format which are then included in the
-#' source R markdown document
-#'
-#' @param psLibOFile    name of the libre office graphics file
-#' @param psLibODir     source directory of Libre Office files
-#' @param psFigOutDir   output directory where figure pdfs are expected to be
-convertLibOToGraphic <- function(psLibOFile,
-                                 psOutFormat = NULL,
-                                 psLibODir = "odg",
-                                 psFigOutDir = "."){
-  ### # output format cannot be null
-  if (is.null(psOutFormat))
-    stop(" *** Missing output format: ", psOutFormat)
-  sOutFormat <- tolower(psOutFormat)
-  sOdgDir <- psLibODir
-  sOdgDirWin <- gsub("/", "\\", sOdgDir, fixed = TRUE)
-  s_os_name <- get_os()
-  if (s_os_name == "windows"){
-    sConvCmdStem <- '"C:/Program Files (x86)/LibreOffice 5/program/soffice"'
-  } else if (s_os_name == "osx"){
-    sConvCmdStem <- '/Applications/LibreOffice.app/Contents/MacOS/soffice'
-  } else {
-    sConvCmdStem <- 'soffice'
-  }
-  sConvCmdStem <- paste(sConvCmdStem, '--headless --convert-to', sOutFormat)
-  ### # construct path to figure file
-  sFigFile <- ifelse(.Platform$OS.type == "windows",
-                     paste(sOdgDirWin, psLibOFile, sep = "\\"),
-                     file.path(sOdgDir, psLibOFile))
-  if (!file.exists(sFigFile))
-    stop("Cannot find Graphics File: ", sFigFile,
-         ". Please run create_odg_graphic(psGraphicName = ",
-         file.path(sOdgDir, psLibOFile), ") first.")
-    #create_odg_graphic(psGraphicName = file.path(sOdgDir, psLibOFile))
-  sConvCommand <- paste(sConvCmdStem, sFigFile)
-  system(command = sConvCommand)
-  # sOutFile <- gsub("odg$", sOutFormat, psLibOFile)
-  sOutFile <- paste(tools::file_path_sans_ext(psLibOFile), psOutFormat, sep = ".")
-  sFigOutFile <- file.path(psFigOutDir, sOutFile)
-  if (!dir.exists(psFigOutDir))
-    dir.create(path = psFigOutDir)
-  file.rename(from = sOutFile, sFigOutFile)
-  return(sFigOutFile)
-}
-
-
 ## ---- Creation and drafting of  odg graphics -------------------------------------------
 
 #' @title Create New ODG Graphics Object
@@ -88,6 +32,7 @@ convertLibOToGraphic <- function(psLibOFile,
 #' @param ps_template_package package from which template should be taken from
 #' @param pb_recursive        flag whether missing directory should be created
 #' @param pb_edit             flag to indicate whether odg file should be opened
+#' @param pb_insert_include   flag indicating whether graphic include command should be inserted into rmd source file
 #' @return s_odg_trg          name of and path to the created odg graphics file
 #' @export use_odg_graphic
 use_odg_graphic <- function(ps_path,
@@ -96,7 +41,8 @@ use_odg_graphic <- function(ps_path,
                             ps_odg_template     = "odg_figure",
                             ps_template_package = "rmddochelper",
                             pb_recursive        = TRUE,
-                            pb_edit             = TRUE ){
+                            pb_edit             = TRUE,
+                            pb_insert_include   = TRUE){
   ### # extract basename and dirname from ps_odg_file
   s_odg_dir <- dirname(ps_path)
   s_odg_base <- basename(ps_path)
@@ -129,7 +75,8 @@ use_odg_graphic <- function(ps_path,
   }
 
   ### # try to insert include_graphics command into rmd
-  insert_include_command(ps_path = ps_path, ps_rmd_src = ps_rmd_src, ps_cwd = ps_cwd)
+  if (pb_insert_include)
+    insert_include_command(ps_path = ps_path, ps_rmd_src = ps_rmd_src, ps_cwd = ps_cwd)
 
   ### # return name of odg target
   return(s_odg_trg)
@@ -186,6 +133,64 @@ insert_include_command <- function(ps_path,
   return(invisible(TRUE))
 }
 
+
+
+# Odg Conversion functions ---------------------------------------------------------
+
+#' Conversion Hook for Odg Graphics Objects
+#'
+#' @description
+#' A graphics object in an odg-formatted file cannot be
+#' included directly into an Rmarkdown source document.
+#' The odg-file must first be converted into a format
+#' such as pdf or png. This conversion is done automatically
+#' by this hook-function whenever a R-code-chunk with a
+#' statement to include a graphics object is executed.
+#'
+#' @param before   running before chunk code
+#' @param options  chunk label options
+#' @param envir    environment
+#' @export odg_convert_hook
+odg_convert_hook <- function(before, options, envir){
+  ### # set some defaults for parameter or take them from options
+  odg_path <- file.path("odg", paste(options$label, "odg", sep="."))
+  if (!is.null(options$odg_path)){
+    odg_path <- options$odg_path
+  }
+  ### # check that file specified by odg_path exists, o/w stop
+  if (!file.exists(odg_path))
+    stop(" *** * ERROR [rmddochelper::odg_convert_hook]: Cannot find odg-file: ", odg_path)
+
+  ### # determine to which output formats we want to convert the odg file
+  out_format <- c("pdf", "png")
+  if (!is.null(options$out_format)){
+    out_format <- options$out_format
+  }
+
+
+  return(invisible(TRUE))
+}
+
+
+#' Converter Function from Odg to Other Formats
+#'
+#' @param ps_odg_path
+#' @param ps_out_format
+#'
+#' @examples
+convert_odg <- function(ps_odg_path, ps_out_format){
+  ### # get the path to the conversion tool
+  s_odg_prog_path <- get_odg_prog_path()
+  ### # add options and format to conversion command
+  s_conv_cmd <- paste0(s_odg_prog_path, "--headless --convert-to", ps_out_format, ps_odg_path, collapse = " ")
+  ### # do the conversion
+  system(command = s_conv_cmd)
+  ### # put the generated result file in the same directory as ps_odg_path
+  s_out_file <- paste(tools::file_path_sans_ext(basename(ps_odg_path)), ps_out_format, sep = ".")
+  s_out_path <- file.path(dirname(ps_odg_path), s_out_file)
+  file.rename(from = s_out_file, to = s_out_path)
+
+}
 
 ## --- Helper functions related to Odg-graphics -------------------------------------------------
 #
@@ -353,6 +358,60 @@ has_file_search_pat <- function(ps_file, ps_pattern){
 
 
 ## ---- Old versions of Creation and drafting of  odg graphics -------------------------------------------
+
+#' @title Convert documents from source format into a given target output format
+#'
+#' @description
+#' \code{convertLibOToGraphic} assumes that LibreOffice is installed
+#' and is ideally available on the search path. Because more recent
+#' versions of windows and mac osx appear to have problems with that
+#' we started to use absolute paths to LibO installations. Source files
+#' which are assumed to LibO-draw files in .odg-format are converted on the
+#' fly to the specified output format which are then included in the
+#' source R markdown document
+#'
+#' @param psLibOFile    name of the libre office graphics file
+#' @param psLibODir     source directory of Libre Office files
+#' @param psFigOutDir   output directory where figure pdfs are expected to be
+convertLibOToGraphic <- function(psLibOFile,
+                                 psOutFormat = NULL,
+                                 psLibODir = "odg",
+                                 psFigOutDir = "."){
+  ### # output format cannot be null
+  if (is.null(psOutFormat))
+    stop(" *** Missing output format: ", psOutFormat)
+  sOutFormat <- tolower(psOutFormat)
+  sOdgDir <- psLibODir
+  sOdgDirWin <- gsub("/", "\\", sOdgDir, fixed = TRUE)
+  s_os_name <- get_os()
+  if (s_os_name == "windows"){
+    sConvCmdStem <- '"C:/Program Files (x86)/LibreOffice 5/program/soffice"'
+  } else if (s_os_name == "osx"){
+    sConvCmdStem <- '/Applications/LibreOffice.app/Contents/MacOS/soffice'
+  } else {
+    sConvCmdStem <- 'soffice'
+  }
+  sConvCmdStem <- paste(sConvCmdStem, '--headless --convert-to', sOutFormat)
+  ### # construct path to figure file
+  sFigFile <- ifelse(.Platform$OS.type == "windows",
+                     paste(sOdgDirWin, psLibOFile, sep = "\\"),
+                     file.path(sOdgDir, psLibOFile))
+  if (!file.exists(sFigFile))
+    stop("Cannot find Graphics File: ", sFigFile,
+         ". Please run create_odg_graphic(psGraphicName = ",
+         file.path(sOdgDir, psLibOFile), ") first.")
+  #create_odg_graphic(psGraphicName = file.path(sOdgDir, psLibOFile))
+  sConvCommand <- paste(sConvCmdStem, sFigFile)
+  system(command = sConvCommand)
+  # sOutFile <- gsub("odg$", sOutFormat, psLibOFile)
+  sOutFile <- paste(tools::file_path_sans_ext(psLibOFile), psOutFormat, sep = ".")
+  sFigOutFile <- file.path(psFigOutDir, sOutFile)
+  if (!dir.exists(psFigOutDir))
+    dir.create(path = psFigOutDir)
+  file.rename(from = sOutFile, sFigOutFile)
+  return(sFigOutFile)
+}
+
 
 #' @title Create an empty odg graphic
 #'
