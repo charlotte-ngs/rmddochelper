@@ -75,8 +75,8 @@ use_odg_graphic <- function(ps_path,
   }
 
   ### # try to insert include_graphics command into rmd
-  if (pb_insert_include)
-    insert_include_command(ps_path = ps_path, ps_rmd_src = ps_rmd_src, ps_cwd = ps_cwd)
+  # if (pb_insert_include)
+  #   insert_include_command(ps_path = ps_path, ps_rmd_src = ps_rmd_src, ps_cwd = ps_cwd)
 
   ### # return name of odg target
   return(s_odg_trg)
@@ -150,39 +150,67 @@ insert_include_command <- function(ps_path,
 #' @param before   running before chunk code
 #' @param options  chunk label options
 #' @param envir    environment
+#' @return command to include the converted graphics object files
 #' @export odg_convert_hook
 odg_convert_hook <- function(before, options, envir){
-  ### # set some defaults for parameter or take them from options
-  odg_path <- file.path("odg", paste(options$label, "odg", sep="."))
-  if (!is.null(options$odg_path)){
-    odg_path <- options$odg_path
+  ### # run conversion after chunk has been evaluated, following
+  ### #  the example given in https://yihui.name/knitr/hooks/
+  if (!before){
+    ### # set some defaults for parameter or take them from options
+    odg_path <- file.path("odg", paste(options$label, "odg", sep="."))
+    ### # take only fig_path from options and file name from label
+    if (!is.null(options$fig_path)){
+      odg_path <- file.path(options$fig_path, paste(options$label, "odg", sep="."))
+    }
+    if (!is.null(options$odg_path)){
+      odg_path <- options$odg_path
+    }
+    ### # check that file specified by odg_path exists, o/w stop
+    if (!file.exists(odg_path))
+      stop(" *** * ERROR [rmddochelper::odg_convert_hook]: Cannot find odg-file: ", odg_path)
+
+    ### # determine to which output formats we want to convert the odg file
+    out_format <- c("pdf", "png")
+    if (!is.null(options$out_format)){
+      out_format <- options$out_format
+    }
+    ### # loop over formats and convert
+    for(fmt in out_format){
+      convert_odg(ps_odg_path = odg_path, ps_out_format = fmt)
+    }
+
+    ### # return the command to be included
+    s_out_file <- paste0(tools::file_path_sans_ext(basename(odg_path)), '.png')
+    return(paste0('\n\n```{r}\n knitr::include_graphics(path = "',
+                  file.path(dirname(odg_path), s_out_file),
+                  '")\n```\n\n'))
+
+  } else {
+    return(NULL)
   }
-  ### # check that file specified by odg_path exists, o/w stop
-  if (!file.exists(odg_path))
-    stop(" *** * ERROR [rmddochelper::odg_convert_hook]: Cannot find odg-file: ", odg_path)
 
-  ### # determine to which output formats we want to convert the odg file
-  out_format <- c("pdf", "png")
-  if (!is.null(options$out_format)){
-    out_format <- options$out_format
-  }
-
-
-  return(invisible(TRUE))
 }
 
 
 #' Converter Function from Odg to Other Formats
 #'
-#' @param ps_odg_path
-#' @param ps_out_format
+#' @description
+#' The conversion is done using the tool returned by \code{get_odg_prog_path()}.
+#' The current version of this function is not vectorized, hence the arguments
+#' can only be single odg-files in ps_odg_path and single formats in ps_out_format.
 #'
-#' @examples
+#' @param ps_odg_path   path to odg file to be converted
+#' @param ps_out_format output format into which ps_odg_path should be converted to
 convert_odg <- function(ps_odg_path, ps_out_format){
+  ### # check restriction of only one odg-file and only
+  ### #  one format
+  if (length(ps_odg_path) > 1 | length(ps_out_format) > 1)
+    stop(" *** * ERROR [rmddochelper:::convert_odg] works only on single arguments")
+
   ### # get the path to the conversion tool
   s_odg_prog_path <- get_odg_prog_path()
   ### # add options and format to conversion command
-  s_conv_cmd <- paste0(s_odg_prog_path, "--headless --convert-to", ps_out_format, ps_odg_path, collapse = " ")
+  s_conv_cmd <- paste0(s_odg_prog_path, " --headless --convert-to ", ps_out_format, " ", ps_odg_path)
   ### # do the conversion
   system(command = s_conv_cmd)
   ### # put the generated result file in the same directory as ps_odg_path

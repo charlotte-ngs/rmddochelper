@@ -14,16 +14,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+knitr::knit_hooks$set(odg_conv = rmddochelper::odg_convert_hook)
 ```
 
-```{r src_doc_info_setup}
-this_rmd <- rprojroot::thisfile()
-s_this_file <- "include_odg.Rmd"
-this_rmd_fun <- rprojroot::is_rstudio_project$make_fix_file()
-#rprojroot::find
-this_rmd <- this_rmd_fun(s_this_file)
-cat("This rmd: ", this_rmd, "\n")
-```
 
 
 ## Disclaimer
@@ -61,7 +54,7 @@ In the process of writing a document, an author decides to include a diagram, a 
 ### Creation
 The way of creating a graphical object proposed here, uses the notebook-type features of R-code chunks in Rmd-documents when edited with RStudio. These features allow for the execution of a given R-statement inside of a R-code chunk without rendering the whole Rmd-source document. A graphics object can be produced by calling an R-function which might be named `rmddochelper::use_odg_graphic` inside an R-code-chunk such as shown below.
 
-```{r my_first_graphic, eval=FALSE}
+```{r my_first_graphic, odg_conv=TRUE, fig_path='.', out_format='png'}
 rmddochelper::use_odg_graphic(ps_path = "my_first_graphic.odg")
 ```
 
@@ -71,8 +64,8 @@ When executing this function inside the Rmd-source-file, an odg-file is created 
 ### Inclusion
 In most cases the original version of the graphical object is in a format that cannot directly be included in a document like an Rmd-document. Hence it needs to be converted into a usable format such as `pdf` or `png`. In the case of `odg` graphics produced with `LibreOffice Draw`, we can use the functionality of `LibreOffice` to do the format conversion. After the format conversion, we need to insert the R-code chunk that includes the graphical object into the Rmd-source document. This chunk looks as follows
 
-```{r my_frist_graphic_knitr, eval=FALSE}
-knitr::include_graphics(path = "my_first_graphic.png")
+```{r}
+knitr::include_graphics(path = "./my_first_graphic.png")
 ```
 
 In the end this chunk will consist of several parts. One part is the statement that calls the `knitr::include_graphics()` function. This function call gets the converted graphic file as argument. Furthermore, it is required that the chunk label has the same name as the included graphic file without extension. This requirement comes from the automated format conversion. 
@@ -83,6 +76,10 @@ The format conversion is best done in a knitr-hook function. A good reference to
 
 
 ## Old Legacy Stuff below
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 The question is how we can decide the location of this rmd-document. One possibility is to use the `rprojroot` package. The function `thisfile()` returns the absolute path to this rmd-document as shown below.
 
 ```{r}

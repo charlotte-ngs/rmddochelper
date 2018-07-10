@@ -6,7 +6,7 @@
 \usage{
 use_odg_graphic(ps_path, ps_cwd = getwd(), ps_rmd_src = NULL,
   ps_odg_template = "odg_figure", ps_template_package = "rmddochelper",
-  pb_recursive = TRUE, pb_edit = TRUE)
+  pb_recursive = TRUE, pb_edit = TRUE, pb_insert_include = TRUE)
 }
 \arguments{
 \item{ps_path}{file name including path of ODG graphics object file}
@@ -22,6 +22,8 @@ use_odg_graphic(ps_path, ps_cwd = getwd(), ps_rmd_src = NULL,
 \item{pb_recursive}{flag whether missing directory should be created}
 
 \item{pb_edit}{flag to indicate whether odg file should be opened}
+
+\item{pb_insert_include}{flag indicating whether graphic include command should be inserted into rmd source file}
 }
 \value{
 s_odg_trg          name of and path to the created odg graphics file
