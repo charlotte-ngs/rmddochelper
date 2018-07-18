@@ -18,7 +18,8 @@ l_rmd_src_result list with name of rmd source file and positions where search pa
 Given a search pattern in ps_path and given the path of the current
 working directory, all files with extension .Rmd are searched whether
 the string in ps_path occurs in the rmd-source file. If the pattern
-is found, the name of the rmd-source file and the positions where
-the pattern was found is returned. If the pattern is not found,
-NULL is returned.
+is found in exactly one Rmd-source file, the name of the Rmd-source
+file and the positions where the pattern was found is returned. If
+the pattern is not found or the pattern occurs in more than one
+Rmd-source file, NULL is returned.
 }

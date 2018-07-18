@@ -16,7 +16,7 @@ insert_include_command(ps_path, ps_rmd_src = NULL, ps_cwd = get_wd())
 \description{
 When creating a new graphics object, this function tries to automatically
 generate the associated command to include the generated graphics object
-into the respective rmd-source document. This process needs as input
-the current working directory where of the rmd-source document and the
+into the respective Rmd-source document. This process needs as input
+the current working directory where of the Rmd-source document and the
 name of the file in which the graphics object is stored.
 }

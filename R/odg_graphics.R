@@ -75,8 +75,8 @@ use_odg_graphic <- function(ps_path,
   }
 
   ### # try to insert include_graphics command into rmd
-  # if (pb_insert_include)
-  #   insert_include_command(ps_path = ps_path, ps_rmd_src = ps_rmd_src, ps_cwd = ps_cwd)
+  if (pb_insert_include)
+    insert_include_command(ps_path = ps_path, ps_rmd_src = ps_rmd_src, ps_cwd = ps_cwd)
 
   ### # return name of odg target
   return(s_odg_trg)
@@ -89,8 +89,8 @@ use_odg_graphic <- function(ps_path,
 #' @description
 #' When creating a new graphics object, this function tries to automatically
 #' generate the associated command to include the generated graphics object
-#' into the respective rmd-source document. This process needs as input
-#' the current working directory where of the rmd-source document and the
+#' into the respective Rmd-source document. This process needs as input
+#' the current working directory where of the Rmd-source document and the
 #' name of the file in which the graphics object is stored.
 #'
 #' @param ps_path    path to the odg graphics file
@@ -118,8 +118,12 @@ insert_include_command <- function(ps_path,
     ### # loop over positions and insert the include command
     for (pids in seq_along(l_rmd_src$position)){
       p <- l_rmd_src$position[pids]
+      ### # change chunk options
+      vec_rmd_src[p-1] <- paste0('```{r ', tools::file_path_sans_ext(basename(ps_path)),
+                                 ', hook_convert_odg=TRUE, fig_path="',
+                                 dirname(ps_path), '"}')
       vec_rmd_src[p] <- paste0('#', vec_rmd_src[p])
-      vec_rmd_src[p+1] <- paste0('knitr::include_graphics(ps_path = "',
+      vec_rmd_src[p+1] <- paste0('knitr::include_graphics(path = "',
                                  gsub(pattern = "odg$", replacement = "png", x = ps_path),
                                  '")\n',
                                  vec_rmd_src[p+1], collapse = '')
@@ -136,6 +140,54 @@ insert_include_command <- function(ps_path,
 
 
 # Odg Conversion functions ---------------------------------------------------------
+
+
+#' Odg Graphics File Conversion Hook
+#'
+#' @description
+#' Graphics objects in odg-format are converted to png
+#' or pdf format by this knitr-hook-function. We assume
+#' that this hook-function is included in the chunk where
+#' the graphics object is included using a call to
+#' \code{knitr::include_graphics()}, hence the conversion
+#' of the odg-file must be run before the code in the chunk.
+#'
+#' @param before   flag whether hook is run before or after chunk
+#' @param options  list of options passed from chunk to hook
+#' @param envir    environment
+#'
+#' @export hook_convert_odg
+hook_convert_odg <- function(before, options, envir){
+  ### # in the chunk that contains the call to knitr::include_graphics,
+  ### #  the conversion must be run before the code in the chunk
+  if (before){
+    ### # set some defaults for parameter or take them from options
+    odg_path <- paste(options$label, "odg", sep=".")
+    ### # take only fig_path from options and file name from label
+    if (!is.null(options$fig_path)){
+      odg_path <- file.path(options$fig_path, paste(options$label, "odg", sep="."))
+    }
+    if (!is.null(options$odg_path)){
+      odg_path <- options$odg_path
+    }
+    ### # check that file specified by odg_path exists, o/w stop
+    if (!file.exists(odg_path))
+      stop(" *** * ERROR [rmddochelper::hook_convert_odg]: Cannot find odg-file: ", odg_path)
+
+    ### # determine to which output formats we want to convert the odg file
+    out_format <- c("pdf", "png")
+    if (!is.null(options$out_format)){
+      out_format <- options$out_format
+    }
+    ### # loop over formats and convert
+    for(fmt in out_format){
+      convert_odg(ps_odg_path = odg_path, ps_out_format = fmt)
+    }
+
+  }
+  return(invisible(NULL))
+
+}
 
 #' Conversion Hook for Odg Graphics Objects
 #'
@@ -181,7 +233,7 @@ odg_convert_hook <- function(before, options, envir){
 
     ### # return the command to be included
     s_out_file <- paste0(tools::file_path_sans_ext(basename(odg_path)), '.png')
-    return(paste0('\n\n```{r}\n knitr::include_graphics(path = "',
+    return(paste0('\n\n```{r}\n','knitr::include_graphics(path = "',
                   file.path(dirname(odg_path), s_out_file),
                   '")\n```\n\n'))
 
@@ -294,9 +346,10 @@ get_current_rmd_src <- function(ps_path, ps_cwd){
 #' Given a search pattern in ps_path and given the path of the current
 #' working directory, all files with extension .Rmd are searched whether
 #' the string in ps_path occurs in the rmd-source file. If the pattern
-#' is found, the name of the rmd-source file and the positions where
-#' the pattern was found is returned. If the pattern is not found,
-#' NULL is returned.
+#' is found in exactly one Rmd-source file, the name of the Rmd-source
+#' file and the positions where the pattern was found is returned. If
+#' the pattern is not found or the pattern occurs in more than one
+#' Rmd-source file, NULL is returned.
 #'
 #' @param ps_path name of and path to odg-graphics file
 #' @param ps_cwd current working directory
