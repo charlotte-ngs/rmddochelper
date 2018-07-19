@@ -120,7 +120,7 @@ insert_include_command <- function(ps_path,
       p <- l_rmd_src$position[pids]
       ### # change chunk options
       vec_rmd_src[p-1] <- paste0('```{r ', tools::file_path_sans_ext(basename(ps_path)),
-                                 ', hook_convert_odg=TRUE, fig_path="',
+                                 ', echo=FALSE, hook_convert_odg=TRUE, fig_path="',
                                  dirname(ps_path), '"}')
       vec_rmd_src[p] <- paste0('#', vec_rmd_src[p])
       vec_rmd_src[p+1] <- paste0('knitr::include_graphics(path = "',
