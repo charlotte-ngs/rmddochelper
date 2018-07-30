@@ -21,3 +21,11 @@ the graphics object is included using a call to
 \code{knitr::include_graphics()}, hence the conversion
 of the odg-file must be run before the code in the chunk.
 }
+\examples{
+\dontrun{
+# registration of hook function
+knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+...
+}
+
+}
