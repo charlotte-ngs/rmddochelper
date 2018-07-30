@@ -244,9 +244,10 @@ odg_convert_hook <- function(before, options, envir){
                   file.path(dirname(odg_path), s_out_file),
                   '")\n```\n\n'))
 
-  } else {
-    return(NULL)
   }
+
+  return(invisible(TRUE))
+
 
 }
 
