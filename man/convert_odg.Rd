@@ -15,4 +15,5 @@ convert_odg(ps_odg_path, ps_out_format)
 The conversion is done using the tool returned by \code{get_odg_prog_path()}.
 The current version of this function is not vectorized, hence the arguments
 can only be single odg-files in ps_odg_path and single formats in ps_out_format.
+The conversion is only done, if the result file does not exist.
 }

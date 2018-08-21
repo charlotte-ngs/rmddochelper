@@ -156,6 +156,13 @@ insert_include_command <- function(ps_path,
 #' @param options  list of options passed from chunk to hook
 #' @param envir    environment
 #'
+#' @examples
+#' \dontrun{
+#' # registration of hook function
+#' knitr::knit_hooks$set(hook_convert_odg = rmddochelper::hook_convert_odg)
+#' ...
+#' }
+#'
 #' @export hook_convert_odg
 hook_convert_odg <- function(before, options, envir){
   ### # in the chunk that contains the call to knitr::include_graphics,
@@ -251,6 +258,7 @@ odg_convert_hook <- function(before, options, envir){
 #' The conversion is done using the tool returned by \code{get_odg_prog_path()}.
 #' The current version of this function is not vectorized, hence the arguments
 #' can only be single odg-files in ps_odg_path and single formats in ps_out_format.
+#' The conversion is only done, if the result file does not exist.
 #'
 #' @param ps_odg_path   path to odg file to be converted
 #' @param ps_out_format output format into which ps_odg_path should be converted to
@@ -260,6 +268,13 @@ convert_odg <- function(ps_odg_path, ps_out_format){
   if (length(ps_odg_path) > 1 | length(ps_out_format) > 1)
     stop(" *** * ERROR [rmddochelper:::convert_odg] works only on single arguments")
 
+  ### # check whether conversion result already exists
+  s_out_file <- paste(tools::file_path_sans_ext(basename(ps_odg_path)), ps_out_format, sep = ".")
+  s_out_path <- file.path(dirname(ps_odg_path), s_out_file)
+  ### # return here if result file s_out_path exists
+  if (file.exists(s_out_path))
+    return(invisible(TRUE))
+
   ### # get the path to the conversion tool
   s_odg_prog_path <- get_odg_prog_path()
   ### # add options and format to conversion command
@@ -267,8 +282,6 @@ convert_odg <- function(ps_odg_path, ps_out_format){
   ### # do the conversion
   system(command = s_conv_cmd)
   ### # put the generated result file in the same directory as ps_odg_path
-  s_out_file <- paste(tools::file_path_sans_ext(basename(ps_odg_path)), ps_out_format, sep = ".")
-  s_out_path <- file.path(dirname(ps_odg_path), s_out_file)
   file.rename(from = s_out_file, to = s_out_path)
 
 }
