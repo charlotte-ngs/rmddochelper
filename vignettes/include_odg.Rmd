@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-knitr::knit_hooks$set(odg_conv = rmddochelper::odg_convert_hook)
+#knitr::knit_hooks$set(odg_conv = rmddochelper::odg_convert_hook)
 ```
 
 
@@ -54,8 +54,9 @@ In the process of writing a document, an author decides to include a diagram, a 
 ### Creation
 The way of creating a graphical object proposed here, uses the notebook-type features of R-code chunks in Rmd-documents when edited with RStudio. These features allow for the execution of a given R-statement inside of a R-code chunk without rendering the whole Rmd-source document. A graphics object can be produced by calling an R-function which might be named `rmddochelper::use_odg_graphic` inside an R-code-chunk such as shown below.
 
-```{r my_first_graphic, odg_conv=TRUE, fig_path='.', out_format='png'}
-rmddochelper::use_odg_graphic(ps_path = "my_first_graphic.odg")
+```{r my_first_graphic, echo=FALSE, hook_convert_odg=TRUE, fig_path="."}
+#rmddochelper::use_odg_graphic(ps_path = "my_first_graphic.odg")
+knitr::include_graphics(path = "my_first_graphic.png")
 ```
 
 When executing this function inside the Rmd-source-file, an odg-file is created in the directory where this rmd-file is located. The above shown function is supposed to work like the `devtools::use_*` class of functions. An important pre-requisite of the shown function is that we have a tool available to create a graphical object in an odg-format. One example of such a tool is `LibreOffice Draw`. 
@@ -64,7 +65,7 @@ When executing this function inside the Rmd-source-file, an odg-file is created 
 ### Inclusion
 In most cases the original version of the graphical object is in a format that cannot directly be included in a document like an Rmd-document. Hence it needs to be converted into a usable format such as `pdf` or `png`. In the case of `odg` graphics produced with `LibreOffice Draw`, we can use the functionality of `LibreOffice` to do the format conversion. After the format conversion, we need to insert the R-code chunk that includes the graphical object into the Rmd-source document. This chunk looks as follows
 
-```{r}
+```{r eval=FALSE}
 knitr::include_graphics(path = "./my_first_graphic.png")
 ```
 
@@ -123,4 +124,4 @@ rmddochelper::use_odg_graphic(ps_odg_file = s_odg_file)
 
 ## List of Source Document Information
 
-  
+   
