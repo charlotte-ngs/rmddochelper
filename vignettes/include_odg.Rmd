@@ -78,6 +78,7 @@ In most cases the original version of the graphical object is in a format that c
  ```
 ```
 
+Between the creation of the odg-graphics object and the inclusion of the graphics file into the Rmd-document, the graphics object must be converted form odg to png or pdf. This conversion can either be done manually from 
 In the end this chunk will consist of several parts. One part is the statement that calls the `knitr::include_graphics()` function. This function call gets the converted graphic file as argument. Furthermore, it is required that the chunk label has the same name as the included graphic file without extension. This requirement comes from the automated format conversion. 
 
 
