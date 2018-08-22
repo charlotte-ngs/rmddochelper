@@ -258,7 +258,8 @@ odg_convert_hook <- function(before, options, envir){
 #' The conversion is done using the tool returned by \code{get_odg_prog_path()}.
 #' The current version of this function is not vectorized, hence the arguments
 #' can only be single odg-files in ps_odg_path and single formats in ps_out_format.
-#' The conversion is only done, if the result file does not exist.
+#' The conversion is only done, if the result file does not exist or if the
+#' result file has an older modification time as found by \code{file.mtime()}.
 #'
 #' @param ps_odg_path   path to odg file to be converted
 #' @param ps_out_format output format into which ps_odg_path should be converted to
@@ -272,7 +273,8 @@ convert_odg <- function(ps_odg_path, ps_out_format){
   s_out_file <- paste(tools::file_path_sans_ext(basename(ps_odg_path)), ps_out_format, sep = ".")
   s_out_path <- file.path(dirname(ps_odg_path), s_out_file)
   ### # return here if result file s_out_path exists
-  if (file.exists(s_out_path))
+  # cont here
+  if (file.exists(s_out_path) && (file.mtime(ps_odg_path) < file.mtime(s_out_path)))
     return(invisible(TRUE))
 
   ### # get the path to the conversion tool
@@ -283,6 +285,9 @@ convert_odg <- function(ps_odg_path, ps_out_format){
   system(command = s_conv_cmd)
   ### # put the generated result file in the same directory as ps_odg_path
   file.rename(from = s_out_file, to = s_out_path)
+
+  ### # do not return anything
+  return(invisible(TRUE))
 
 }
 
