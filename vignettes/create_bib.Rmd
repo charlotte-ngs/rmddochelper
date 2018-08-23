@@ -1,0 +1,36 @@
+---
+title: "Create bib-file"
+author: "Peter von Rohr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Create bib-file}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Disclaimer
+This vignette descibes how a bib-file created for a certain R-markdown document that contains citation references. 
+
+
+## Backgroud
+When writing scientific publications or technical documentations, certain background information is described by citing other sources. The references to these sources are listed at the end of the document in a separate section. In principle, it is possible to compile the list of reference manually based on the cited sources in the text. Such a manual procedure is tedious and error-prone. 
+
+
+## Automated Procedure
+Manual compilation of references should be avoided at all costs. Hence, we have to come up with an automated procedure. Possible approaches to generating a reference list automatically are described in this section. 
+
+
+### A first attempt
+An initial fast solution to the problem is to let the reference manager export all publication entries into one bib-file. This single bib-file is then used in the bibliography field of the yaml-header in the R-markdown document. While this approach works well for documents that are written by a single author, it does not work well when multiple co-authors write on the same document. The problem with this approach for multiple co-authors is that every co-author would need to have access to the same reference manager database and the locally exported bib-file would have to be stored in a directory having the same name and the same path. In addition to that when reference manager databases grow, these bib-files can get large and it might be slow to generate only a few references out of a huge database of publications. 
+
+
+### A refined approach
