@@ -26,7 +26,7 @@ When writing scientific publications or technical documentations, certain backgr
 
 
 ## Automated Procedure
-Manual compilation of references should be avoided at all costs. Hence, we have to come up with an automated procedure. Possible approaches to generating a reference list automatically are described in this section. 
+Manual compilation of references should be avoided at all costs. Hence, we have to come up with an automated procedure. Possible approaches to generating a reference list automatically are described in this section. The goal of such an automated procedure is that we have for each document source the available references as bib-records in one file. This bib-file is also considered as a part of the document source. This behavior is required to be able to share the document source with other people that do not have the same reference manager database. 
 
 
 ### A first attempt
@@ -34,3 +34,17 @@ An initial fast solution to the problem is to let the reference manager export a
 
 
 ### A refined approach
+We assume the following model for writing a document. We start by writing some text that contains a fact or an argument that we want to support with a reference to a certain publication. At this point, we distinguish two different cases
+
+1. We know that the publication to be cited is in our reference manager database and hence it is just a matter of copying the bib-record into the current working directory of our document.
+2. The publication is not in our reference manager database. We first have to add the cited publication to the reference manager and then can proceed as described in 1.
+
+For both cases it is important to be able to copy a bib-record out of a reference manager database into to bib-file in the current working directory. This can be done using the following steps:
+
+__Step 1__: Read the reference manager database
+__Step 2__: Find and select the desired publication record
+__Step 3__: Save or write the found publication record to a bib-file in the current working directory
+
+
+## Reading Reference Manager Database
+Reading the reference manager database requires that we can specify and persistenly store the location of that database. There are several options for that. One possiblility is to use the general list
