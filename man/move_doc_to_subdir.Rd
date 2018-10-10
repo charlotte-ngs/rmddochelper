@@ -4,8 +4,7 @@
 \alias{move_doc_to_subdir}
 \title{Move a document to a separate subdirectory}
 \usage{
-move_doc_to_subdir(psDocuName, psDocuPath = NULL,
-  pbMoveEverything = TRUE)
+move_doc_to_subdir(psDocuName, psDocuPath = NULL, pbMoveEverything = TRUE)
 }
 \arguments{
 \item{psDocuName}{Name of the document to be moved}

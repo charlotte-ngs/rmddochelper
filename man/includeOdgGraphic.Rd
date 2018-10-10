@@ -11,8 +11,7 @@ format to include the figure. Graphic files are only re-generated
 if the outputfile does not exist or, if the flag pbMustGenerate is TRUE.}
 \usage{
 includeOdgGraphic(psOdgFileStem, psOutFormat, psOdgDir = "odg",
-  psFigOutDir = ".", pbMustGenerate = FALSE,
-  pnPaperWidthScale = NULL)
+  psFigOutDir = ".", pbMustGenerate = FALSE, pnPaperWidthScale = NULL)
 }
 \arguments{
 \item{psOdgFileStem}{stem of odg figure file}
@@ -26,13 +25,4 @@ includeOdgGraphic(psOdgFileStem, psOutFormat, psOdgDir = "odg",
 \item{pbMustGenerate}{flag to indicate whether pdf-graphics must be regenerated}
 
 \item{pnPaperWidthScale}{scale factor for produced graphic}
-}
-\description{
-Include a graphic file based on an odg template in a given output format
-
-\code{includeOdgGraphic} takes the name of a file containing a graphic
-in odg format, converts the content of that file into a given output format using
-function \code{convertLibOToGraphic} and outputs the string in markdown
-format to include the figure. Graphic files are only re-generated
-if the outputfile does not exist or, if the flag pbMustGenerate is TRUE.
 }
