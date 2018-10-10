@@ -4,26 +4,29 @@
 \alias{cleanup_output}
 \title{Cleanup a directory from temporary output files}
 \usage{
-cleanup_output(psDocuPath = "vignettes", psPattern = c("pdf$", "png$"),
-  pbIgnoreDir = TRUE, pbInteractive = TRUE)
+cleanup_output(ps_docu_path = "vignettes", pvec_docu_root = NA,
+  pvec_pattern = c("pdf$", "png$"), pb_ignore_dir = TRUE,
+  pb_interactive = TRUE)
 }
 \arguments{
-\item{psDocuPath}{Name of the document path}
+\item{ps_docu_path}{Name of the document path}
 
-\item{psPattern}{Pattern to match by files to be deleted}
+\item{pvec_docu_root}{Vector of prefixes matching document output files}
 
-\item{pbIgnoreDir}{Flag indicating whether directories should be ignored}
+\item{pvec_pattern}{Pattern to match by files to be deleted}
 
-\item{pbInteractive}{Should user be asked whether to delete files}
+\item{pb_ignore_dir}{Flag indicating whether directories should be ignored}
+
+\item{pb_interactive}{Should user be asked whether to delete files}
 }
 \description{
 Remove all files and possibly also directories that
 were generated as ouput from a previous compilation
-of a document in directory psDocuPath. All files that
-match the pattern specified by psPattern are selected
+of a document in directory ps_docu_path. All files that
+match the pattern specified by pvec_pattern are selected
 for deletion. The user is asked whether the files should
 be deleted before actually deleting them. By default,
 directories are ignored, even if they match the given
 pattern. In case directories are to be included the
-argument pbIgnoreDir must be set to FALSE.
+argument pb_ignore_dir must be set to FALSE.
 }

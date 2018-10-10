@@ -2,17 +2,17 @@
 % Please edit documentation in R/rmddochelper_project_management.R
 \name{cleanup_all}
 \alias{cleanup_all}
-\title{Recursively cleanup all directories of psDocuPath}
+\title{Recursively cleanup all directories of ps_docu_path}
 \usage{
-cleanup_all(psDocuPath = "vignettes", psPattern = c("pdf$", "png$"),
-  pbIgnoreDir = TRUE)
+cleanup_all(ps_docu_path = "vignettes", pvec_pattern = c("pdf$",
+  "png$"), pb_ignore_dir = TRUE)
 }
 \arguments{
-\item{psDocuPath}{Name of the document path}
+\item{ps_docu_path}{Name of the document path}
 
-\item{psPattern}{Pattern to match by files to be deleted}
+\item{pvec_pattern}{Pattern to match by files to be deleted}
 }
 \description{
 This is a wrapper over cleanup_output using sapply
-over the result of list.files(psDocuPath)
+over the result of list.files(ps_docu_path)
 }

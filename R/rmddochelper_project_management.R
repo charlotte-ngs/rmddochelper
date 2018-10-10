@@ -73,58 +73,119 @@ move_doc_to_subdir <- function(psDocuName, psDocuPath = NULL, pbMoveEverything =
 #' @description
 #' Remove all files and possibly also directories that
 #' were generated as ouput from a previous compilation
-#' of a document in directory psDocuPath. All files that
-#' match the pattern specified by psPattern are selected
+#' of a document in directory ps_docu_path. All files that
+#' match the pattern specified by pvec_pattern are selected
 #' for deletion. The user is asked whether the files should
 #' be deleted before actually deleting them. By default,
 #' directories are ignored, even if they match the given
 #' pattern. In case directories are to be included the
-#' argument pbIgnoreDir must be set to FALSE.
+#' argument pb_ignore_dir must be set to FALSE.
 #'
-#' @param psDocuPath     Name of the document path
-#' @param psPattern      Pattern to match by files to be deleted
-#' @param pbIgnoreDir    Flag indicating whether directories should be ignored
-#' @param pbInteractive  Should user be asked whether to delete files
+#' @param ps_docu_path     Name of the document path
+#' @param pvec_docu_root   Vector of prefixes matching document output files
+#' @param pvec_pattern     Pattern to match by files to be deleted
+#' @param pb_ignore_dir      Flag indicating whether directories should be ignored
+#' @param pb_interactive    Should user be asked whether to delete files
 #' @export cleanup_output
-cleanup_output <- function(psDocuPath    = "vignettes",
-                           psPattern     = c("pdf$", "png$"),
-                           pbIgnoreDir   = TRUE,
-                           pbInteractive = TRUE){
-  ### # loop over vector of patterns given in psPattern
-  for (p in psPattern) {
-    ### # list the files and directories that match the current pattern p
-    curMatch <- list.files(path = psDocuPath, pattern = p, full.names = TRUE)
-    if (pbIgnoreDir)
-      curMatch <- curMatch[!file.info(curMatch)[,"isdir"]]
-    ### # ask whether to delete files
-    if (length(curMatch) > 0){
-      message("Files to be removed from directory: ", psDocuPath,
-              "\n", paste(basename(curMatch), collapse = ", "))
-      sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
-      if (tolower(sAnswer) == "y" | !pbInteractive)
-        file.remove(curMatch)
-    }
-
-  }
+cleanup_output <- function(ps_docu_path    = "vignettes",
+                           pvec_docu_root  = NA,
+                           pvec_pattern    = c("pdf$", "png$"),
+                           pb_ignore_dir   = TRUE,
+                           pb_interactive  = TRUE){
+  ### # loop over vector of document roots
+  if (!is.na(pvec_docu_root))
+    find_match_delete( ps_docu_path   = ps_docu_path,
+                       ps_pattern     = pvec_docu_root,
+                       pb_ignore_dir  = pb_ignore_dir,
+                       pb_interactive = pb_interactive )
+  ### # loop over vector of patterns given in pvec_pattern
+  find_match_delete( ps_docu_path   = ps_docu_path,
+                     ps_pattern     = pvec_pattern,
+                     pb_ignore_dir  = pb_ignore_dir,
+                     pb_interactive = pb_interactive )
+  ### # invisible return
   invisible(TRUE)
 }
 
 
-#' Recursively cleanup all directories of psDocuPath
+#' @title Helper to find all files match a certain pattern
+#'
+#' @description
+#' A given pattern is used in function \code{list.files()}
+#' to obtain a list of files matching the given pattern.
+#' The list of files is then used as input for the function
+#' \code{delete.files()}.
+#'
+#' @param ps_docu_path directory containing files to be matched
+#' @param ps_pattern   pattern used for matching files
+#' @param pb_ignore_dir flag indicating whether directories are ignored
+#' @param pb_interactive flag for interactive mode
+find_match_delete <- function( ps_docu_path,
+                               ps_pattern,
+                               pb_ignore_dir  = TRUE,
+                               pb_interactive = TRUE ) {
+  for (p in ps_pattern) {
+    ### # list the files and directories that match the current pattern p
+    vec_cur_match <- list.files(path = ps_docu_path, pattern = p, full.names = TRUE)
+    if (pb_ignore_dir)
+      vec_cur_match <- vec_cur_match[!file.info(vec_cur_match)[,"isdir"]]
+    ### # ask whether to delete files
+    if (length(vec_cur_match) > 0){
+      delete_files(ps_docu_path = ps_docu_path,
+                   pvec_filenames = vec_cur_match,
+                   pb_interactive = pb_interactive)
+
+    }
+
+  }
+  return(invisible(TRUE))
+}
+
+
+#' @title Helper function to delete a set of files
+#'
+#' @description
+#' If \code{pb_interactive} is true, the function loops
+#' over a given vector of file names and asks to user
+#' whether the files should be deleted. Otherwise the
+#' files in the vector are deleted without asking.
+#'
+#' @param pvec_filenames vector of filenames to be deleted
+#' @param pb_interactive flag for interactive mode
+delete_files <- function(ps_docu_path,
+                         pvec_filenames,
+                         pb_interactive = TRUE){
+  message("Files to be removed from directory: ", ps_docu_path,
+          "\n", paste(basename(pvec_filenames), collapse = ", "))
+  ### # ask user in interactive mode
+  if (pb_interactive){
+    sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
+    if (tolower(sAnswer) == "y")
+      file.remove(pvec_filenames)
+
+  } else {
+    file.remove(pvec_filenames)
+  }
+  return(invisible(TRUE))
+}
+
+
+#' Recursively cleanup all directories of ps_docu_path
 #'
 #' This is a wrapper over cleanup_output using sapply
-#' over the result of list.files(psDocuPath)
+#' over the result of list.files(ps_docu_path)
 #'
-#' @param psDocuPath   Name of the document path
-#' @param psPattern    Pattern to match by files to be deleted
+#' @param ps_docu_path   Name of the document path
+#' @param pvec_pattern    Pattern to match by files to be deleted
 #' @export cleanup_all
-cleanup_all <- function(psDocuPath  = "vignettes",
-                        psPattern   = c("pdf$", "png$"),
-                        pbIgnoreDir = TRUE){
-  sapply(list.files(path = psDocuPath, full.names = TRUE),
-         function(x) cleanup_output(psDocuPath = x,
-                                    psPattern = psPattern,
-                                    pbIgnoreDir = pbIgnoreDir,
-                                    pbInteractive = TRUE))
+cleanup_all <- function(ps_docu_path  = "vignettes",
+                        pvec_pattern   = c("pdf$", "png$"),
+                        pb_ignore_dir = TRUE){
+  sapply(list.files(path = ps_docu_path, full.names = TRUE),
+         function(x) cleanup_output(ps_docu_path   = x,
+                                    pvec_docu_root = NA,
+                                    pvec_pattern   = pvec_pattern,
+                                    pb_ignore_dir  = pb_ignore_dir,
+                                    pb_interactive = TRUE))
   invisible(TRUE)
 }

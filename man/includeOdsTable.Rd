@@ -5,7 +5,8 @@
 \title{Generic Method to include Ods tables as graphics}
 \usage{
 includeOdsTable(psOdsFileStem, psOutFormat = "pdf", psOdsDir,
-  psFigOutDir = ".", pbMustGenerate = FALSE, pnPaperWidthScale = NULL)
+  psFigOutDir = ".", pbMustGenerate = FALSE,
+  pnPaperWidthScale = NULL)
 }
 \arguments{
 \item{psOdsFileStem}{stem of odg figure file}
