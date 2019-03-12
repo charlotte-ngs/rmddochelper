@@ -5,9 +5,10 @@
 \title{Create a Rmarkdown (rmd) document with html_output}
 \usage{
 create_html_output_skeleton(psDocuName, psPkgPath = ".",
-  psRmdTemplate = "default_html_output", psTemplatePkg = "rmddochelper",
-  psDocuSubdir = "vignettes", pDocuHasOwnSubdir = TRUE,
-  pbOverwrite = FALSE, pbEdit = TRUE, plReplace = NULL)
+  psRmdTemplate = "default_html_output",
+  psTemplatePkg = "rmddochelper", psDocuSubdir = "vignettes",
+  pDocuHasOwnSubdir = TRUE, pbOverwrite = FALSE, pbEdit = TRUE,
+  plReplace = NULL)
 }
 \arguments{
 \item{psDocuName}{name of the new document}
