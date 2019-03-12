@@ -4,8 +4,7 @@
 \alias{genericScaledPlot}
 \title{Insert a plot into a document using a given width scale}
 \usage{
-genericScaledPlot(pData = NULL, pnPaperWidthScale, pfPlotMethod = NULL,
-  ...)
+genericScaledPlot(pData = NULL, pnPaperWidthScale, pfPlotMethod = NULL, ...)
 }
 \arguments{
 \item{pData}{data to be plotted}

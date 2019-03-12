@@ -18,6 +18,3 @@ insertOdgAsPng(psOdgFileStem, psOdgDir = "odg", psFigOutDir = ".",
 
 \item{pnPaperWidthScale}{scale factor for produced graphic}
 }
-\description{
-Include an odg graphic in png format into a rmarkdown source file
-}
