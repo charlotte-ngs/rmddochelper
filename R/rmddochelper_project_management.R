@@ -88,21 +88,25 @@ move_doc_to_subdir <- function(psDocuName, psDocuPath = NULL, pbMoveEverything =
 #' @param pb_interactive    Should user be asked whether to delete files
 #' @export cleanup_output
 cleanup_output <- function(ps_docu_path    = "vignettes",
-                           pvec_docu_root  = NA,
+                           pvec_docu_root  = NULL,
                            pvec_pattern    = c("pdf$", "png$"),
                            pb_ignore_dir   = TRUE,
                            pb_interactive  = TRUE){
   ### # loop over vector of document roots
-  if (!is.na(pvec_docu_root))
+  if (is.null(pvec_docu_root)){
+    ### # find matching file names based on pvec_pattern and delete them
+    find_match_delete( ps_docu_path   = ps_docu_path,
+                       ps_pattern     = pvec_pattern,
+                       pb_ignore_dir  = pb_ignore_dir,
+                       pb_interactive = pb_interactive )
+
+  } else {
+    ### # find matching file names based on pvec_docu_root and delete them
     find_match_delete( ps_docu_path   = ps_docu_path,
                        ps_pattern     = pvec_docu_root,
                        pb_ignore_dir  = pb_ignore_dir,
                        pb_interactive = pb_interactive )
-  ### # loop over vector of patterns given in pvec_pattern
-  find_match_delete( ps_docu_path   = ps_docu_path,
-                     ps_pattern     = pvec_pattern,
-                     pb_ignore_dir  = pb_ignore_dir,
-                     pb_interactive = pb_interactive )
+  }
   ### # invisible return
   invisible(TRUE)
 }
@@ -159,9 +163,12 @@ delete_files <- function(ps_docu_path,
           "\n", paste(basename(pvec_filenames), collapse = ", "))
   ### # ask user in interactive mode
   if (pb_interactive){
-    sAnswer <- readline(prompt = "Should above files be removed [y/N]: ")
-    if (tolower(sAnswer) == "y")
-      file.remove(pvec_filenames)
+    for (f in pvec_filenames){
+      sAnswer <- readline(prompt = paste0("Remove file: ", f, " [y/N]: ", collapse = ""))
+      if (tolower(sAnswer) == "y")
+        file.remove(f)
+
+    }
 
   } else {
     file.remove(pvec_filenames)
