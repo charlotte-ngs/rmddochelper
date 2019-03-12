@@ -746,7 +746,7 @@ odg_draft <- function(file,
          template,"'")
   }
   ### # read yaml info from file into variable
-  template_meta <- rmarkdown:::yaml_load_file_utf8(template_yaml)
+  template_meta <- rmarkdown:::yaml_load_file(template_yaml)
   if (is.null(template_meta$name) || is.null(template_meta$description)) {
     stop("template.yaml must contain name and description fields")
   }
