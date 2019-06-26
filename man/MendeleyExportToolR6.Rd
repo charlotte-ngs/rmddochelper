@@ -61,6 +61,10 @@ a local BibTeX file.
 \dontrun{
 # instantiate a new MendeleyExportTool object
 met <- rmddochelper::MendeleyExportToolR6$new()
+# setting the current rmd-file
+mrmt$set_this_rmd_file(ps_this_rmd_file = ifelse(rstudioapi::isAvailable(),
+                              rstudioapi::getActiveDocumentContext()$path,
+                              rprojroot::thisfile()))
 # check whether mendeley export dir exists
 met.exists_mendeley_export_dir()
 # add a new reference to the local BibTeX file

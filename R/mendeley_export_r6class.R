@@ -29,6 +29,10 @@
 #' \dontrun{
 #' # instantiate a new MendeleyExportTool object
 #' met <- rmddochelper::MendeleyExportToolR6$new()
+#' # setting the current rmd-file
+#' mrmt$set_this_rmd_file(ps_this_rmd_file = ifelse(rstudioapi::isAvailable(),
+#'                               rstudioapi::getActiveDocumentContext()$path,
+#'                               rprojroot::thisfile()))
 #' # check whether mendeley export dir exists
 #' met.exists_mendeley_export_dir()
 #' # add a new reference to the local BibTeX file
@@ -61,9 +65,13 @@
 MendeleyExportToolR6 <- R6::R6Class(classname = "MendeleyExporter",
                                     public = list(
                                       initialize = function(ps_men_export_dir = getOption("rmddh.mendeley.export.dir"),
-                                                            ps_local_bib_file = "bibliography.bib"){
+                                                            ps_local_bib_file = "bibliography.bib",
+                                                            ps_this_rmd_file  = ifelse(rstudioapi::isAvailable(),
+                                                                                       rstudioapi::getActiveDocumentContext()$path,
+                                                                                       rprojroot::thisfile())){
                                         private$s_men_export_dir <- ps_men_export_dir
                                         private$s_local_bib_file <- ps_local_bib_file
+                                        private$s_this_rmd_file <- ps_this_rmd_file
                                       },
                                       ### # setter and getter for s_men_export_dir
                                       set_mendeley_export_dir = function(ps_men_export_dir){private$s_men_export_dir <- ps_men_export_dir},

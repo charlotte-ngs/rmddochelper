@@ -4,8 +4,8 @@
 \alias{cleanup_all}
 \title{Recursively cleanup all directories of ps_docu_path}
 \usage{
-cleanup_all(ps_docu_path = "vignettes", pvec_pattern = c("pdf$", "png$"),
-  pb_ignore_dir = TRUE)
+cleanup_all(ps_docu_path = "vignettes", pvec_pattern = c("pdf$",
+  "png$"), pb_ignore_dir = TRUE)
 }
 \arguments{
 \item{ps_docu_path}{Name of the document path}

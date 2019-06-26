@@ -4,7 +4,7 @@
 \alias{cleanup_output}
 \title{Cleanup a directory from temporary output files}
 \usage{
-cleanup_output(ps_docu_path = "vignettes", pvec_docu_root = NA,
+cleanup_output(ps_docu_path = "vignettes", pvec_docu_root = NULL,
   pvec_pattern = c("pdf$", "png$"), pb_ignore_dir = TRUE,
   pb_interactive = TRUE)
 }
